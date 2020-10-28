@@ -32,3 +32,7 @@ class PictureShow:
         pdf_canvas.drawImage(picture, x, y,
                              width=pic_width, height=pic_height)
         pdf_canvas.save()
+
+
+def picture_to_pdf(pic_file, *args, **kwargs):
+    PictureShow(pic_file).picture_to_pdf(*args, **kwargs)

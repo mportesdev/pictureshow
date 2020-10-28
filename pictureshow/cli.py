@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from pictureshow import PictureShow
+from pictureshow import picture_to_pdf
 
 
 def main():
@@ -15,5 +15,4 @@ def main():
     picture_path = os.path.abspath(args.picture)
     pdf_path = os.path.abspath(args.pdf)
 
-    picture_show = PictureShow(picture_path)
-    picture_show.picture_to_pdf(pdf_path)
+    picture_to_pdf(picture_path, pdf_path)
