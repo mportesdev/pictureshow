@@ -34,5 +34,7 @@ class PictureShow:
         pdf_canvas.save()
 
 
-def picture_to_pdf(pic_file, *args, **kwargs):
-    PictureShow(pic_file).picture_to_pdf(*args, **kwargs)
+def picture_to_pdf(pic_file, pdf_file, page_size=A4, margin=0,
+                   stretch_small=False):
+    PictureShow(pic_file).picture_to_pdf(pdf_file, page_size, margin,
+                                         stretch_small)
