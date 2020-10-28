@@ -22,10 +22,12 @@ Example:
 .. code::
 
     $ python -m pictureshow --picture picture.png --pdf output_file.pdf
+    Saved to file: /.../output_file.pdf
 
 .. code::
 
     $ python -m pictureshow -i picture.png -o output_file.pdf
+    Saved to file: /.../output_file.pdf
 
 
 As a Python library

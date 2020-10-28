@@ -16,3 +16,4 @@ def main():
     pdf_path = os.path.abspath(args.pdf)
 
     picture_to_pdf(picture_path, pdf_path)
+    print(f'Saved to file: {pdf_path}')
