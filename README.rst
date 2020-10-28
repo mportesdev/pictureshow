@@ -12,10 +12,10 @@ Usage:
 
     optional arguments:
       -h, --help            show this help message and exit
-      -i PICTURE, --picture PICTURE, --infile PICTURE
-                            input file
-      -o PDF, --pdf PDF, --outfile PDF
-                            output file
+      -i PICTURE, --input PICTURE, --picture PICTURE
+                            input file path
+      -o PDF, --output PDF, --pdf PDF
+                            output file path
 
 Example:
 
