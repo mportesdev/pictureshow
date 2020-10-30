@@ -1,4 +1,4 @@
-from .classes import PictureShow, picture_to_pdf
+from .core import PictureShow, picture_to_pdf
 
 __version__ = '0.1.0'
 

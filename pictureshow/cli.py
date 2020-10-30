@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from pictureshow import picture_to_pdf
+from pictureshow.core import picture_to_pdf
 
 
 def main():
