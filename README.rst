@@ -40,7 +40,7 @@ Using the ``PictureShow`` class:
     from pictureshow import PictureShow
 
     ps = PictureShow('picture.jpg')
-    ps.picture_to_pdf('output_file.pdf')
+    ps.save_pdf('output_file.pdf')
 
 Using the ``picture_to_pdf`` shortcut function:
 
