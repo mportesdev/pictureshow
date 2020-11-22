@@ -7,7 +7,7 @@ Usage:
 
 .. code::
 
-    $ python -m pictureshow -h
+    $ pictureshow -h
     usage: pictureshow [-h] -i PICTURE [PICTURE ...] -o PDF
 
     optional arguments:
@@ -20,12 +20,12 @@ Example:
 
 .. code::
 
-    $ python -m pictureshow -i picture.png -o pic.pdf
+    $ pictureshow -i picture.png -o pic.pdf
     Saved to file: /.../pic.pdf
 
 .. code::
 
-    $ python -m pictureshow --pictures picture1.jpg picture2.gif --pdf pics.pdf
+    $ pictureshow --pictures picture1.jpg picture2.gif --pdf pics.pdf
     Saved to file: /.../pics.pdf
 
 
