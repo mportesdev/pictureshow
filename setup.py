@@ -34,4 +34,5 @@ setup(
     packages=['pictureshow'],
     install_requires=['reportlab'],
     python_requires='>=3.6',
+    entry_points={'console_scripts': ['pictureshow=pictureshow.cli:main']},
 )
