@@ -8,26 +8,25 @@ Usage:
 .. code::
 
     $ python -m pictureshow -h
-    usage: pictureshow [-h] -i PICTURE -o PDF
+    usage: pictureshow [-h] -i PICTURE [PICTURE ...] -o PDF
 
     optional arguments:
       -h, --help            show this help message and exit
-      -i PICTURE, --input PICTURE, --picture PICTURE
-                            input file path
-      -o PDF, --output PDF, --pdf PDF
-                            output file path
+      -i PICTURE [PICTURE ...], --pictures PICTURE [PICTURE ...]
+                            input picture file path(s)
+      -o PDF, --pdf PDF     output PDF file path
 
 Example:
 
 .. code::
 
-    $ python -m pictureshow --picture picture.png --pdf output_file.pdf
-    Saved to file: /.../output_file.pdf
+    $ python -m pictureshow -i picture.png -o pic.pdf
+    Saved to file: /.../pic.pdf
 
 .. code::
 
-    $ python -m pictureshow -i picture.png -o output_file.pdf
-    Saved to file: /.../output_file.pdf
+    $ python -m pictureshow --pictures picture1.jpg picture2.gif --pdf pics.pdf
+    Saved to file: /.../pics.pdf
 
 
 As a Python library
@@ -39,13 +38,21 @@ Using the ``PictureShow`` class:
 
     from pictureshow import PictureShow
 
-    ps = PictureShow('picture.jpg')
-    ps.save_pdf('output_file.pdf')
+    pic_show = PictureShow('pic1.png', 'pic2.jpg', 'pic3.gif')
+    pic_show.save_pdf('pictures.pdf')
 
-Using the ``picture_to_pdf`` shortcut function:
+Using the ``pictures_to_pdf`` shortcut function:
+
+.. code-block:: python
+
+    from pictureshow import pictures_to_pdf
+
+    pictures_to_pdf('pic1.png', 'pic2.jpg', 'pic3.gif', pdf_file='pictures.pdf')
+
+For a single picture, it is also possible to use the ``picture_to_pdf`` shortcut function:
 
 .. code-block:: python
 
     from pictureshow import picture_to_pdf
 
-    picture_to_pdf('picture.png', 'output_file.pdf')
+    picture_to_pdf('picture.png', 'picture.pdf')
