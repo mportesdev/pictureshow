@@ -52,6 +52,7 @@ Using the ``pictures_to_pdf`` shortcut function:
 It is however recommended to pass the output file name as a keyword argument:
 
 .. code-block:: python
+
     from pictureshow import pictures_to_pdf
 
     list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
