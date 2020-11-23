@@ -15,5 +15,8 @@ def main():
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.picture]
     pdf_path = os.path.abspath(args.pdf)
 
-    pictures_to_pdf(*picture_paths, pdf_file=pdf_path)
-    print(f'Saved to file: {pdf_path}')
+    ok, errors = pictures_to_pdf(*picture_paths, pdf_file=pdf_path)
+    if errors:
+        print(f'{errors} file{"s" if errors > 1 else ""} skipped'
+              ' because of error.')
+    print(f'Saved {ok} picture{"s" if ok > 1 else ""} to file: {pdf_path}')

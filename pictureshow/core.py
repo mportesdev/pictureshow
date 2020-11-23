@@ -12,8 +12,14 @@ class PictureShow:
         area_width, area_height = page_width - 2*margin, page_height - 2*margin
 
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
+        ok, errors = 0, 0
         for pic_file in self.pic_files:
-            picture = ImageReader(pic_file)
+            try:
+                picture = ImageReader(pic_file)
+            except Exception:
+                errors += 1
+                continue
+
             pic_width, pic_height = picture.getSize()
             pic_is_big = pic_width > area_width or pic_height > area_height
             pic_is_wide = pic_width / pic_height > area_width / area_height
@@ -32,8 +38,10 @@ class PictureShow:
             pdf_canvas.drawImage(picture, x, y,
                                  width=pic_width, height=pic_height)
             pdf_canvas.showPage()
+            ok += 1
 
         pdf_canvas.save()
+        return ok, errors
 
 
 def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4, margin=0,
@@ -41,7 +49,8 @@ def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4, margin=0,
     if pdf_file is None:
         *pic_files, pdf_file = pic_files
 
-    PictureShow(*pic_files).save_pdf(pdf_file, page_size, margin, stretch_small)
+    pic_show = PictureShow(*pic_files)
+    return pic_show.save_pdf(pdf_file, page_size, margin, stretch_small)
 
 
 def picture_to_pdf(pic_file, pdf_file, page_size=A4, margin=0,
