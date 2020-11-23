@@ -47,12 +47,12 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pic1.png', 'pic2.jpg', 'pic3.gif', pdf_file='pictures.pdf')
+    pictures_to_pdf('pic1.png', 'pic2.jpg', 'pic3.gif', 'pictures.pdf')
 
-For a single picture, it is also possible to use the ``picture_to_pdf`` shortcut function:
+It is however recommended to pass the output file name as a keyword argument:
 
 .. code-block:: python
+    from pictureshow import pictures_to_pdf
 
-    from pictureshow import picture_to_pdf
-
-    picture_to_pdf('picture.png', 'picture.pdf')
+    list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
+    pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
