@@ -21,12 +21,12 @@ Example:
 .. code::
 
     $ pictureshow -i picture.png -o pic.pdf
-    Saved to file: /.../pic.pdf
+    Saved 1 picture to file: /.../pic.pdf
 
 .. code::
 
     $ pictureshow --pictures picture1.jpg picture2.gif --pdf pics.pdf
-    Saved to file: /.../pics.pdf
+    Saved 2 pictures to file: /.../pics.pdf
 
 
 As a Python library
