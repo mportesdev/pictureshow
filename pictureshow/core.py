@@ -51,8 +51,3 @@ def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4, margin=0,
 
     pic_show = PictureShow(*pic_files)
     return pic_show.save_pdf(pdf_file, page_size, margin, stretch_small)
-
-
-def picture_to_pdf(pic_file, pdf_file, page_size=A4, margin=0,
-                   stretch_small=False):
-    PictureShow(pic_file).save_pdf(pdf_file, page_size, margin, stretch_small)
