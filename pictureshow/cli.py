@@ -6,10 +6,9 @@ from pictureshow.core import pictures_to_pdf
 
 def main():
     parser = argparse.ArgumentParser('pictureshow')
-    parser.add_argument('-i', '--pictures', nargs='+', required=True,
-                        help='input picture file path(s)', dest='picture')
-    parser.add_argument('-o', '--pdf', required=True,
-                        help='output PDF file path', dest='pdf')
+    parser.add_argument('picture', nargs='+',
+                        help='input picture file path(s)')
+    parser.add_argument('pdf', help='output PDF file path')
     args = parser.parse_args()
 
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.picture]

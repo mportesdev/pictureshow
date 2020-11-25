@@ -8,26 +8,31 @@ Usage:
 .. code::
 
     $ pictureshow -h
-    usage: pictureshow [-h] -i PICTURE [PICTURE ...] -o PDF
+    usage: pictureshow [-h] picture [picture ...] pdf
+
+    positional arguments:
+      picture     input picture file path(s)
+      pdf         output PDF file path
 
     optional arguments:
-      -h, --help            show this help message and exit
-      -i PICTURE [PICTURE ...], --pictures PICTURE [PICTURE ...]
-                            input picture file path(s)
-      -o PDF, --pdf PDF     output PDF file path
+      -h, --help  show this help message and exit
 
 Example:
 
 .. code::
 
-    $ pictureshow -i picture.png -o pic.pdf
-    Saved 1 picture to file: /.../pic.pdf
+    $ pictureshow picture.png pic.pdf
+    Saved 1 picture to PDF file: /.../pic.pdf
 
 .. code::
 
-    $ pictureshow --pictures picture1.jpg picture2.gif --pdf pics.pdf
-    Saved 2 pictures to file: /.../pics.pdf
+    $ pictureshow *.jpg jpg_pics.pdf
+    Saved 14 pictures to PDF file: /.../jpg_pics.pdf
 
+.. code::
+
+    $ pictureshow *.png *.jpg *.gif all_pics.pdf
+    Saved 32 pictures to PDF file: /.../all_pics.pdf
 
 As a Python library
 -------------------
