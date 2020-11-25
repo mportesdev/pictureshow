@@ -7,14 +7,15 @@ Usage:
 
 .. code::
 
-    usage: pictureshow [-h] PIC [PIC ...] PDF
+    usage: pictureshow [-h] [-q] PIC [PIC ...] PDF
 
     positional arguments:
-      PIC         one or more input picture file paths
-      PDF         output PDF file path
+      PIC          one or more input picture file paths
+      PDF          output PDF file path
 
     optional arguments:
-      -h, --help  show this help message and exit
+      -h, --help   show this help message and exit
+      -q, --quiet  disable printing to stdout
 
 Examples:
 
@@ -25,8 +26,7 @@ Examples:
 
 .. code::
 
-    $ pictureshow *.jpg jpg_pics.pdf
-    Saved 14 pictures to '/.../jpg_pics.pdf'
+    $ pictureshow *.jpg jpg_pics.pdf -q
 
 .. code::
 
