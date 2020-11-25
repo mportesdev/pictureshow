@@ -5,14 +5,18 @@ from pictureshow.core import pictures_to_pdf
 
 
 def main():
-    parser = argparse.ArgumentParser('pictureshow')
-    parser.add_argument('picture', nargs='+',
-                        help='input picture file path(s)')
-    parser.add_argument('pdf', help='output PDF file path')
+    parser = argparse.ArgumentParser(
+        prog='pictureshow',
+        description='Save pictures to PDF',
+        epilog='https://pypi.org/project/pictureshow/'
+    )
+    parser.add_argument('PIC', nargs='+',
+                        help='one or more input picture file paths')
+    parser.add_argument('PDF', help='output PDF file path')
     args = parser.parse_args()
 
-    picture_paths = [os.path.abspath(pic_file) for pic_file in args.picture]
-    pdf_path = os.path.abspath(args.pdf)
+    picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
+    pdf_path = os.path.abspath(args.PDF)
 
     ok, errors = pictures_to_pdf(*picture_paths, pdf_file=pdf_path)
     if errors:

@@ -7,12 +7,11 @@ Usage:
 
 .. code::
 
-    $ pictureshow -h
-    usage: pictureshow [-h] picture [picture ...] pdf
+    usage: pictureshow [-h] PIC [PIC ...] PDF
 
     positional arguments:
-      picture     input picture file path(s)
-      pdf         output PDF file path
+      PIC         one or more input picture file paths
+      PDF         output PDF file path
 
     optional arguments:
       -h, --help  show this help message and exit
