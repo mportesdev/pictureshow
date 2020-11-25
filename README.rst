@@ -16,22 +16,22 @@ Usage:
     optional arguments:
       -h, --help  show this help message and exit
 
-Example:
+Examples:
 
 .. code::
 
     $ pictureshow picture.png pic.pdf
-    Saved 1 picture to PDF file: /.../pic.pdf
+    Saved 1 picture to '/.../pic.pdf'
 
 .. code::
 
     $ pictureshow *.jpg jpg_pics.pdf
-    Saved 14 pictures to PDF file: /.../jpg_pics.pdf
+    Saved 14 pictures to '/.../jpg_pics.pdf'
 
 .. code::
 
     $ pictureshow *.png *.jpg *.gif all_pics.pdf
-    Saved 32 pictures to PDF file: /.../all_pics.pdf
+    Saved 32 pictures to '/.../all_pics.pdf'
 
 As a Python library
 -------------------
