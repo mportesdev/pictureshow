@@ -40,7 +40,8 @@ class PictureShow:
             pdf_canvas.showPage()
             ok += 1
 
-        pdf_canvas.save()
+        if ok != 0:
+            pdf_canvas.save()
         return ok, errors
 
 

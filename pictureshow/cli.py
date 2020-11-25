@@ -19,4 +19,9 @@ def main():
     if errors:
         print(f'{errors} file{"s" if errors > 1 else ""} skipped'
               ' because of error.')
-    print(f'Saved {ok} picture{"s" if ok > 1 else ""} to file: {pdf_path}')
+    if ok != 0:
+        print(
+            f'Saved {ok} picture{"s" if ok > 1 else ""} to PDF file: {pdf_path}'
+        )
+    else:
+        print('No PDF file generated.')
