@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from pictureshow.core import pictures_to_pdf
+from pictureshow import pictures_to_pdf, version
 
 
 def get_args():
@@ -10,10 +10,12 @@ def get_args():
         description='Save pictures to PDF',
         epilog='https://pypi.org/project/pictureshow/'
     )
+    parser.version = version
 
     parser.add_argument('PIC', nargs='+',
                         help='one or more input picture file paths')
     parser.add_argument('PDF', help='output PDF file path')
+    parser.add_argument('-v', '--version', action='version')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='disable printing to stdout')
 
