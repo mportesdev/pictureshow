@@ -18,6 +18,9 @@ def get_args():
     parser.add_argument('-v', '--version', action='version')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='disable printing to stdout')
+    parser.add_argument('-m', '--margin', type=int, default=0,
+                        help='width of empty margin on page, in points;'
+                             ' default 0')
 
     return parser.parse_args()
 
@@ -39,6 +42,7 @@ def main():
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
     pdf_path = os.path.abspath(args.PDF)
 
-    num_ok, num_errors = pictures_to_pdf(*picture_paths, pdf_file=pdf_path)
+    num_ok, num_errors = pictures_to_pdf(*picture_paths, pdf_file=pdf_path,
+                                         margin=args.margin)
     if not args.quiet:
         report_results(num_ok, num_errors, pdf_path)
