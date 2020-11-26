@@ -7,7 +7,7 @@ class PictureShow:
     def __init__(self, *pic_files):
         self.pic_files = pic_files
 
-    def save_pdf(self, pdf_file, page_size=A4, margin=0, stretch_small=False):
+    def save_pdf(self, pdf_file, page_size=A4, margin=72, stretch_small=False):
         area_size = page_size[0] - 2*margin, page_size[1] - 2*margin
 
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
@@ -55,7 +55,7 @@ class PictureShow:
         return x, y, pic_width, pic_height
 
 
-def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4, margin=0,
+def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4, margin=72,
                     stretch_small=False):
     if pdf_file is None:
         *pic_files, pdf_file = pic_files
