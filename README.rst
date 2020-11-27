@@ -1,4 +1,3 @@
-# coding: utf-8
 Save pictures to PDF — from the command line, or from your Python programs.
 
 As a command line tool
@@ -8,7 +7,7 @@ Usage:
 
 .. code::
 
-    usage: pictureshow [-h] [-v] [-q] [-m MARGIN] PIC [PIC ...] PDF
+    usage: pictureshow [-h] [-v] [-q] [-m MARGIN] [-s] PIC [PIC ...] PDF
 
     positional arguments:
       PIC                   one or more input picture file paths
@@ -21,6 +20,7 @@ Usage:
       -m MARGIN, --margin MARGIN
                             width of empty margin on page; default 72 points (1
                             inch)
+      -s, --stretch-small   scale small pictures up to fit drawing area
 
 Simple example — saving a single picture to PDF:
 
@@ -41,6 +41,13 @@ Using multiple glob patterns, with margin width specified:
 
     $ pictureshow -m 36 *.png *.jpg *.gif all_pics.pdf
     Saved 32 pictures to '/.../all_pics.pdf'
+
+Combining glob pattern and additional filenames, with zero margin, stretching small pictures to page:
+
+.. code::
+
+    $ pictureshow chart.gif *.jpg graph.png pics.pdf -m 0 -s
+    Saved 7 pictures to '/.../pics.pdf'
 
 As a Python library
 -------------------

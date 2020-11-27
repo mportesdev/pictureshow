@@ -21,6 +21,8 @@ def get_args():
     parser.add_argument('-m', '--margin', type=int, default=72,
                         help='width of empty margin on page; default 72 points'
                              ' (1 inch)')
+    parser.add_argument('-s', '--stretch-small', action='store_true',
+                        help='scale small pictures up to fit drawing area')
 
     return parser.parse_args()
 
@@ -42,7 +44,9 @@ def main():
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
     pdf_path = os.path.abspath(args.PDF)
 
-    num_ok, num_errors = pictures_to_pdf(*picture_paths, pdf_file=pdf_path,
-                                         margin=args.margin)
+    num_ok, num_errors = pictures_to_pdf(
+        *picture_paths, pdf_file=pdf_path,
+        margin=args.margin, stretch_small=args.stretch_small
+    )
     if not args.quiet:
         report_results(num_ok, num_errors, pdf_path)
