@@ -1,4 +1,5 @@
-Save pictures to PDF either from a command line, or in your Python programs.
+# coding: utf-8
+Save pictures to PDF — from the command line, or from your Python programs.
 
 As a command line tool
 ----------------------
@@ -16,21 +17,25 @@ Usage:
     optional arguments:
       -h, --help            show this help message and exit
       -v, --version         show program's version number and exit
-      -q, --quiet           disable printing to stdout
+      -q, --quiet           suppress printing to stdout
       -m MARGIN, --margin MARGIN
                             width of empty margin on page; default 72 points (1
                             inch)
 
-Examples:
+Simple example — saving a single picture to PDF:
 
 .. code::
 
     $ pictureshow picture.png pic.pdf
     Saved 1 picture to '/.../pic.pdf'
 
+Using a glob pattern, in the quiet mode:
+
 .. code::
 
     $ pictureshow -q *.jpg jpg_pics.pdf
+
+Using multiple glob patterns, with margin width specified:
 
 .. code::
 

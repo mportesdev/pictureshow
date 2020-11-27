@@ -17,7 +17,7 @@ def get_args():
     parser.add_argument('PDF', help='output PDF file path')
     parser.add_argument('-v', '--version', action='version')
     parser.add_argument('-q', '--quiet', action='store_true',
-                        help='disable printing to stdout')
+                        help='suppress printing to stdout')
     parser.add_argument('-m', '--margin', type=int, default=72,
                         help='width of empty margin on page; default 72 points'
                              ' (1 inch)')
