@@ -59,7 +59,7 @@ Using the ``PictureShow`` class:
     from pictureshow import PictureShow
 
     pic_show = PictureShow('pic1.png', 'pic2.jpg', 'pic3.gif')
-    pic_show.save_pdf('pictures.pdf', margin=36)
+    pic_show.save_pdf('pictures.pdf')
 
 Using the ``pictures_to_pdf`` shortcut function:
 
@@ -67,8 +67,7 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pic1.png', 'pic2.jpg', 'pic3.gif', 'pictures.pdf',
-                    margin=36)
+    pictures_to_pdf('pic1.png', 'pic2.jpg', 'pic3.gif', 'pictures.pdf')
 
 It is however recommended to pass the output file name as a keyword argument:
 
@@ -77,4 +76,20 @@ It is however recommended to pass the output file name as a keyword argument:
     from pictureshow import pictures_to_pdf
 
     list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
-    pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf', margin=36)
+    pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
+
+Using a glob pattern, sorted by name, with a two-inch margin, stretching smaller pictures to area:
+
+.. code-block:: python
+
+    from pathlib import Path
+
+    from pictureshow import pictures_to_pdf
+
+    list_of_pictures = sorted(Path.cwd().glob('screenshots/*.png'))
+    pictures_to_pdf(
+        *list_of_pictures,
+        pdf_file='screenshots.pdf',
+        margin=144,
+        stretch_small=True
+    )
