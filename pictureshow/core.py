@@ -7,7 +7,10 @@ class PictureShow:
     def __init__(self, *pic_files):
         self.pic_files = pic_files
 
-    def save_pdf(self, pdf_file, page_size=A4, margin=72, stretch_small=False):
+    def save_pdf(self, pdf_file, page_size=A4, orientation='portrait',
+                 margin=72, stretch_small=False):
+        if orientation == 'landscape':
+            page_size = page_size[::-1]
         area_size = page_size[0] - 2*margin, page_size[1] - 2*margin
 
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
@@ -55,10 +58,12 @@ class PictureShow:
         return x, y, pic_width, pic_height
 
 
-def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4, margin=72,
-                    stretch_small=False):
+def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4,
+                    orientation='portrait', margin=72, stretch_small=False):
     if pdf_file is None:
         *pic_files, pdf_file = pic_files
 
     pic_show = PictureShow(*pic_files)
-    return pic_show.save_pdf(pdf_file, page_size, margin, stretch_small)
+    return pic_show.save_pdf(
+        pdf_file, page_size, orientation, margin, stretch_small
+    )
