@@ -19,8 +19,11 @@ def get_args():
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='suppress printing to stdout')
     parser.add_argument('-m', '--margin', type=int, default=72,
-                        help='width of empty margin on page; default 72 points'
-                             ' (1 inch)')
+                        help='width of empty margin on page;'
+                             ' default is 72 points (1 inch)')
+    parser.add_argument('-l', '--landscape', action='store_true',
+                        help='set page orientation to landscape;'
+                             ' default is portrait')
     parser.add_argument('-s', '--stretch-small', action='store_true',
                         help='scale small pictures up to fit drawing area')
 
@@ -43,9 +46,10 @@ def main():
 
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
     pdf_path = os.path.abspath(args.PDF)
+    orientation = 'landscape' if args.landscape else 'portrait'
 
     num_ok, num_errors = pictureshow.pictures_to_pdf(
-        *picture_paths, pdf_file=pdf_path,
+        *picture_paths, pdf_file=pdf_path, orientation=orientation,
         margin=args.margin, stretch_small=args.stretch_small
     )
     if not args.quiet:
