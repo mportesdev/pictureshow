@@ -1,0 +1,2 @@
+class PageOrientationError(ValueError):
+    pass

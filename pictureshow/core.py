@@ -2,6 +2,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
+from pictureshow.exceptions import PageOrientationError
+
 
 class PictureShow:
     def __init__(self, *pic_files):
@@ -9,8 +11,13 @@ class PictureShow:
 
     def save_pdf(self, pdf_file, page_size=A4, orientation='portrait',
                  margin=72, stretch_small=False):
-        if orientation == 'landscape':
+        if orientation == 'portrait':
+            pass
+        elif orientation == 'landscape':
             page_size = page_size[::-1]
+        else:
+            raise PageOrientationError("must be 'portrait' or 'landscape'")
+
         area_size = page_size[0] - 2*margin, page_size[1] - 2*margin
 
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
