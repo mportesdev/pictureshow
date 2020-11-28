@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from pictureshow import pictures_to_pdf, version
+import pictureshow
 
 
 def get_args():
@@ -10,7 +10,7 @@ def get_args():
         description='Save pictures to PDF',
         epilog='https://pypi.org/project/pictureshow/'
     )
-    parser.version = version
+    parser.version = pictureshow.__version__
 
     parser.add_argument('PIC', nargs='+',
                         help='one or more input picture file paths')
@@ -44,7 +44,7 @@ def main():
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
     pdf_path = os.path.abspath(args.PDF)
 
-    num_ok, num_errors = pictures_to_pdf(
+    num_ok, num_errors = pictureshow.pictures_to_pdf(
         *picture_paths, pdf_file=pdf_path,
         margin=args.margin, stretch_small=args.stretch_small
     )
