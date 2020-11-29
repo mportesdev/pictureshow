@@ -2,7 +2,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
-from pictureshow.exceptions import PageOrientationError
+from pictureshow.exceptions import PageOrientationError, MarginError
 
 
 class PictureShow:
@@ -19,6 +19,8 @@ class PictureShow:
             raise PageOrientationError("must be 'portrait' or 'landscape'")
 
         area_size = page_size[0] - 2*margin, page_size[1] - 2*margin
+        if min(area_size) <= 0:
+            raise MarginError('margin value too high')
 
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
         ok, errors = 0, 0
