@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
@@ -11,6 +13,9 @@ class PictureShow:
 
     def save_pdf(self, pdf_file, page_size=A4, orientation='portrait',
                  margin=72, stretch_small=False):
+        if Path(pdf_file).exists():
+            raise FileExistsError(f'file {pdf_file!r} exists')
+
         return self._save_pdf(
             pdf_file, page_size, orientation, margin, stretch_small
         )
