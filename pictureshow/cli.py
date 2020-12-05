@@ -47,9 +47,13 @@ def main():
     pdf_path = os.path.abspath(args.PDF)
     orientation = 'landscape' if args.landscape else 'portrait'
 
-    num_ok, num_errors = pictureshow.pictures_to_pdf(
-        *picture_paths, pdf_file=pdf_path, orientation=orientation,
-        margin=args.margin, stretch_small=args.stretch_small
-    )
-    if not args.quiet:
-        report_results(num_ok, num_errors, pdf_path)
+    try:
+        num_ok, num_errors = pictureshow.pictures_to_pdf(
+            *picture_paths, pdf_file=pdf_path, orientation=orientation,
+            margin=args.margin, stretch_small=args.stretch_small
+        )
+    except Exception as err:
+        parser.error(err)
+    else:
+        if not args.quiet:
+            report_results(num_ok, num_errors, pdf_path)
