@@ -11,6 +11,11 @@ class PictureShow:
 
     def save_pdf(self, pdf_file, page_size=A4, orientation='portrait',
                  margin=72, stretch_small=False):
+        return self._save_pdf(
+            pdf_file, page_size, orientation, margin, stretch_small
+        )
+
+    def _save_pdf(self, pdf_file, page_size, orientation, margin, stretch_small):
         if orientation == 'portrait':
             pass
         elif orientation == 'landscape':
