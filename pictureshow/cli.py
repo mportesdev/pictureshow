@@ -11,6 +11,8 @@ def get_args(parser):
     parser.add_argument('-v', '--version', action='version')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='suppress printing to stdout')
+    parser.add_argument('-f', '--force-overwrite', action='store_true',
+                        help='save output file even if filename exists')
     parser.add_argument('-m', '--margin', type=int, default=72,
                         help='width of empty margin on page;'
                              ' default is 72 points (1 inch)')
@@ -50,7 +52,8 @@ def main():
     try:
         num_ok, num_errors = pictureshow.pictures_to_pdf(
             *picture_paths, pdf_file=pdf_path, orientation=orientation,
-            margin=args.margin, stretch_small=args.stretch_small
+            margin=args.margin, stretch_small=args.stretch_small,
+            force_overwrite=args.force_overwrite
         )
     except Exception as err:
         parser.error(err)
