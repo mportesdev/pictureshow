@@ -4,7 +4,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
-from pictureshow.exceptions import PageOrientationError, MarginError
+from pictureshow import PageOrientationError, MarginError
 
 
 class PictureShow:
