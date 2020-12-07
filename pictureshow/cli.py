@@ -13,7 +13,7 @@ def get_args(parser):
                         help='suppress printing to stdout')
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save output file even if filename exists')
-    parser.add_argument('-m', '--margin', type=int, default=72,
+    parser.add_argument('-m', '--margin', type=float, default=72,
                         help='width of empty margin on page;'
                              ' default is 72 points (1 inch)')
     parser.add_argument('-l', '--landscape', action='store_true',
