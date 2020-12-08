@@ -13,6 +13,7 @@ DrawingArea = namedtuple('DrawingArea', 'x y width height')
 class PictureShow:
     def __init__(self, *pic_files):
         self.pic_files = pic_files
+        self.errors = 0
 
     def save_pdf(self, pdf_file, page_size=A4, orientation='portrait',
                  margin=72, layout=(1, 1), stretch_small=False,
