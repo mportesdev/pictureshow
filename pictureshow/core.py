@@ -1,3 +1,4 @@
+from collections import namedtuple
 from pathlib import Path
 
 from reportlab.lib.pagesizes import A4
@@ -5,6 +6,8 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
 from pictureshow import PageOrientationError, MarginError
+
+DrawingArea = namedtuple('DrawingArea', 'x y width height')
 
 
 class PictureShow:
@@ -88,7 +91,7 @@ class PictureShow:
             area_y = page_height - row * (area_height + margin)
             for col in range(1, columns + 1):
                 area_x = page_width - col * (area_width + margin)
-                yield area_x, area_y, area_width, area_height
+                yield DrawingArea(area_x, area_y, area_width, area_height)
 
 
 def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4,
