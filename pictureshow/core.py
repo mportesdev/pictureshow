@@ -36,14 +36,8 @@ class PictureShow:
         area_size = page_size[0] - 2*margin, page_size[1] - 2*margin
 
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
-        ok, errors = 0, 0
-        for pic_file in self.pic_files:
-            try:
-                picture = ImageReader(pic_file)
-            except Exception:
-                errors += 1
-                continue
-
+        ok, self.errors = 0, 0
+        for picture in self._valid_pictures():
             x, y, pic_width, pic_height = self._position_and_size(
                 picture.getSize(), area_size, stretch_small
             )
@@ -55,7 +49,17 @@ class PictureShow:
 
         if ok != 0:
             pdf_canvas.save()
-        return ok, errors
+        return ok, self.errors
+
+    def _valid_pictures(self):
+        for pic_file in self.pic_files:
+            try:
+                picture = ImageReader(pic_file)
+            except Exception:
+                self.errors += 1
+                continue
+            else:
+                yield picture
 
     @staticmethod
     def _position_and_size(pic_size, area_size, stretch_small):
