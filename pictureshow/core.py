@@ -33,23 +33,25 @@ class PictureShow:
         else:
             raise PageOrientationError("must be 'portrait' or 'landscape'")
 
-        area_size = page_size[0] - 2*margin, page_size[1] - 2*margin
-
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
-        ok, self.errors = 0, 0
-        for picture in self._valid_pictures():
-            x, y, pic_width, pic_height = self._position_and_size(
-                picture.getSize(), area_size, stretch_small
-            )
-            pdf_canvas.drawImage(
-                picture, margin + x, margin + y, pic_width, pic_height
-            )
+        valid_pics = self._valid_pictures()
+        num_ok, self.errors = 0, 0
+        while True:
+            for area in self._areas(layout, page_size, margin):
+                try:
+                    picture = next(valid_pics)
+                except StopIteration:
+                    if num_ok != 0:
+                        pdf_canvas.save()
+                    return num_ok, self.errors
+                x, y, pic_width, pic_height = self._position_and_size(
+                    picture.getSize(), (area.width, area.height), stretch_small
+                )
+                pdf_canvas.drawImage(
+                    picture, area.x + x, area.y + y, pic_width, pic_height
+                )
+                num_ok += 1
             pdf_canvas.showPage()
-            ok += 1
-
-        if ok != 0:
-            pdf_canvas.save()
-        return ok, self.errors
 
     def _valid_pictures(self):
         for pic_file in self.pic_files:
