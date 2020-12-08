@@ -76,6 +76,20 @@ class PictureShow:
 
         return x, y, pic_width, pic_height
 
+    @staticmethod
+    def _areas(page_layout, page_size, margin):
+        columns, rows = page_layout
+        page_width, page_height = page_size
+
+        area_width = (page_width - (columns + 1) * margin) / columns
+        area_height = (page_height - (rows + 1) * margin) / rows
+
+        for row in range(1, rows + 1):
+            area_y = page_height - row * (area_height + margin)
+            for col in range(1, columns + 1):
+                area_x = page_width - col * (area_width + margin)
+                yield area_x, area_y, area_width, area_height
+
 
 def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4,
                     orientation='portrait', margin=72, stretch_small=False,
