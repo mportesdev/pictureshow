@@ -101,8 +101,8 @@ class PictureShow:
 
         for row in range(1, rows + 1):
             area_y = page_height - row * (area_height + margin)
-            for col in range(1, columns + 1):
-                area_x = page_width - col * (area_width + margin)
+            for col in range(columns):
+                area_x = margin + col * (area_width + margin)
                 yield DrawingArea(area_x, area_y, area_width, area_height)
 
 
