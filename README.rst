@@ -72,7 +72,7 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     pictures_to_pdf('pic1.png', 'pic2.jpg', 'pic3.gif', 'pictures.pdf')
 
-It is however recommended to pass the output file name as a keyword argument:
+The example above will work as long as the output file is passed as the last positional argument. It is however recommended to always use a keyword argument:
 
 .. code-block:: python
 
@@ -81,7 +81,7 @@ It is however recommended to pass the output file name as a keyword argument:
     list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
-Using a glob pattern, sorted by name, with landscape page orientation and two-inch margin, stretching small pictures to area:
+Another example, with landscape page orientation and two-inch margin, stretching small pictures to area:
 
 .. code-block:: python
 
