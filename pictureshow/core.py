@@ -34,8 +34,6 @@ class PictureShow:
             raise PageOrientationError("must be 'portrait' or 'landscape'")
 
         area_size = page_size[0] - 2*margin, page_size[1] - 2*margin
-        if min(area_size) <= 0:
-            raise MarginError('margin value too high')
 
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
         ok, errors = 0, 0
@@ -85,6 +83,11 @@ class PictureShow:
     def _areas(page_layout, page_size, margin):
         columns, rows = page_layout
         page_width, page_height = page_size
+
+        margins_too_wide = margin * (columns + 1) >= page_width
+        margins_too_high = margin * (rows + 1) >= page_height
+        if margins_too_wide or margins_too_high:
+            raise MarginError('margin value too high')
 
         area_width = (page_width - (columns + 1) * margin) / columns
         area_height = (page_height - (rows + 1) * margin) / rows
