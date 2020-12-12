@@ -14,8 +14,7 @@ def get_args(parser):
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save output file even if filename exists')
     parser.add_argument('-L', '--landscape', action='store_true',
-                        help='set page orientation to landscape;'
-                             ' default is portrait')
+                        help='force landscape orientation of page')
     parser.add_argument('-m', '--margin', type=float, default=72,
                         help='width of empty margin on page;'
                              ' default is 72 points (1 inch)')
@@ -49,12 +48,11 @@ def main():
 
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
     pdf_path = os.path.abspath(args.PDF)
-    orientation = 'landscape' if args.landscape else 'portrait'
     layout = tuple(int(s) for s in args.layout.split('x'))
 
     try:
         num_ok, num_errors = pictureshow.pictures_to_pdf(
-            *picture_paths, pdf_file=pdf_path, orientation=orientation,
+            *picture_paths, pdf_file=pdf_path, landscape=args.landscape,
             margin=args.margin, layout=layout, stretch_small=args.stretch_small,
             force_overwrite=args.force_overwrite
         )

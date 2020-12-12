@@ -15,25 +15,17 @@ class PictureShow:
         self.pic_files = pic_files
         self.errors = 0
 
-    def save_pdf(self, pdf_file, page_size=A4, orientation='portrait',
-                 margin=72, layout=(1, 1), stretch_small=False,
-                 force_overwrite=False):
+    def save_pdf(self, pdf_file, page_size=A4, landscape=False, margin=72,
+                 layout=(1, 1), stretch_small=False, force_overwrite=False):
         if Path(pdf_file).exists() and not force_overwrite:
             raise FileExistsError(f'file {pdf_file!r} exists')
 
-        return self._save_pdf(
-            pdf_file, page_size, orientation, margin, layout, stretch_small
-        )
-
-    def _save_pdf(self, pdf_file, page_size, orientation, margin, layout,
-                  stretch_small):
-        if orientation == 'portrait':
-            pass
-        elif orientation == 'landscape':
+        if landscape and page_size[0] < page_size[1]:
             page_size = page_size[::-1]
-        else:
-            raise PageOrientationError("must be 'portrait' or 'landscape'")
 
+        return self._save_pdf(pdf_file, page_size, margin, layout, stretch_small)
+
+    def _save_pdf(self, pdf_file, page_size, margin, layout, stretch_small):
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
         valid_pics = self._valid_pictures()
         num_ok, self.errors = 0, 0
@@ -107,13 +99,13 @@ class PictureShow:
 
 
 def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4,
-                    orientation='portrait', margin=72, layout=(1, 1),
+                    landscape=False, margin=72, layout=(1, 1),
                     stretch_small=False, force_overwrite=False):
     if pdf_file is None:
         *pic_files, pdf_file = pic_files
 
     pic_show = PictureShow(*pic_files)
     return pic_show.save_pdf(
-        pdf_file, page_size, orientation, margin, layout, stretch_small,
+        pdf_file, page_size, landscape, margin, layout, stretch_small,
         force_overwrite
     )
