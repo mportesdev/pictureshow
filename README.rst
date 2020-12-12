@@ -7,7 +7,8 @@ Usage:
 
 .. code::
 
-    usage: pictureshow [-h] [-v] [-q] [-f] [-m MARGIN] [-l] [-s] PIC [PIC ...] PDF
+    usage: pictureshow [-h] [-v] [-q] [-f] [-L] [-m MARGIN] [-l LAYOUT] [-s]
+                       PIC [PIC ...] PDF
 
     positional arguments:
       PIC                   one or more input picture file paths
@@ -19,10 +20,12 @@ Usage:
       -q, --quiet           suppress printing to stdout
       -f, --force-overwrite
                             save output file even if filename exists
+      -L, --landscape       force landscape orientation of page
       -m MARGIN, --margin MARGIN
                             width of empty margin on page; default is 72 points (1
                             inch)
-      -l, --landscape       set page orientation to landscape; default is portrait
+      -l LAYOUT, --layout LAYOUT
+                            grid layout of pictures on page; default is 1x1
       -s, --stretch-small   scale small pictures up to fit drawing area
 
 Simple example — saving a single picture to PDF:
@@ -42,14 +45,14 @@ Using multiple glob patterns, with margin width specified:
 
 .. code::
 
-    $ pictureshow -m 36 *.png *.jpg *.gif all_pics.pdf
+    $ pictureshow --margin=36 *.png *.jpg *.gif all_pics.pdf
     Saved 32 pictures to '/.../all_pics.pdf'
 
 Combining glob pattern and additional filenames, overwriting existing output file, stretching small pictures to page, with zero margin:
 
 .. code::
 
-    $ pictureshow chart.gif *.jpg graph.png pics.pdf -fsm 0
+    $ pictureshow chart.gif *.jpg figure.png pics.pdf -fsm0
     Saved 7 pictures to '/.../pics.pdf'
 
 As a Python library
@@ -81,7 +84,7 @@ The example above will work as long as the output file is passed as the last pos
     list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
-Another example, with landscape page orientation and two-inch margin, stretching small pictures to area:
+Another example, with landscape page orientation, half-inch margin and 2x2 pictures per page, stretching small pictures to area, overwriting target file if it exists:
 
 .. code-block:: python
 
@@ -93,7 +96,9 @@ Another example, with landscape page orientation and two-inch margin, stretching
     pictures_to_pdf(
         *list_of_pictures,
         pdf_file='screenshots.pdf',
-        orientation='landscape',
-        margin=144,
-        stretch_small=True
+        landscape=True,
+        margin=36,
+        layout=(2, 2),
+        stretch_small=True,
+        force_overwrite=True
     )
