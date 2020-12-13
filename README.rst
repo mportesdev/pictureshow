@@ -41,11 +41,11 @@ Using a glob pattern, in the quiet mode:
 
     $ pictureshow -q *.jpg jpg_pics.pdf
 
-Using multiple glob patterns, with margin width specified:
+Using multiple glob patterns, with half-inch margin and 1x3 pictures per page:
 
 .. code::
 
-    $ pictureshow --margin=36 *.png *.jpg *.gif all_pics.pdf
+    $ pictureshow --margin=36 --layout=1x3 *.png *.jpg *.gif all_pics.pdf
     Saved 32 pictures to '/.../all_pics.pdf'
 
 Combining glob pattern and additional filenames, overwriting existing output file, stretching small pictures to page, with zero margin:
