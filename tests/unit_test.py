@@ -1,6 +1,7 @@
 import pytest
 
-from pictureshow import PictureShow
+from pictureshow.core import PictureShow, _get_page_size_from_name
+from pictureshow.exceptions import PageSizeError
 from tests import A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
 
 
@@ -86,3 +87,49 @@ class TestAreas:
 
         # all areas in the bottom row have y == margin
         assert all(area.y == pytest.approx(margin) for area in areas[6:])
+
+
+class TestGetPageSizeFromName:
+    """Test core._get_page_size_from_name"""
+
+    @pytest.mark.parametrize(
+        'name, expected_mm',
+        (
+            pytest.param('A4', [210, 297], id='A4'),
+            pytest.param('A5', [148, 210], id='A5'),
+            pytest.param('a4', [210, 297], id='a4'),
+            pytest.param('b0', [1000, 1414], id='b0'),
+        )
+    )
+    def test_valid_names_mm(self, name, expected_mm):
+        result = _get_page_size_from_name(name)
+        assert isinstance(result, tuple)
+        assert len(result) == 2
+        assert [n / 72 * 25.4 for n in result] == pytest.approx(expected_mm)
+
+    @pytest.mark.parametrize(
+        'name, expected_inches',
+        (
+            pytest.param('LETTER', [8.5, 11], id='LETTER'),
+            pytest.param('letter', [8.5, 11], id='letter'),
+            pytest.param('LEGAL', [8.5, 14], id='LEGAL'),
+            pytest.param('legal', [8.5, 14], id='legal'),
+        )
+    )
+    def test_valid_names_inches(self, name, expected_inches):
+        result = _get_page_size_from_name(name)
+        assert isinstance(result, tuple)
+        assert len(result) == 2
+        assert [n / 72 for n in result] == pytest.approx(expected_inches)
+
+    @pytest.mark.parametrize(
+        'name',
+        (
+            pytest.param('A11', id='A11'),
+            pytest.param('landscape', id='landscape'),
+            pytest.param('portrait', id='portrait'),
+        )
+    )
+    def test_invalid_name_raises_error(self, name):
+        with pytest.raises(PageSizeError, match='unknown page size: .+'):
+            _get_page_size_from_name(name)
