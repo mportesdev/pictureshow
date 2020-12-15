@@ -1,11 +1,12 @@
 from collections import namedtuple
 from pathlib import Path
 
+from reportlab.lib import pagesizes
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
-from pictureshow import MarginError
+from pictureshow import MarginError, PageSizeError
 
 DrawingArea = namedtuple('DrawingArea', 'x y width height')
 
@@ -20,6 +21,8 @@ class PictureShow:
         if Path(pdf_file).exists() and not force_overwrite:
             raise FileExistsError(f'file {pdf_file!r} exists')
 
+        if isinstance(page_size, str):
+            page_size = _get_page_size_from_name(page_size)
         if landscape and page_size[0] < page_size[1]:
             page_size = page_size[::-1]
 
@@ -109,3 +112,13 @@ def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4,
         pdf_file, page_size, landscape, margin, layout, stretch_small,
         force_overwrite
     )
+
+
+def _get_page_size_from_name(name):
+    try:
+        # use upper() to exclude deprecated names and function names
+        result = getattr(pagesizes, name.upper())
+    except AttributeError:
+        raise PageSizeError(f'unknown page size: {name}')
+
+    return result
