@@ -13,15 +13,15 @@ def get_args(parser):
                         help='suppress printing to stdout')
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save output file even if filename exists')
-    parser.add_argument('-p', '--page-size', default='A4',
+    parser.add_argument('-p', '--page-size', default='A4', metavar='SIZE',
                         help='specify page size; default is A4')
     parser.add_argument('-L', '--landscape', action='store_true',
                         help='force landscape orientation of page')
     parser.add_argument('-m', '--margin', type=float, default=72,
-                        help='width of empty margin on page;'
+                        help='set width of empty space around pictures;'
                              ' default is 72 points (1 inch)')
     parser.add_argument('-l', '--layout', default='1x1',
-                        help='grid layout of pictures on page; default is 1x1')
+                        help='specify grid layout of pictures on page; default is 1x1')
     parser.add_argument('-s', '--stretch-small', action='store_true',
                         help='scale small pictures up to fit drawing area')
 

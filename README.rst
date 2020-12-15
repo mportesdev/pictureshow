@@ -7,7 +7,8 @@ Usage:
 
 .. code::
 
-    usage: pictureshow [-h] [-v] [-q] [-f] [-L] [-m MARGIN] [-l LAYOUT] [-s]
+    usage: pictureshow [-h] [-v] [-q] [-f] [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT]
+                       [-s]
                        PIC [PIC ...] PDF
 
     positional arguments:
@@ -20,12 +21,15 @@ Usage:
       -q, --quiet           suppress printing to stdout
       -f, --force-overwrite
                             save output file even if filename exists
+      -p SIZE, --page-size SIZE
+                            specify page size; default is A4
       -L, --landscape       force landscape orientation of page
       -m MARGIN, --margin MARGIN
-                            width of empty margin on page; default is 72 points (1
-                            inch)
+                            set width of empty space around pictures; default is
+                            72 points (1 inch)
       -l LAYOUT, --layout LAYOUT
-                            grid layout of pictures on page; default is 1x1
+                            specify grid layout of pictures on page; default is
+                            1x1
       -s, --stretch-small   scale small pictures up to fit drawing area
 
 Simple example — saving a single picture to PDF:
