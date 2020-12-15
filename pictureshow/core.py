@@ -86,7 +86,7 @@ class PictureShow:
         margins_too_wide = margin * (columns + 1) >= page_width
         margins_too_high = margin * (rows + 1) >= page_height
         if margins_too_wide or margins_too_high:
-            raise MarginError('margin value too high')
+            raise MarginError(f'margin value too high: {margin}')
 
         area_width = (page_width - (columns + 1) * margin) / columns
         area_height = (page_height - (rows + 1) * margin) / rows
