@@ -2,7 +2,160 @@ import pytest
 
 from pictureshow.core import PictureShow, _get_page_size_from_name
 from pictureshow.exceptions import PageSizeError
-from tests import A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
+from tests import (PICS, A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE,
+                   A4_PORTRAIT_MARGIN_72, A4_LANDSCAPE_MARGIN_72)
+
+
+class TestValidPictures:
+    """Test core.PictureShow._valid_pictures"""
+
+    @pytest.mark.parametrize(
+        'pic_files, expected_len, expected_names',
+        (
+            pytest.param(PICS._1_GOOD, 1, ['picture.png'], id='1 valid'),
+            pytest.param(PICS._2_GOOD, 2, ['picture.png', 'picture.jpg'],
+                         id='2 valid'),
+            pytest.param(PICS._1_BAD, 0, [], id='1 invalid'),
+            pytest.param(PICS._2_GOOD_1_BAD, 2, ['picture.png', 'picture.jpg'],
+                         id='invalid+valid'),
+        )
+    )
+    def test_typical_cases(self, pic_files, expected_len, expected_names):
+        result = list(PictureShow(*pic_files)._valid_pictures())
+        assert len(result) == expected_len
+        assert [item.fileName for item in result] == expected_names
+
+
+class TestPositionAndSize:
+    """Test core.PictureShow._position_and_size"""
+
+    @pytest.mark.parametrize(
+        'pic_size, area_size',
+        (
+            pytest.param((800, 387), A4_PORTRAIT_MARGIN_72, id='portrait'),
+            pytest.param((800, 387), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+            pytest.param((1000, 1500), A4_PORTRAIT_MARGIN_72, id='2:3 portrait'),
+            pytest.param(
+                (1500, 1000),
+                A4_LANDSCAPE_MARGIN_72,
+                id='3:2 landscape',
+                marks=pytest.mark.xfail(
+                    raises=AssertionError,
+                    reason='picture is wider than page, but not wider than area'
+                )
+            ),
+        )
+    )
+    def test_big_wide_picture(self, pic_size, area_size):
+        aspect_ratio = pic_size[0] / pic_size[1]
+        area_width, area_height = area_size
+        x, y, pic_width, pic_height = PictureShow._position_and_size(
+            pic_size, area_size, stretch_small=False
+        )
+        assert x == 0
+        assert y == (area_height - pic_height) / 2
+        assert pic_width == area_width
+        assert pic_height == pytest.approx(pic_width / aspect_ratio)
+
+    @pytest.mark.parametrize(
+        'pic_size, area_size',
+        (
+            pytest.param((400, 3260), A4_PORTRAIT_MARGIN_72, id='portrait'),
+            pytest.param((400, 3260), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+            pytest.param((1500, 1000), A4_LANDSCAPE_MARGIN_72, id='3:2 landscape'),
+            pytest.param(
+                (1000, 1500),
+                A4_PORTRAIT_MARGIN_72,
+                id='2:3 portrait',
+                marks=pytest.mark.xfail(
+                    raises=AssertionError,
+                    reason='picture is taller than page, but not taller than area'
+                )
+            ),
+        )
+    )
+    def test_big_tall_picture(self, pic_size, area_size):
+        aspect_ratio = pic_size[0] / pic_size[1]
+        area_width, area_height = area_size
+        x, y, pic_width, pic_height = PictureShow._position_and_size(
+            pic_size, area_size, stretch_small=False
+        )
+        assert x == (area_width - pic_width) / 2
+        assert y == 0
+        assert pic_width == pytest.approx(pic_height * aspect_ratio)
+        assert pic_height == area_height
+
+    @pytest.mark.parametrize(
+        'pic_size, area_size',
+        (
+            pytest.param((104, 112), A4_PORTRAIT_MARGIN_72, id='portrait'),
+            pytest.param((104, 112), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+        )
+    )
+    def test_small_picture(self, pic_size, area_size):
+        area_width, area_height = area_size
+        x, y, pic_width, pic_height = PictureShow._position_and_size(
+            pic_size, area_size, stretch_small=False
+        )
+        assert x == (area_width - pic_width) / 2
+        assert y == (area_height - pic_height) / 2
+        assert pic_width, pic_height == pic_size
+
+    @pytest.mark.parametrize(
+        'pic_size, area_size',
+        (
+            pytest.param((192, 108), A4_PORTRAIT_MARGIN_72, id='portrait'),
+            pytest.param((192, 108), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+            pytest.param((200, 300), A4_PORTRAIT_MARGIN_72, id='2:3 portrait'),
+            pytest.param(
+                (300, 200),
+                A4_LANDSCAPE_MARGIN_72,
+                id='3:2 landscape',
+                marks=pytest.mark.xfail(
+                    raises=AssertionError,
+                    reason='picture is wider than page, but not wider than area'
+                )
+            ),
+        )
+    )
+    def test_small_wide_picture_stretch_small(self, pic_size, area_size):
+        aspect_ratio = pic_size[0] / pic_size[1]
+        area_width, area_height = area_size
+        x, y, pic_width, pic_height = PictureShow._position_and_size(
+            pic_size, area_size, stretch_small=True
+        )
+        assert x == 0
+        assert y == (area_height - pic_height) / 2
+        assert pic_width == area_width
+        assert pic_height == pytest.approx(pic_width / aspect_ratio)
+
+    @pytest.mark.parametrize(
+        'pic_size, area_size',
+        (
+            pytest.param((68, 112), A4_PORTRAIT_MARGIN_72, id='portrait'),
+            pytest.param((68, 112), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+            pytest.param((300, 200), A4_LANDSCAPE_MARGIN_72, id='3:2 landscape'),
+            pytest.param(
+                (200, 300),
+                A4_PORTRAIT_MARGIN_72,
+                id='2:3 portrait',
+                marks=pytest.mark.xfail(
+                    raises=AssertionError,
+                    reason='picture is taller than page, but not taller than area'
+                )
+            ),
+        )
+    )
+    def test_small_tall_picture_stretch_small(self, pic_size, area_size):
+        aspect_ratio = pic_size[0] / pic_size[1]
+        area_width, area_height = area_size
+        x, y, pic_width, pic_height = PictureShow._position_and_size(
+            pic_size, area_size, stretch_small=True
+        )
+        assert x == (area_width - pic_width) / 2
+        assert y == 0
+        assert pic_width == pytest.approx(pic_height * aspect_ratio)
+        assert pic_height == area_height
 
 
 class TestAreas:
@@ -56,7 +209,8 @@ class TestAreas:
 
         # all areas have y == margin, height == A4_LENGTH - 2*margin
         assert all(area == pytest.approx(
-            (margin + i * (margin + expected_width), margin, expected_width, A4_LENGTH - 2*margin),
+            (margin + i * (margin + expected_width), margin,
+             expected_width, A4_LENGTH - 2*margin),
             abs=1e-4
         )
                    for i, area in enumerate(areas))
