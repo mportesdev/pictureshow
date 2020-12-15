@@ -2,7 +2,6 @@ from collections import namedtuple
 from pathlib import Path
 
 from reportlab.lib import pagesizes
-from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
@@ -16,7 +15,7 @@ class PictureShow:
         self.pic_files = pic_files
         self.errors = 0
 
-    def save_pdf(self, pdf_file, page_size=A4, landscape=False, margin=72,
+    def save_pdf(self, pdf_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, force_overwrite=False):
         if Path(pdf_file).exists() and not force_overwrite:
             raise FileExistsError(f'file {pdf_file!r} exists')
@@ -101,7 +100,7 @@ class PictureShow:
                 yield DrawingArea(area_x, area_y, area_width, area_height)
 
 
-def pictures_to_pdf(*pic_files, pdf_file=None, page_size=A4,
+def pictures_to_pdf(*pic_files, pdf_file=None, page_size='A4',
                     landscape=False, margin=72, layout=(1, 1),
                     stretch_small=False, force_overwrite=False):
     if pdf_file is None:
