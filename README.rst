@@ -39,25 +39,26 @@ Simple example — saving a single picture to PDF:
     $ pictureshow picture.png pic.pdf
     Saved 1 picture to '/.../pic.pdf'
 
-Using a glob pattern, in the quiet mode:
+Using a glob pattern, setting page to landscape Letter-sized:
 
 .. code::
 
-    $ pictureshow -q *.jpg jpg_pics.pdf
+    $ pictureshow --page-size=LETTER -L *.jpg jpg_pics.pdf
+    Saved 4 pictures to '/.../jpg_pics.pdf'
 
 Using multiple glob patterns, with half-inch margin and 1x3 pictures per page:
 
 .. code::
 
     $ pictureshow --margin=36 --layout=1x3 *.png *.jpg *.gif all_pics.pdf
-    Saved 32 pictures to '/.../all_pics.pdf'
+    Saved 9 pictures to '/.../all_pics.pdf'
 
 Combining glob pattern and additional filenames, overwriting existing output file, stretching small pictures to page, with zero margin:
 
 .. code::
 
     $ pictureshow chart.gif *.jpg figure.png pics.pdf -fsm0
-    Saved 7 pictures to '/.../pics.pdf'
+    Saved 6 pictures to '/.../pics.pdf'
 
 As a Python library
 -------------------
@@ -88,7 +89,7 @@ The example above will work as long as the output file is passed as the last pos
     list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
-Another example, with landscape page orientation, half-inch margin and 2x2 pictures per page, stretching small pictures to area, overwriting target file if it exists:
+Another example, with all available keyword parameters — A5-sized page, landscape orientation, half-inch margin, 2x2 pictures per page, stretching small pictures to area, overwriting target file if it exists:
 
 .. code-block:: python
 
@@ -100,6 +101,7 @@ Another example, with landscape page orientation, half-inch margin and 2x2 pictu
     pictures_to_pdf(
         *list_of_pictures,
         pdf_file='screenshots.pdf',
+        page_size='A5',
         landscape=True,
         margin=36,
         layout=(2, 2),
