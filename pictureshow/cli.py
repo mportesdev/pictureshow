@@ -13,6 +13,8 @@ def get_args(parser):
                         help='suppress printing to stdout')
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save output file even if filename exists')
+    parser.add_argument('-p', '--page-size', default='A4',
+                        help='specify page size; default is A4')
     parser.add_argument('-L', '--landscape', action='store_true',
                         help='force landscape orientation of page')
     parser.add_argument('-m', '--margin', type=float, default=72,
@@ -52,8 +54,13 @@ def main():
 
     try:
         num_ok, num_errors = pictureshow.pictures_to_pdf(
-            *picture_paths, pdf_file=pdf_path, landscape=args.landscape,
-            margin=args.margin, layout=layout, stretch_small=args.stretch_small,
+            *picture_paths,
+            pdf_file=pdf_path,
+            page_size=args.page_size,
+            landscape=args.landscape,
+            margin=args.margin,
+            layout=layout,
+            stretch_small=args.stretch_small,
             force_overwrite=args.force_overwrite
         )
     except Exception as err:
