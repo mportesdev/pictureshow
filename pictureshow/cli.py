@@ -63,7 +63,7 @@ def main():
             force_overwrite=args.force_overwrite
         )
     except Exception as err:
-        parser.error(err)
+        parser.error(f'{err.__class__.__name__}: {err}')
     else:
         if not args.quiet:
             report_results(num_ok, num_errors, pdf_path)
