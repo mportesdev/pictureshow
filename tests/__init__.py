@@ -8,8 +8,8 @@ A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
 A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
 
 PICS = SimpleNamespace(
-    _1_GOOD=('picture.png',),
-    _2_GOOD=('picture.png', 'picture.jpg'),
-    _2_GOOD_1_BAD=('picture.png', 'big_pdf.pdf', 'picture.jpg'),
-    _1_BAD=('not_jpg.jpg',),
+    _1_GOOD=('pics/picture.png',),
+    _2_GOOD=('pics/picture.png', 'pics/picture.jpg'),
+    _2_GOOD_1_BAD=('pics/picture.png', 'pics/samples.pdf', 'pics/picture.jpg'),
+    _1_BAD=('pics/not_jpg.jpg',),
 )

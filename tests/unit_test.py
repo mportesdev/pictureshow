@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from pictureshow.core import PictureShow, _get_page_size_from_name
@@ -23,7 +25,7 @@ class TestValidPictures:
     def test_typical_cases(self, pic_files, expected_len, expected_names):
         result = list(PictureShow(*pic_files)._valid_pictures())
         assert len(result) == expected_len
-        assert [item.fileName for item in result] == expected_names
+        assert [Path(item.fileName).name for item in result] == expected_names
 
 
 class TestPositionAndSize:
