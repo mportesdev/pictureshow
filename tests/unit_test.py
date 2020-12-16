@@ -225,19 +225,24 @@ class TestAreas:
                    for i, area in enumerate(areas))
 
     @pytest.mark.parametrize(
-        'page_size, margin, expected_width, expected_height',
+        'layout, page_size, margin, expected_width, expected_height',
         (
-            pytest.param(A4, 18, (A4_WIDTH - 72) / 3, (A4_LENGTH - 72) / 3,
-                         id='3x3 portrait'),
-            pytest.param(A4, 0, A4_WIDTH / 3, A4_LENGTH / 3,
+            pytest.param((3, 3), A4, 18, (A4_WIDTH - 72) / 3,
+                         (A4_LENGTH - 72) / 3, id='(3, 3) portrait'),
+            pytest.param('3x3', A4, 18, (A4_WIDTH - 72) / 3,
+                         (A4_LENGTH - 72) / 3, id='3x3 portrait'),
+            pytest.param((3, 3), A4, 0, A4_WIDTH / 3, A4_LENGTH / 3,
+                         id='(3, 3) portrait no margin'),
+            pytest.param('3x3', A4, 0, A4_WIDTH / 3, A4_LENGTH / 3,
                          id='3x3 portrait no margin'),
-            pytest.param(A4_LANDSCAPE, 36, (A4_LENGTH - 144) / 3,
+            pytest.param((3, 3), A4_LANDSCAPE, 36, (A4_LENGTH - 144) / 3,
+                         (A4_WIDTH - 144) / 3, id='(3, 3) landscape'),
+            pytest.param('3x3', A4_LANDSCAPE, 36, (A4_LENGTH - 144) / 3,
                          (A4_WIDTH - 144) / 3, id='3x3 landscape'),
         )
     )
-    def test_3x3_layout(self, page_size, margin, expected_width,
+    def test_3x3_layout(self, layout, page_size, margin, expected_width,
                         expected_height):
-        layout = (3, 3)
         areas = list(PictureShow._areas(layout, page_size, margin))
         assert len(areas) == 9
         assert all(area.width == pytest.approx(expected_width, abs=1e-4)

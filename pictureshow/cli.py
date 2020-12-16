@@ -50,7 +50,6 @@ def main():
 
     picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
     pdf_path = os.path.abspath(args.PDF)
-    layout = tuple(int(s) for s in args.layout.split('x'))
 
     try:
         num_ok, num_errors = pictureshow.pictures_to_pdf(
@@ -59,7 +58,7 @@ def main():
             page_size=args.page_size,
             landscape=args.landscape,
             margin=args.margin,
-            layout=layout,
+            layout=args.layout,
             stretch_small=args.stretch_small,
             force_overwrite=args.force_overwrite
         )

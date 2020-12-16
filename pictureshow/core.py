@@ -82,6 +82,8 @@ class PictureShow:
 
     @staticmethod
     def _areas(page_layout, page_size, margin):
+        if isinstance(page_layout, str):
+            page_layout = tuple(int(s) for s in page_layout.split('x'))
         columns, rows = page_layout
         page_width, page_height = page_size
 
