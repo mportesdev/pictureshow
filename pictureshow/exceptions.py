@@ -1,6 +1,10 @@
+class PageSizeError(ValueError):
+    pass
+
+
 class MarginError(ValueError):
     pass
 
 
-class PageSizeError(ValueError):
+class LayoutError(ValueError):
     pass
