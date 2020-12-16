@@ -5,7 +5,7 @@ from reportlab.lib import pagesizes
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
-from pictureshow import MarginError, PageSizeError
+from pictureshow import PageSizeError, MarginError, LayoutError
 
 DrawingArea = namedtuple('DrawingArea', 'x y width height')
 
@@ -82,9 +82,14 @@ class PictureShow:
 
     @staticmethod
     def _areas(page_layout, page_size, margin):
-        if isinstance(page_layout, str):
-            page_layout = tuple(int(s) for s in page_layout.split('x'))
-        columns, rows = page_layout
+        try:
+            if isinstance(page_layout, str):
+                page_layout = tuple(int(s) for s in page_layout.split('x'))
+            columns, rows = page_layout
+            assert columns > 0 and isinstance(columns, int)
+            assert rows > 0 and isinstance(rows, int)
+        except (ValueError, AssertionError):
+            raise LayoutError('two positive integers expected')
         page_width, page_height = page_size
 
         margins_too_wide = margin * (columns + 1) >= page_width

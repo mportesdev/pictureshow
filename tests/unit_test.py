@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from pictureshow.core import PictureShow, _get_page_size_from_name
-from pictureshow.exceptions import PageSizeError
+from pictureshow.exceptions import PageSizeError, LayoutError
 from tests import PICS, A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
 
 A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
@@ -255,6 +255,25 @@ class TestAreas:
 
         # all areas in the bottom row have y == margin
         assert all(area.y == pytest.approx(margin) for area in areas[6:])
+
+    @pytest.mark.parametrize(
+        'layout',
+        (
+            pytest.param((1,), id='(1,)'),
+            pytest.param('1', id='1'),
+            pytest.param((1, 1, 1), id='(1, 1, 1)'),
+            pytest.param('1x1x1', id='1x1x1'),
+            pytest.param((0, 1), id='(0, 1)'),
+            pytest.param('0x1', id='0x1'),
+            pytest.param((-1, 3), id='(-1, 3)'),
+            pytest.param('-1x3', id='-1x3'),
+            pytest.param((1, 0.5), id='(1, 0.5)'),
+            pytest.param('1x0.5', id='1x0.5'),
+        )
+    )
+    def test_invalid_layout_raises_error(self, layout):
+        with pytest.raises(LayoutError, match='two positive integers expected'):
+            list(PictureShow._areas(layout, A4, 72))
 
 
 class TestGetPageSizeFromName:
