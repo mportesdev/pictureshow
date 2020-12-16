@@ -88,8 +88,8 @@ class PictureShow:
             columns, rows = page_layout
             assert columns > 0 and isinstance(columns, int)
             assert rows > 0 and isinstance(rows, int)
-        except (ValueError, AssertionError):
-            raise LayoutError('two positive integers expected')
+        except (ValueError, AssertionError) as err:
+            raise LayoutError('two positive integers expected') from err
         page_width, page_height = page_size
 
         margins_too_wide = margin * (columns + 1) >= page_width
@@ -124,7 +124,7 @@ def _get_page_size_from_name(name):
     try:
         # use upper() to exclude deprecated names and function names
         result = getattr(pagesizes, name.upper())
-    except AttributeError:
-        raise PageSizeError(f'unknown page size: {name}')
+    except AttributeError as err:
+        raise PageSizeError(f'unknown page size: {name}') from err
 
     return result
