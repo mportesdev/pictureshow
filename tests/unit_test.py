@@ -4,8 +4,10 @@ import pytest
 
 from pictureshow.core import PictureShow, _get_page_size_from_name
 from pictureshow.exceptions import PageSizeError
-from tests import (PICS, A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE,
-                   A4_PORTRAIT_MARGIN_72, A4_LANDSCAPE_MARGIN_72)
+from tests import PICS, A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
+
+A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
+A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
 
 
 class TestValidPictures:
@@ -18,8 +20,13 @@ class TestValidPictures:
             pytest.param(PICS._2_GOOD, 2, ['picture.png', 'picture.jpg'],
                          id='2 valid'),
             pytest.param(PICS._1_BAD, 0, [], id='1 invalid'),
+            pytest.param(PICS._2_BAD, 0, [], id='2 invalid'),
             pytest.param(PICS._2_GOOD_1_BAD, 2, ['picture.png', 'picture.jpg'],
-                         id='invalid+valid'),
+                         id='2 valid + 1 valid'),
+            pytest.param(PICS._2_BAD_1_GOOD, 1, ['picture.png'],
+                         id='2 invalid + 1 valid'),
+            pytest.param(PICS.DIR, 0, [], id='dir'),
+            pytest.param(PICS.MISSING, 0, [], id='missing'),
         )
     )
     def test_typical_cases(self, pic_files, expected_len, expected_names):
