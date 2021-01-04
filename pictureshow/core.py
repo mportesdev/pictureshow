@@ -31,8 +31,9 @@ class PictureShow:
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
         valid_pics = self._valid_pictures()
         num_ok, self.errors = 0, 0
+        areas = tuple(self._areas(layout, page_size, margin))
         while True:
-            for area in self._areas(layout, page_size, margin):
+            for area in areas:
                 try:
                     picture = next(valid_pics)
                 except StopIteration:
