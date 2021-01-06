@@ -10,6 +10,31 @@ A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
 A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
 
 
+class TestSavePdf:
+    """Test core.PictureShow._save_pdf"""
+
+    @pytest.mark.parametrize(
+        'pic_files, expected',
+        (
+            pytest.param(PICS._1_GOOD, (1, 0), id='1good'),
+            pytest.param(PICS._2_GOOD, (2, 0), id='2good'),
+            pytest.param(PICS._5_GOOD, (5, 0), id='5good'),
+            pytest.param(PICS._3_TYPES, (3, 0), id='3types'),
+            pytest.param(PICS._2_GOOD_1_BAD, (2, 1), id='2good1bad'),
+            pytest.param(PICS._2_BAD_1_GOOD, (1, 2), id='2bad1good'),
+            pytest.param(PICS._1_BAD, (0, 1), id='1bad'),
+            pytest.param(PICS._2_BAD, (0, 2), id='2bad'),
+            pytest.param(PICS.DIR, (0, 1), id='dir'),
+            pytest.param(PICS.MISSING, (0, 1), id='missing'),
+        )
+    )
+    def test_valid_and_invalid_input(self, temp_pdf, pic_files, expected):
+        page_size, margin, layout, stretch_small = A4, 72, (1, 1), False
+        result = PictureShow(*pic_files)._save_pdf(str(temp_pdf), page_size,
+                                                   margin, layout, stretch_small)
+        assert result == expected
+
+
 class TestValidPictures:
     """Test core.PictureShow._valid_pictures"""
 
@@ -22,7 +47,7 @@ class TestValidPictures:
             pytest.param(PICS._1_BAD, 0, [], id='1 invalid'),
             pytest.param(PICS._2_BAD, 0, [], id='2 invalid'),
             pytest.param(PICS._2_GOOD_1_BAD, 2, ['picture.png', 'picture.jpg'],
-                         id='2 valid + 1 valid'),
+                         id='2 valid + 1 invalid'),
             pytest.param(PICS._2_BAD_1_GOOD, 1, ['picture.png'],
                          id='2 invalid + 1 valid'),
             pytest.param(PICS.DIR, 0, [], id='dir'),
