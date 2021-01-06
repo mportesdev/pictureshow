@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -13,6 +14,7 @@ A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
+    @patch('pictureshow.core.Canvas')
     @pytest.mark.parametrize(
         'pic_files, expected',
         (
@@ -28,11 +30,25 @@ class TestSavePdf:
             pytest.param(PICS.MISSING, (0, 1), id='missing'),
         )
     )
-    def test_valid_and_invalid_input(self, temp_pdf, pic_files, expected):
+    def test_valid_and_invalid_input(self, mock, pic_files, expected):
         page_size, margin, layout, stretch_small = A4, 72, (1, 1), False
-        result = PictureShow(*pic_files)._save_pdf(str(temp_pdf), page_size,
-                                                   margin, layout, stretch_small)
+        result = PictureShow(*pic_files)._save_pdf('foo', page_size, margin,
+                                                   layout, stretch_small)
         assert result == expected
+
+        # test the mocked canvas' method calls
+        canvas_mock = mock.return_value
+        num_valid_pics = expected[0]
+        if num_valid_pics > 0:
+            canvas_mock.drawImage.assert_called()
+            assert canvas_mock.drawImage.call_count == num_valid_pics
+            canvas_mock.showPage.assert_called_with()
+            assert canvas_mock.showPage.call_count == num_valid_pics
+            canvas_mock.save.assert_called_once_with()
+        else:
+            canvas_mock.drawImage.assert_not_called()
+            canvas_mock.showPage.assert_not_called()
+            canvas_mock.save.assert_not_called()
 
 
 class TestValidPictures:
