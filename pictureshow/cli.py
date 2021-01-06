@@ -8,11 +8,6 @@ def get_args(parser):
     parser.add_argument('PIC', nargs='+',
                         help='one or more input picture file paths')
     parser.add_argument('PDF', help='output PDF file path')
-    parser.add_argument('-v', '--version', action='version')
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='suppress printing to stdout')
-    parser.add_argument('-f', '--force-overwrite', action='store_true',
-                        help='save output file even if filename exists')
     parser.add_argument('-p', '--page-size', default='A4', metavar='SIZE',
                         help='specify page size; default is A4')
     parser.add_argument('-L', '--landscape', action='store_true',
@@ -24,6 +19,11 @@ def get_args(parser):
                         help='specify grid layout of pictures on page; default is 1x1')
     parser.add_argument('-s', '--stretch-small', action='store_true',
                         help='scale small pictures up to fit drawing area')
+    parser.add_argument('-f', '--force-overwrite', action='store_true',
+                        help='save output file even if filename exists')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='suppress printing to stdout')
+    parser.add_argument('-v', '--version', action='version')
 
     return parser.parse_args()
 

@@ -1,3 +1,5 @@
+.. image:: https://github.com/myrmica-habilis/pictureshow/workflows/pytest/badge.svg
+
 Save pictures to PDF — from the command line, or from your Python programs.
 
 As a command line tool
@@ -7,8 +9,8 @@ Usage:
 
 .. code::
 
-    usage: pictureshow [-h] [-v] [-q] [-f] [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT]
-                       [-s]
+    usage: pictureshow [-h] [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT] [-s] [-f] [-q]
+                       [-v]
                        PIC [PIC ...] PDF
 
     positional arguments:
@@ -17,10 +19,6 @@ Usage:
 
     optional arguments:
       -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      -q, --quiet           suppress printing to stdout
-      -f, --force-overwrite
-                            save output file even if filename exists
       -p SIZE, --page-size SIZE
                             specify page size; default is A4
       -L, --landscape       force landscape orientation of page
@@ -31,6 +29,10 @@ Usage:
                             specify grid layout of pictures on page; default is
                             1x1
       -s, --stretch-small   scale small pictures up to fit drawing area
+      -f, --force-overwrite
+                            save output file even if filename exists
+      -q, --quiet           suppress printing to stdout
+      -v, --version         show program's version number and exit
 
 Simple example — saving a single picture to PDF:
 
@@ -89,7 +91,7 @@ The example above will work as long as the output file is passed as the last pos
     list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
-Another example, with all available keyword parameters — A5-sized page, landscape orientation, half-inch margin, 2x2 pictures per page, stretching small pictures to area, overwriting target file if it exists:
+Another example, demonstrating all available keyword parameters:
 
 .. code-block:: python
 
