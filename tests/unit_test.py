@@ -30,25 +30,30 @@ class TestSavePdf:
             pytest.param(PICS.MISSING, (0, 1), id='missing'),
         )
     )
-    def test_valid_and_invalid_input(self, mock, pic_files, expected):
+    def test_valid_and_invalid_input(self, mock_canvas_class, pic_files,
+                                     expected):
         page_size, margin, layout, stretch_small = A4, 72, (1, 1), False
-        result = PictureShow(*pic_files)._save_pdf('foo', page_size, margin,
-                                                   layout, stretch_small)
+        fake_filename = 'foo'
+        result = PictureShow(*pic_files)._save_pdf(
+            fake_filename, page_size, margin, layout, stretch_small
+        )
         assert result == expected
+        mock_canvas_class.assert_called_once_with(fake_filename,
+                                                  pagesize=page_size)
 
         # test the mocked canvas' method calls
-        canvas_mock = mock.return_value
+        mock_canvas = mock_canvas_class()
         num_valid_pics = expected[0]
         if num_valid_pics > 0:
-            canvas_mock.drawImage.assert_called()
-            assert canvas_mock.drawImage.call_count == num_valid_pics
-            canvas_mock.showPage.assert_called_with()
-            assert canvas_mock.showPage.call_count == num_valid_pics
-            canvas_mock.save.assert_called_once_with()
+            mock_canvas.drawImage.assert_called()
+            assert mock_canvas.drawImage.call_count == num_valid_pics
+            mock_canvas.showPage.assert_called_with()
+            assert mock_canvas.showPage.call_count == num_valid_pics
+            mock_canvas.save.assert_called_once_with()
         else:
-            canvas_mock.drawImage.assert_not_called()
-            canvas_mock.showPage.assert_not_called()
-            canvas_mock.save.assert_not_called()
+            mock_canvas.drawImage.assert_not_called()
+            mock_canvas.showPage.assert_not_called()
+            mock_canvas.save.assert_not_called()
 
 
 class TestValidPictures:
