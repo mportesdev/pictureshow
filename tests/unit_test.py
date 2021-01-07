@@ -275,16 +275,10 @@ class TestAreas:
         (
             pytest.param((3, 3), A4, 18, (A4_WIDTH - 72) / 3,
                          (A4_LENGTH - 72) / 3, id='(3, 3) portrait'),
-            pytest.param('3x3', A4, 18, (A4_WIDTH - 72) / 3,
-                         (A4_LENGTH - 72) / 3, id='3x3 portrait'),
             pytest.param((3, 3), A4, 0, A4_WIDTH / 3, A4_LENGTH / 3,
                          id='(3, 3) portrait no margin'),
-            pytest.param('3x3', A4, 0, A4_WIDTH / 3, A4_LENGTH / 3,
-                         id='3x3 portrait no margin'),
             pytest.param((3, 3), A4_LANDSCAPE, 36, (A4_LENGTH - 144) / 3,
                          (A4_WIDTH - 144) / 3, id='(3, 3) landscape'),
-            pytest.param('3x3', A4_LANDSCAPE, 36, (A4_LENGTH - 144) / 3,
-                         (A4_WIDTH - 144) / 3, id='3x3 landscape'),
         )
     )
     def test_3x3_layout(self, layout, page_size, margin, expected_width,
@@ -302,6 +296,26 @@ class TestAreas:
         # all areas in the bottom row have y == margin
         assert all(area.y == pytest.approx(margin) for area in areas[6:])
 
+
+class TestValidateLayout:
+    """Test core.PictureShow._validate_layout"""
+
+    @pytest.mark.parametrize(
+        'layout, expected',
+        (
+            pytest.param((1, 1), (1, 1), id='(1, 1)'),
+            pytest.param([1, 1], (1, 1), id='[1, 1]'),
+            pytest.param((2, 3), (2, 3), id='(2, 3)'),
+            pytest.param(iter([4, 3]), (4, 3), id='iter([4, 3])'),
+            pytest.param('1x1', (1, 1), id='1x1'),
+            pytest.param('010x005', (10, 5), id='010x005'),
+            pytest.param(' 1 x 1 ', (1, 1), id=' 1 x 1 '),
+        )
+    )
+    def test_valid_input(self, layout, expected):
+        result = PictureShow._validate_layout(layout)
+        assert result == expected
+
     @pytest.mark.parametrize(
         'layout',
         (
@@ -315,11 +329,13 @@ class TestAreas:
             pytest.param('-1x3', id='-1x3'),
             pytest.param((1, 0.5), id='(1, 0.5)'),
             pytest.param('1x0.5', id='1x0.5'),
+            pytest.param(0, id='0'),
+            pytest.param(object(), id='object()'),
         )
     )
-    def test_invalid_layout_raises_error(self, layout):
+    def test_invalid_input_raises_error(self, layout):
         with pytest.raises(LayoutError, match='two positive integers expected'):
-            list(PictureShow._areas(layout, A4, 72))
+            PictureShow._validate_layout(layout)
 
 
 class TestGetPageSizeFromName:

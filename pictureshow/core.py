@@ -24,6 +24,7 @@ class PictureShow:
             page_size = _get_page_size_from_name(page_size)
         if landscape and page_size[0] < page_size[1]:
             page_size = page_size[::-1]
+        layout = self._validate_layout(layout)
 
         return self._save_pdf(pdf_file, page_size, margin, layout, stretch_small)
 
@@ -48,6 +49,19 @@ class PictureShow:
                 )
                 num_ok += 1
             pdf_canvas.showPage()
+
+    @staticmethod
+    def _validate_layout(layout):
+        try:
+            if isinstance(layout, str):
+                layout = tuple(int(s) for s in layout.split('x'))
+            columns, rows = layout
+            assert columns > 0 and isinstance(columns, int)
+            assert rows > 0 and isinstance(rows, int)
+        except (ValueError, AssertionError, TypeError) as err:
+            raise LayoutError('two positive integers expected') from err
+
+        return columns, rows
 
     def _valid_pictures(self):
         for pic_file in self.pic_files:
@@ -82,15 +96,8 @@ class PictureShow:
         return x, y, pic_width, pic_height
 
     @staticmethod
-    def _areas(page_layout, page_size, margin):
-        try:
-            if isinstance(page_layout, str):
-                page_layout = tuple(int(s) for s in page_layout.split('x'))
-            columns, rows = page_layout
-            assert columns > 0 and isinstance(columns, int)
-            assert rows > 0 and isinstance(rows, int)
-        except (ValueError, AssertionError) as err:
-            raise LayoutError('two positive integers expected') from err
+    def _areas(layout, page_size, margin):
+        columns, rows = layout
         page_width, page_height = page_size
 
         margins_too_wide = margin * (columns + 1) >= page_width
