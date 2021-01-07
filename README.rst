@@ -111,4 +111,4 @@ Another example, demonstrating all available keyword parameters:
         force_overwrite=True
     )
 
-The ``page_size`` and ``layout`` parameters can be specified either with a string or with a tuple of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
+The ``page_size`` and ``layout`` parameters can be specified either by a string or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
