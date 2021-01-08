@@ -1,4 +1,3 @@
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -101,25 +100,31 @@ class TestValidPictures:
     """Test core.PictureShow._valid_pictures"""
 
     @pytest.mark.parametrize(
-        'pic_files, expected_len, expected_names',
+        'mock_side_effects, expected',
         (
-            pytest.param(PICS._1_GOOD, 1, ['picture.png'], id='1 valid'),
-            pytest.param(PICS._2_GOOD, 2, ['picture.png', 'picture.jpg'],
-                         id='2 valid'),
-            pytest.param(PICS._1_BAD, 0, [], id='1 invalid'),
-            pytest.param(PICS._2_BAD, 0, [], id='2 invalid'),
-            pytest.param(PICS._2_GOOD_1_BAD, 2, ['picture.png', 'picture.jpg'],
+            pytest.param(['1ok'], ['1ok'], id='1 valid'),
+            pytest.param(['1ok', '2ok'], ['1ok', '2ok'], id='2 valid'),
+            pytest.param([ValueError], [], id='1 invalid'),
+            pytest.param([ValueError, ValueError], [], id='2 invalid'),
+            pytest.param(['1ok', ValueError, '2ok'], ['1ok', '2ok'],
                          id='2 valid + 1 invalid'),
-            pytest.param(PICS._2_BAD_1_GOOD, 1, ['picture.png'],
+            pytest.param([ValueError, '1ok', ValueError], ['1ok'],
                          id='2 invalid + 1 valid'),
-            pytest.param(PICS.DIR, 0, [], id='dir'),
-            pytest.param(PICS.MISSING, 0, [], id='missing'),
+            pytest.param([IsADirectoryError], [], id='dir'),
+            pytest.param([FileNotFoundError], [], id='missing'),
         )
     )
-    def test_typical_cases(self, pic_files, expected_len, expected_names):
-        result = list(PictureShow(*pic_files)._valid_pictures())
-        assert len(result) == expected_len
-        assert [Path(item.fileName).name for item in result] == expected_names
+    def test_typical_cases(self, mock_side_effects, expected):
+        fake_filenames = ['foo'] * len(mock_side_effects)
+        pic_show = PictureShow(*fake_filenames)
+        with patch('pictureshow.core.ImageReader',
+                   side_effect=mock_side_effects) as mock:
+            result = list(pic_show._valid_pictures())
+            mock.assert_called_with('foo')
+            assert mock.call_count == len(fake_filenames)
+
+        assert result == expected
+        assert pic_show.errors == len(fake_filenames) - len(expected)
 
 
 class TestPositionAndSize:
