@@ -4,7 +4,7 @@ import pytest
 
 from pictureshow.core import PictureShow, _get_page_size_from_name
 from pictureshow.exceptions import PageSizeError, LayoutError
-from tests import PICS, A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
+from tests import A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
 
 A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
 A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
@@ -17,32 +17,33 @@ def pic_ok():
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
-    @patch('pictureshow.core.Canvas')
     @pytest.mark.parametrize(
-        'pic_files, expected',
+        'mock_side_effects, expected',
         (
-            pytest.param(PICS._1_GOOD, (1, 0), id='1good'),
-            pytest.param(PICS._2_GOOD, (2, 0), id='2good'),
-            pytest.param(PICS._5_GOOD, (5, 0), id='5good'),
-            pytest.param(PICS._3_TYPES, (3, 0), id='3types'),
-            pytest.param(PICS._2_GOOD_1_BAD, (2, 1), id='2good1bad'),
-            pytest.param(PICS._2_BAD_1_GOOD, (1, 2), id='2bad1good'),
-            pytest.param(PICS._1_BAD, (0, 1), id='1bad'),
-            pytest.param(PICS._2_BAD, (0, 2), id='2bad'),
-            pytest.param(PICS.DIR, (0, 1), id='dir'),
-            pytest.param(PICS.MISSING, (0, 1), id='missing'),
+            pytest.param([pic_ok()], (1, 0), id='1 valid'),
+            pytest.param([pic_ok(), pic_ok()], (2, 0), id='2 valid'),
+            pytest.param([pic_ok(), ValueError, pic_ok()], (2, 1),
+                         id='2 valid + 1 invalid'),
+            pytest.param([ValueError, pic_ok(), ValueError], (1, 2),
+                         id='2 invalid + 1 valid'),
+            pytest.param([ValueError], (0, 1), id='1 invalid'),
+            pytest.param([ValueError, ValueError], (0, 2), id='2 invalid'),
+            pytest.param([IsADirectoryError], (0, 1), id='dir'),
+            pytest.param([FileNotFoundError], (0, 1), id='missing'),
         )
     )
-    def test_valid_and_invalid_input(self, mock_canvas_class, pic_files,
+    @patch('pictureshow.core.Canvas')
+    def test_valid_and_invalid_input(self, mock_canvas_class, mock_side_effects,
                                      expected):
-        page_size, margin, layout, stretch_small = A4, 72, (1, 1), False
-        fake_filename = 'foo'
-        result = PictureShow(*pic_files)._save_pdf(
-            fake_filename, page_size, margin, layout, stretch_small
-        )
+        fake_pic_files = ['foo.png'] * len(mock_side_effects)
+        fake_pdf_name = 'foo.pdf'
+        with patch('pictureshow.core.ImageReader',
+                   side_effect=mock_side_effects):
+            result = PictureShow(*fake_pic_files)._save_pdf(
+                fake_pdf_name, A4, 72, (1, 1), False
+            )
         assert result == expected
-        mock_canvas_class.assert_called_once_with(fake_filename,
-                                                  pagesize=page_size)
+        mock_canvas_class.assert_called_once_with(fake_pdf_name, pagesize=A4)
 
         # test the mocked canvas' method calls
         mock_canvas = mock_canvas_class()
