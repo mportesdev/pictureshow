@@ -2,6 +2,18 @@
 
 Save pictures to PDF — from the command line, or from your Python programs.
 
+Requirements
+------------
+
+Python 3.6 or higher is required. The only direct dependency is the fantastic `reportlab <https://pypi.org/project/reportlab/>`__ library.
+
+Installation
+------------
+
+.. code::
+
+    pip install pictureshow
+
 As a command line tool
 ----------------------
 
