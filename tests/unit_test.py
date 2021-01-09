@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 import pytest
 
@@ -8,6 +8,10 @@ from tests import PICS, A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
 
 A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
 A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
+
+
+def pic_ok():
+    return Mock(**{'getSize.return_value': (640, 400)})
 
 
 class TestSavePdf:
