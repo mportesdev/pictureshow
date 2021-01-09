@@ -102,29 +102,29 @@ class TestValidPictures:
     @pytest.mark.parametrize(
         'mock_side_effects, expected',
         (
-            pytest.param(['1ok'], ['1ok'], id='1 valid'),
-            pytest.param(['1ok', '2ok'], ['1ok', '2ok'], id='2 valid'),
+            pytest.param(['1'], ['1'], id='1 valid'),
+            pytest.param(['1', '2'], ['1', '2'], id='2 valid'),
+            pytest.param(['1', ValueError, '2'], ['1', '2'],
+                         id='2 valid + 1 invalid'),
+            pytest.param([ValueError, '1', ValueError], ['1'],
+                         id='2 invalid + 1 valid'),
             pytest.param([ValueError], [], id='1 invalid'),
             pytest.param([ValueError, ValueError], [], id='2 invalid'),
-            pytest.param(['1ok', ValueError, '2ok'], ['1ok', '2ok'],
-                         id='2 valid + 1 invalid'),
-            pytest.param([ValueError, '1ok', ValueError], ['1ok'],
-                         id='2 invalid + 1 valid'),
             pytest.param([IsADirectoryError], [], id='dir'),
             pytest.param([FileNotFoundError], [], id='missing'),
         )
     )
     def test_typical_cases(self, mock_side_effects, expected):
-        fake_filenames = ['foo'] * len(mock_side_effects)
-        pic_show = PictureShow(*fake_filenames)
+        fake_pic_files = ['foo.png'] * len(mock_side_effects)
+        pic_show = PictureShow(*fake_pic_files)
         with patch('pictureshow.core.ImageReader',
                    side_effect=mock_side_effects) as mock:
             result = list(pic_show._valid_pictures())
-            mock.assert_called_with('foo')
-            assert mock.call_count == len(fake_filenames)
+            mock.assert_called_with('foo.png')
+            assert mock.call_count == len(fake_pic_files)
 
         assert result == expected
-        assert pic_show.errors == len(fake_filenames) - len(expected)
+        assert pic_show.errors == len(fake_pic_files) - len(expected)
 
 
 class TestPositionAndSize:
