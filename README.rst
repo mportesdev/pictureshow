@@ -5,7 +5,7 @@ Save pictures to PDF — from the command line, or from your Python programs.
 Requirements
 ------------
 
-Python 3.6 or higher is required. The only direct dependency is the fantastic `reportlab <https://pypi.org/project/reportlab/>`__ library.
+Python 3.6 or higher is required. The only direct dependency is the wonderful `reportlab <https://pypi.org/project/reportlab/>`__ library.
 
 Installation
 ------------
@@ -58,18 +58,24 @@ With the resulting PDF document:
 .. image:: pics/sample_pdf_mandelbrot.png
 
 
-Using a glob pattern, setting page to landscape Letter-sized:
+Using a glob pattern, setting page to landscape Letter-sized and layout to 2x2 pictures per page:
 
 .. code::
 
-    $ pictureshow --page-size=LETTER -L *.jpg jpg_pics.pdf
+    $ pictureshow pics/*.jpg jpg_pics.pdf --page-size=LETTER --landscape --layout=2x2
+    1 file skipped because of error.
     Saved 4 pictures to '/.../jpg_pics.pdf'
 
-Setting half-inch margin and layout of 1x3 pictures per page:
+With the resulting PDF document:
+
+.. image:: pics/sample_pdf_jpg_pics.png
+
+
+Setting half-inch margin, 1x3 pictures per page:
 
 .. code::
 
-    $ pictureshow --margin=36 --layout=1x3 pics/noise*.* noise.pdf
+    $ pictureshow -m36 -l1x3 pics/noise*.* noise.pdf
     Saved 5 pictures to '/.../noise.pdf'
 
 With the resulting PDF document:
