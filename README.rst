@@ -50,8 +50,13 @@ Simple example — saving a single picture to PDF:
 
 .. code::
 
-    $ pictureshow picture.png pic.pdf
-    Saved 1 picture to '/.../pic.pdf'
+    $ pictureshow pics/mandelbrot.png mandelbrot.pdf
+    Saved 1 picture to '/.../mandelbrot.pdf'
+
+With the resulting PDF document:
+
+.. image:: pics/sample_pdf_mandelbrot.png
+
 
 Using a glob pattern, setting page to landscape Letter-sized:
 
@@ -60,12 +65,17 @@ Using a glob pattern, setting page to landscape Letter-sized:
     $ pictureshow --page-size=LETTER -L *.jpg jpg_pics.pdf
     Saved 4 pictures to '/.../jpg_pics.pdf'
 
-Using multiple glob patterns, with half-inch margin and 1x3 pictures per page:
+Setting half-inch margin and layout of 1x3 pictures per page:
 
 .. code::
 
-    $ pictureshow --margin=36 --layout=1x3 *.png *.jpg *.gif all_pics.pdf
-    Saved 9 pictures to '/.../all_pics.pdf'
+    $ pictureshow --margin=36 --layout=1x3 pics/noise*.* noise.pdf
+    Saved 5 pictures to '/.../noise.pdf'
+
+With the resulting PDF document:
+
+.. image:: pics/sample_pdf_noise.png
+
 
 Combining glob pattern and additional filenames, overwriting existing output file, stretching small pictures to page, with zero margin:
 
