@@ -46,49 +46,50 @@ Usage:
       -q, --quiet           suppress printing to stdout
       -v, --version         show program's version number and exit
 
-Simple example — saving a single picture to PDF:
+Example 1
+~~~~~~~~~
+
+Save a single picture to PDF.
 
 .. code::
 
     $ pictureshow pics/mandelbrot.png mandelbrot.pdf
     Saved 1 picture to '/.../mandelbrot.pdf'
 
-With the resulting PDF document:
+Resulting PDF document:
 
-.. image:: pics/sample_pdf_mandelbrot.png
-
-
-Using a glob pattern, setting page to landscape Letter-sized and layout to 2x2 pictures per page:
-
-.. code::
-
-    $ pictureshow pics/*.jpg jpg_pics.pdf --page-size=LETTER --landscape --layout=2x2
-    1 file skipped because of error.
-    Saved 4 pictures to '/.../jpg_pics.pdf'
-
-With the resulting PDF document:
-
-.. image:: pics/sample_pdf_jpg_pics.png
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_mandelbrot.png
 
 
-Setting half-inch margin, 1x3 pictures per page:
+Example 2
+~~~~~~~~~
+
+Select pictures using a glob pattern, set half-inch margin and layout with 1x3 pictures per page.
 
 .. code::
 
-    $ pictureshow -m36 -l1x3 pics/noise*.* noise.pdf
+    $ pictureshow --margin=36 --layout=1x3 pics/noise*.* noise.pdf
     Saved 5 pictures to '/.../noise.pdf'
 
-With the resulting PDF document:
+Resulting PDF document:
 
-.. image:: pics/sample_pdf_noise.png
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_noise.png
 
 
-Combining glob pattern and additional filenames, overwriting existing output file, stretching small pictures to page, with zero margin:
+Example 3
+~~~~~~~~~
+
+Select pictures using a glob pattern, set page to landscape Letter-sized, 2x2 pictures per page.
 
 .. code::
 
-    $ pictureshow chart.gif *.jpg figure.png pics.pdf -fsm0
-    Saved 6 pictures to '/.../pics.pdf'
+    $ pictureshow pics/*.jpg jpg_pics.pdf -pLETTER -L -l2x2
+    Saved 4 pictures to '/.../jpg_pics.pdf'
+
+Resulting PDF document:
+
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_jpg_pics.png
+
 
 As a Python library
 -------------------
