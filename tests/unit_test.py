@@ -14,6 +14,39 @@ def pic_ok():
     return Mock(**{'getSize.return_value': (640, 400)})
 
 
+class TestPictureShowSavePdf:
+    """Test core.PictureShow.save_pdf"""
+
+    @pytest.mark.parametrize(
+        'page_size',
+        (
+            pytest.param(A4),
+            pytest.param(A4_LANDSCAPE),
+        )
+    )
+    @patch('pictureshow.core.PictureShow._save_pdf')
+    def test_page_size_as_tuple(self, mock, page_size):
+        PictureShow().save_pdf('foo.pdf', page_size)
+        mock.assert_called_once_with(
+            'foo.pdf', page_size, 72, (1, 1), False
+        )
+
+    @pytest.mark.parametrize(
+        'page_size, landscape, expected_page_size',
+        (
+            pytest.param('A4', False, A4),
+            pytest.param('A4', True, A4_LANDSCAPE),
+        )
+    )
+    @patch('pictureshow.core.PictureShow._save_pdf')
+    def test_page_size_as_str(self, mock, page_size, landscape,
+                              expected_page_size):
+        PictureShow().save_pdf('foo.pdf', page_size, landscape)
+        mock.assert_called_once_with(
+            'foo.pdf', pytest.approx(expected_page_size), 72, (1, 1), False
+        )
+
+
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
