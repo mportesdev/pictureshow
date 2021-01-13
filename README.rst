@@ -100,8 +100,13 @@ Using the ``PictureShow`` class:
 
     from pictureshow import PictureShow
 
-    pic_show = PictureShow('pic1.png', 'pic2.jpg', 'pic3.gif')
+    pic_show = PictureShow('pics/mandelbrot.png', 'pics/darkcyan.jpg')
     pic_show.save_pdf('pictures.pdf')
+
+Result:
+
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_pictures.png
+
 
 Using the ``pictures_to_pdf`` shortcut function:
 
@@ -109,7 +114,7 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pic1.png', 'pic2.jpg', 'pic3.gif', 'pictures.pdf')
+    pictures_to_pdf('pics/mandelbrot.png', 'pics/darkcyan.jpg', 'pictures.pdf')
 
 The example above will work as long as the output file is passed as the last positional argument. It is however recommended to always use a keyword argument:
 
@@ -117,7 +122,7 @@ The example above will work as long as the output file is passed as the last pos
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = ['pic1.png', 'pic2.jpg', 'pic3.gif']
+    list_of_pictures = ['pics/mandelbrot.png', 'pics/darkcyan.jpg']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
 Another example, demonstrating all available keyword parameters:
@@ -128,10 +133,10 @@ Another example, demonstrating all available keyword parameters:
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = sorted(Path.cwd().glob('screenshots/*.png'))
+    list_of_pictures = sorted(Path.cwd().glob('pics/*green*'))
     pictures_to_pdf(
         *list_of_pictures,
-        pdf_file='screenshots.pdf',
+        pdf_file='green.pdf',
         page_size='A5',
         landscape=True,
         margin=36,
@@ -139,5 +144,10 @@ Another example, demonstrating all available keyword parameters:
         stretch_small=True,
         force_overwrite=True
     )
+
+Result:
+
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_green.png
+
 
 The ``page_size`` and ``layout`` parameters can be specified either by a string or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
