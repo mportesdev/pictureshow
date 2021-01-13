@@ -22,8 +22,12 @@ class PictureShow:
 
         if isinstance(page_size, str):
             page_size = _get_page_size_from_name(page_size)
-        if landscape and page_size[0] < page_size[1]:
-            page_size = page_size[::-1]
+        try:
+            page_width, page_height = page_size
+        except (ValueError, TypeError) as err:
+            raise PageSizeError('two positive floats expected') from err
+        if landscape and page_width < page_height:
+            page_size = page_height, page_width
         layout = self._validate_layout(layout)
 
         return self._save_pdf(pdf_file, page_size, margin, layout, stretch_small)

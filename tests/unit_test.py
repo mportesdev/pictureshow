@@ -46,6 +46,19 @@ class TestPictureShowSavePdf:
             'foo.pdf', pytest.approx(expected_page_size), 72, (1, 1), False
         )
 
+    @pytest.mark.parametrize(
+        'page_size',
+        (
+            pytest.param((100,), id='invalid length (1)'),
+            pytest.param((100, 100, 100), id='invalid length (3)'),
+            pytest.param(1, id='invalid type (int)'),
+            pytest.param(1.0, id='invalid type (float)'),
+        )
+    )
+    def test_invalid_page_size(self, page_size):
+        with pytest.raises(PageSizeError, match='two positive floats expected'):
+            PictureShow().save_pdf('foo.pdf', page_size)
+
 
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
