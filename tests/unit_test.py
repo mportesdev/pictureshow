@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock
 import pytest
 
 from pictureshow.core import PictureShow
-from pictureshow.exceptions import PageSizeError, LayoutError
+from pictureshow.exceptions import PageSizeError, MarginError, LayoutError
 from tests import A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
 
 A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
@@ -433,3 +433,21 @@ class TestAreas:
 
         # all areas in the bottom row have y == margin
         assert all(area.y == pytest.approx(margin) for area in areas[6:])
+
+    @pytest.mark.parametrize(
+        'layout, page_size, margin',
+        (
+            pytest.param((1, 1), A4, A4_WIDTH / 2, id='page width / 2'),
+            pytest.param((1, 1), A4_LANDSCAPE, A4_WIDTH / 2,
+                         id='page width / 2, landscape'),
+            pytest.param((1, 1), A4, A4_WIDTH / 2 + 1, id='page width / 2 + 1'),
+            pytest.param((1, 2), A4, A4_LENGTH / 3, id='page length / 3'),
+            pytest.param((1, 2), A4_LANDSCAPE, A4_LENGTH / 3,
+                         id='page length / 3, landscape'),
+            pytest.param((1, 2), A4, A4_LENGTH / 3 + 1, id='page length / 3 + 1'),
+            pytest.param((1, 5), A4, A4_LENGTH / 6, id='page length / 6'),
+        )
+    )
+    def test_high_margin_raises_error(self, layout, page_size, margin):
+        with pytest.raises(MarginError, match='margin value too high: .+'):
+            list(PictureShow()._areas(layout, page_size, margin))
