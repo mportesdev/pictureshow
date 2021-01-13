@@ -20,14 +20,7 @@ class PictureShow:
         if Path(pdf_file).exists() and not force_overwrite:
             raise FileExistsError(f'file {pdf_file!r} exists')
 
-        if isinstance(page_size, str):
-            page_size = _get_page_size_from_name(page_size)
-        try:
-            page_width, page_height = page_size
-        except (ValueError, TypeError) as err:
-            raise PageSizeError('two positive floats expected') from err
-        if landscape and page_width < page_height:
-            page_size = page_height, page_width
+        page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
         return self._save_pdf(pdf_file, page_size, margin, layout, stretch_small)
@@ -53,6 +46,20 @@ class PictureShow:
                 )
                 num_ok += 1
             pdf_canvas.showPage()
+
+    @staticmethod
+    def _validate_page_size(page_size, landscape):
+        if isinstance(page_size, str):
+            page_size = _get_page_size_from_name(page_size)
+
+        try:
+            page_width, page_height = page_size
+            if page_width < page_height and landscape:
+                page_size = page_height, page_width
+        except (ValueError, TypeError) as err:
+            raise PageSizeError('two positive floats expected') from err
+
+        return page_size
 
     @staticmethod
     def _validate_layout(layout):

@@ -14,52 +14,6 @@ def fake_pic():
     return Mock(**{'getSize.return_value': (640, 400)})
 
 
-class TestPictureShowSavePdf:
-    """Test core.PictureShow.save_pdf"""
-
-    @pytest.mark.parametrize(
-        'page_size',
-        (
-            pytest.param(A4),
-            pytest.param(A4_LANDSCAPE),
-        )
-    )
-    @patch('pictureshow.core.PictureShow._save_pdf')
-    def test_page_size_as_tuple(self, mock, page_size):
-        PictureShow().save_pdf('foo.pdf', page_size)
-        mock.assert_called_once_with(
-            'foo.pdf', page_size, 72, (1, 1), False
-        )
-
-    @pytest.mark.parametrize(
-        'page_size, landscape, expected_page_size',
-        (
-            pytest.param('A4', False, A4),
-            pytest.param('A4', True, A4_LANDSCAPE),
-        )
-    )
-    @patch('pictureshow.core.PictureShow._save_pdf')
-    def test_page_size_as_str(self, mock, page_size, landscape,
-                              expected_page_size):
-        PictureShow().save_pdf('foo.pdf', page_size, landscape)
-        mock.assert_called_once_with(
-            'foo.pdf', pytest.approx(expected_page_size), 72, (1, 1), False
-        )
-
-    @pytest.mark.parametrize(
-        'page_size',
-        (
-            pytest.param((100,), id='invalid length (1)'),
-            pytest.param((100, 100, 100), id='invalid length (3)'),
-            pytest.param(1, id='invalid type (int)'),
-            pytest.param(1.0, id='invalid type (float)'),
-        )
-    )
-    def test_invalid_page_size(self, page_size):
-        with pytest.raises(PageSizeError, match='two positive floats expected'):
-            PictureShow().save_pdf('foo.pdf', page_size)
-
-
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
@@ -104,6 +58,51 @@ class TestSavePdf:
             mock_canvas.drawImage.assert_not_called()
             mock_canvas.showPage.assert_not_called()
             mock_canvas.save.assert_not_called()
+
+
+@pytest.mark.current
+class TestValidatePageSize:
+    """Test core.PictureShow._validate_page_size"""
+
+    @pytest.mark.parametrize(
+        'page_size, landscape, expected',
+        (
+            pytest.param(A4, False, A4),
+            pytest.param(A4, True, A4_LANDSCAPE),
+            pytest.param(A4_LANDSCAPE, False, A4_LANDSCAPE),
+            pytest.param(A4_LANDSCAPE, True, A4_LANDSCAPE),
+        )
+    )
+    def test_page_size_as_tuple(self, page_size, landscape, expected):
+        result = PictureShow()._validate_page_size(page_size, landscape)
+        assert result == expected
+
+    @pytest.mark.parametrize(
+        'page_size, landscape, expected',
+        (
+            pytest.param('A4', False, A4),
+            pytest.param('A4', True, A4_LANDSCAPE),
+            pytest.param('LETTER', False, (72 * 8.5, 72 * 11)),
+            pytest.param('LETTER', True, (72 * 11, 72 * 8.5)),
+        )
+    )
+    def test_page_size_as_str(self, page_size, landscape, expected):
+        result = PictureShow()._validate_page_size(page_size, landscape)
+        assert result == pytest.approx(expected)
+
+    @pytest.mark.parametrize(
+        'page_size',
+        (
+            pytest.param((100,), id='invalid length (1)'),
+            pytest.param((100, 100, 100), id='invalid length (3)'),
+            pytest.param((500.0, '500.0'), id='invalid type (int, str)'),
+            pytest.param(1, id='invalid type (int)'),
+            pytest.param(1.0, id='invalid type (float)'),
+        )
+    )
+    def test_invalid_page_size(self, page_size):
+        with pytest.raises(PageSizeError, match='two positive floats expected'):
+            PictureShow()._validate_page_size(page_size, False)
 
 
 class TestValidateLayout:
