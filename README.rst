@@ -56,7 +56,7 @@ Save a single picture to PDF.
     $ pictureshow pics/mandelbrot.png mandelbrot.pdf
     Saved 1 picture to '/.../mandelbrot.pdf'
 
-Resulting PDF document:
+Result:
 
 .. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_mandelbrot.png
 
@@ -71,7 +71,7 @@ Select pictures using a glob pattern, set half-inch margin and layout with 1x3 p
     $ pictureshow --margin=36 --layout=1x3 pics/noise*.* noise.pdf
     Saved 5 pictures to '/.../noise.pdf'
 
-Resulting PDF document:
+Result:
 
 .. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_noise.png
 
@@ -86,7 +86,7 @@ Select pictures using a glob pattern, set page to landscape Letter-sized, 2x2 pi
     $ pictureshow pics/*.jpg jpg_pics.pdf -pLETTER -L -l2x2
     Saved 4 pictures to '/.../jpg_pics.pdf'
 
-Resulting PDF document:
+Result:
 
 .. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_jpg_pics.png
 

@@ -10,7 +10,7 @@ A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
 A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
 
 
-def pic_ok():
+def fake_pic():
     return Mock(**{'getSize.return_value': (640, 400)})
 
 
@@ -66,11 +66,11 @@ class TestSavePdf:
     @pytest.mark.parametrize(
         'mock_side_effects, expected',
         (
-            pytest.param([pic_ok()], (1, 0), id='1 valid'),
-            pytest.param([pic_ok(), pic_ok()], (2, 0), id='2 valid'),
-            pytest.param([pic_ok(), ValueError, pic_ok()], (2, 1),
+            pytest.param([fake_pic()], (1, 0), id='1 valid'),
+            pytest.param([fake_pic(), fake_pic()], (2, 0), id='2 valid'),
+            pytest.param([fake_pic(), ValueError, fake_pic()], (2, 1),
                          id='2 valid + 1 invalid'),
-            pytest.param([ValueError, pic_ok(), ValueError], (1, 2),
+            pytest.param([ValueError, fake_pic(), ValueError], (1, 2),
                          id='2 invalid + 1 valid'),
             pytest.param([ValueError], (0, 1), id='1 invalid'),
             pytest.param([ValueError, ValueError], (0, 2), id='2 invalid'),
