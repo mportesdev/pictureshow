@@ -163,7 +163,7 @@ class TestValidateLayout:
         )
     )
     def test_valid_input(self, layout, expected):
-        result = PictureShow._validate_layout(layout)
+        result = PictureShow()._validate_layout(layout)
         assert result == expected
 
     @pytest.mark.parametrize(
@@ -185,7 +185,7 @@ class TestValidateLayout:
     )
     def test_invalid_input_raises_error(self, layout):
         with pytest.raises(LayoutError, match='two positive integers expected'):
-            PictureShow._validate_layout(layout)
+            PictureShow()._validate_layout(layout)
 
 
 class TestValidPictures:
@@ -242,7 +242,7 @@ class TestPositionAndSize:
     def test_big_wide_picture(self, pic_size, area_size):
         aspect_ratio = pic_size[0] / pic_size[1]
         area_width, area_height = area_size
-        x, y, pic_width, pic_height = PictureShow._position_and_size(
+        x, y, pic_width, pic_height = PictureShow()._position_and_size(
             pic_size, area_size, stretch_small=False
         )
         assert x == 0
@@ -270,7 +270,7 @@ class TestPositionAndSize:
     def test_big_tall_picture(self, pic_size, area_size):
         aspect_ratio = pic_size[0] / pic_size[1]
         area_width, area_height = area_size
-        x, y, pic_width, pic_height = PictureShow._position_and_size(
+        x, y, pic_width, pic_height = PictureShow()._position_and_size(
             pic_size, area_size, stretch_small=False
         )
         assert x == (area_width - pic_width) / 2
@@ -287,7 +287,7 @@ class TestPositionAndSize:
     )
     def test_small_picture(self, pic_size, area_size):
         area_width, area_height = area_size
-        x, y, pic_width, pic_height = PictureShow._position_and_size(
+        x, y, pic_width, pic_height = PictureShow()._position_and_size(
             pic_size, area_size, stretch_small=False
         )
         assert x == (area_width - pic_width) / 2
@@ -314,7 +314,7 @@ class TestPositionAndSize:
     def test_small_wide_picture_stretch_small(self, pic_size, area_size):
         aspect_ratio = pic_size[0] / pic_size[1]
         area_width, area_height = area_size
-        x, y, pic_width, pic_height = PictureShow._position_and_size(
+        x, y, pic_width, pic_height = PictureShow()._position_and_size(
             pic_size, area_size, stretch_small=True
         )
         assert x == 0
@@ -342,7 +342,7 @@ class TestPositionAndSize:
     def test_small_tall_picture_stretch_small(self, pic_size, area_size):
         aspect_ratio = pic_size[0] / pic_size[1]
         area_width, area_height = area_size
-        x, y, pic_width, pic_height = PictureShow._position_and_size(
+        x, y, pic_width, pic_height = PictureShow()._position_and_size(
             pic_size, area_size, stretch_small=True
         )
         assert x == (area_width - pic_width) / 2
@@ -365,7 +365,7 @@ class TestAreas:
     )
     def test_single_column_layout(self, layout, expected_height):
         page_size, margin = A4, 72
-        areas = list(PictureShow._areas(layout, page_size, margin))
+        areas = list(PictureShow()._areas(layout, page_size, margin))
 
         # number of areas == number of rows
         assert len(areas) == layout[1]
@@ -392,7 +392,7 @@ class TestAreas:
     )
     def test_single_row_layout(self, layout, expected_width):
         page_size, margin = A4, 72
-        areas = list(PictureShow._areas(layout, page_size, margin))
+        areas = list(PictureShow()._areas(layout, page_size, margin))
 
         # number of areas == number of columns
         assert len(areas) == layout[0]
@@ -421,7 +421,7 @@ class TestAreas:
     )
     def test_3x3_layout(self, layout, page_size, margin, expected_width,
                         expected_height):
-        areas = list(PictureShow._areas(layout, page_size, margin))
+        areas = list(PictureShow()._areas(layout, page_size, margin))
         assert len(areas) == 9
         assert all(area.width == pytest.approx(expected_width, abs=1e-4)
                    for area in areas)
