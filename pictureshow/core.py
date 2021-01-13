@@ -50,7 +50,11 @@ class PictureShow:
     @staticmethod
     def _validate_page_size(page_size, landscape):
         if isinstance(page_size, str):
-            page_size = _get_page_size_from_name(page_size)
+            try:
+                # use upper() to exclude deprecated names and function names
+                page_size = getattr(pagesizes, page_size.upper())
+            except AttributeError as err:
+                raise PageSizeError(f'unknown page size: {page_size}') from err
 
         try:
             page_width, page_height = page_size
@@ -137,13 +141,3 @@ def pictures_to_pdf(*pic_files, pdf_file=None, page_size='A4',
         pdf_file, page_size, landscape, margin, layout, stretch_small,
         force_overwrite
     )
-
-
-def _get_page_size_from_name(name):
-    try:
-        # use upper() to exclude deprecated names and function names
-        result = getattr(pagesizes, name.upper())
-    except AttributeError as err:
-        raise PageSizeError(f'unknown page size: {name}') from err
-
-    return result

@@ -2,7 +2,7 @@ from unittest.mock import patch, Mock
 
 import pytest
 
-from pictureshow.core import PictureShow, _get_page_size_from_name
+from pictureshow.core import PictureShow
 from pictureshow.exceptions import PageSizeError, LayoutError
 from tests import A4_WIDTH, A4_LENGTH, A4, A4_LANDSCAPE
 
@@ -91,6 +91,36 @@ class TestValidatePageSize:
         assert result == pytest.approx(expected)
 
     @pytest.mark.parametrize(
+        'page_size, expected_mm',
+        (
+            pytest.param('A4', [210, 297], id='A4'),
+            pytest.param('A5', [148, 210], id='A5'),
+            pytest.param('a4', [210, 297], id='a4'),
+            pytest.param('b0', [1000, 1414], id='b0'),
+        )
+    )
+    def test_valid_names_mm(self, page_size, expected_mm):
+        result = PictureShow()._validate_page_size(page_size, False)
+        assert isinstance(result, tuple)
+        assert len(result) == 2
+        assert [n / 72 * 25.4 for n in result] == pytest.approx(expected_mm)
+
+    @pytest.mark.parametrize(
+        'page_size, expected_inches',
+        (
+            pytest.param('LETTER', [8.5, 11], id='LETTER'),
+            pytest.param('letter', [8.5, 11], id='letter'),
+            pytest.param('LEGAL', [8.5, 14], id='LEGAL'),
+            pytest.param('legal', [8.5, 14], id='legal'),
+        )
+    )
+    def test_valid_names_inches(self, page_size, expected_inches):
+        result = PictureShow()._validate_page_size(page_size, False)
+        assert isinstance(result, tuple)
+        assert len(result) == 2
+        assert [n / 72 for n in result] == pytest.approx(expected_inches)
+
+    @pytest.mark.parametrize(
         'page_size',
         (
             pytest.param((100,), id='invalid length (1)'),
@@ -100,8 +130,20 @@ class TestValidatePageSize:
             pytest.param(1.0, id='invalid type (float)'),
         )
     )
-    def test_invalid_page_size(self, page_size):
+    def test_invalid_page_size_raises_error(self, page_size):
         with pytest.raises(PageSizeError, match='two positive floats expected'):
+            PictureShow()._validate_page_size(page_size, False)
+
+    @pytest.mark.parametrize(
+        'page_size',
+        (
+            pytest.param('A11', id='A11'),
+            pytest.param('landscape', id='landscape'),
+            pytest.param('portrait', id='portrait'),
+        )
+    )
+    def test_invalid_page_size_name_raises_error(self, page_size):
+        with pytest.raises(PageSizeError, match='unknown page size: .+'):
             PictureShow()._validate_page_size(page_size, False)
 
 
@@ -391,49 +433,3 @@ class TestAreas:
 
         # all areas in the bottom row have y == margin
         assert all(area.y == pytest.approx(margin) for area in areas[6:])
-
-
-class TestGetPageSizeFromName:
-    """Test core._get_page_size_from_name"""
-
-    @pytest.mark.parametrize(
-        'name, expected_mm',
-        (
-            pytest.param('A4', [210, 297], id='A4'),
-            pytest.param('A5', [148, 210], id='A5'),
-            pytest.param('a4', [210, 297], id='a4'),
-            pytest.param('b0', [1000, 1414], id='b0'),
-        )
-    )
-    def test_valid_names_mm(self, name, expected_mm):
-        result = _get_page_size_from_name(name)
-        assert isinstance(result, tuple)
-        assert len(result) == 2
-        assert [n / 72 * 25.4 for n in result] == pytest.approx(expected_mm)
-
-    @pytest.mark.parametrize(
-        'name, expected_inches',
-        (
-            pytest.param('LETTER', [8.5, 11], id='LETTER'),
-            pytest.param('letter', [8.5, 11], id='letter'),
-            pytest.param('LEGAL', [8.5, 14], id='LEGAL'),
-            pytest.param('legal', [8.5, 14], id='legal'),
-        )
-    )
-    def test_valid_names_inches(self, name, expected_inches):
-        result = _get_page_size_from_name(name)
-        assert isinstance(result, tuple)
-        assert len(result) == 2
-        assert [n / 72 for n in result] == pytest.approx(expected_inches)
-
-    @pytest.mark.parametrize(
-        'name',
-        (
-            pytest.param('A11', id='A11'),
-            pytest.param('landscape', id='landscape'),
-            pytest.param('portrait', id='portrait'),
-        )
-    )
-    def test_invalid_name_raises_error(self, name):
-        with pytest.raises(PageSizeError, match='unknown page size: .+'):
-            _get_page_size_from_name(name)
