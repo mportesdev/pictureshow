@@ -100,7 +100,7 @@ Using the ``PictureShow`` class:
 
     from pictureshow import PictureShow
 
-    pic_show = PictureShow('pics/mandelbrot.png', 'pics/darkcyan.jpg')
+    pic_show = PictureShow('pics/mandelbrot.jpg', 'pics/darkcyan.png')
     pic_show.save_pdf('pictures.pdf')
 
 Result:
@@ -114,7 +114,7 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pics/mandelbrot.png', 'pics/darkcyan.jpg', 'pictures.pdf')
+    pictures_to_pdf('pics/mandelbrot.jpg', 'pics/darkcyan.png', 'pictures.pdf')
 
 The example above will work as long as the output file is passed as the last positional argument. It is however recommended to always use a keyword argument:
 
@@ -122,7 +122,7 @@ The example above will work as long as the output file is passed as the last pos
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = ['pics/mandelbrot.png', 'pics/darkcyan.jpg']
+    list_of_pictures = ['pics/mandelbrot.jpg', 'pics/darkcyan.png']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
 Another example, demonstrating all available keyword parameters:

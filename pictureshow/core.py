@@ -42,7 +42,8 @@ class PictureShow:
                     picture.getSize(), (area.width, area.height), stretch_small
                 )
                 pdf_canvas.drawImage(
-                    picture, area.x + x, area.y + y, pic_width, pic_height
+                    picture, area.x + x, area.y + y, pic_width, pic_height,
+                    mask='auto'
                 )
                 num_ok += 1
             pdf_canvas.showPage()
