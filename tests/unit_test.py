@@ -17,6 +17,56 @@ def fake_pic():
     return Mock(**{'getSize.return_value': (640, 400)})
 
 
+class TestPictureShowSavePdf:
+    """Test core.PictureShow.save_pdf"""
+
+    @patch('pictureshow.core.PictureShow._save_pdf')
+    @patch('pictureshow.core.Path')
+    def test_nonexistent_target_file(self, mock_path_class, mock_save_pdf):
+        mock_path_class.configure_mock(
+            **{'return_value.exists.return_value': False}
+        )
+        fake_pdf_name = 'foo.pdf'
+        PictureShow().save_pdf(fake_pdf_name)
+
+        mock_path_class.assert_called_once_with(fake_pdf_name)
+        mock_path_class().exists.assert_called_once_with()
+        mock_save_pdf.assert_called_once_with(
+            fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
+        )
+
+    @patch('pictureshow.core.PictureShow._save_pdf')
+    @patch('pictureshow.core.Path')
+    def test_existing_target_file_raises_error(self, mock_path_class,
+                                               mock_save_pdf):
+        mock_path_class.configure_mock(
+            **{'return_value.exists.return_value': True}
+        )
+        fake_pdf_name = 'foo.pdf'
+        with pytest.raises(FileExistsError, match=f'file .* exists'):
+            PictureShow().save_pdf(fake_pdf_name)
+
+        mock_path_class.assert_called_once_with(fake_pdf_name)
+        mock_path_class().exists.assert_called_once_with()
+        mock_save_pdf.assert_not_called()
+
+    @patch('pictureshow.core.PictureShow._save_pdf')
+    @patch('pictureshow.core.Path')
+    def test_force_overwrite_existing_file(self, mock_path_class,
+                                           mock_save_pdf):
+        mock_path_class.configure_mock(
+            **{'return_value.exists.return_value': True}
+        )
+        fake_pdf_name = 'foo.pdf'
+        PictureShow().save_pdf(fake_pdf_name, force_overwrite=True)
+
+        mock_path_class.assert_called_once_with(fake_pdf_name)
+        mock_path_class().exists.assert_called_once_with()
+        mock_save_pdf.assert_called_once_with(
+            fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
+        )
+
+
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
