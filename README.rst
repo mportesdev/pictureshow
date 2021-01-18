@@ -64,7 +64,7 @@ Result:
 Example 2
 ~~~~~~~~~
 
-Select pictures using a glob pattern, set half-inch margin and layout with 1x3 pictures per page.
+Select pictures using a glob pattern [#]_, set half-inch margin and layout with 1x3 pictures per page.
 
 .. code::
 
@@ -79,7 +79,7 @@ Result:
 Example 3
 ~~~~~~~~~
 
-Select pictures using a glob pattern, set page to landscape Letter-sized, 2x2 pictures per page.
+Select pictures using a glob pattern, set page to landscape Letter-sized [#]_, 2x2 pictures per page.
 
 .. code::
 
@@ -150,4 +150,15 @@ Result:
 .. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_green.png
 
 
-The ``page_size`` and ``layout`` parameters can be specified either by a string or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
+The ``page_size`` and ``layout`` parameters can be specified either by a string (just like in the command line interface) or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
+
+Footnotes
+~~~~~~~~~
+
+.. [#] Please note that glob patterns are not expanded by the Windows command line.
+.. [#] Available page sizes are:
+    A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10,
+    B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10,
+    C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10,
+    LETTER, LEGAL, ELEVENSEVENTEEN,
+    JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER
