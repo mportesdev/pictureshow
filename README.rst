@@ -133,21 +133,21 @@ Another example, demonstrating all available keyword parameters:
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = sorted(Path.cwd().glob('pics/*green*'))
+    list_of_pictures = sorted(Path.cwd().glob('pics/oldies/*'))
     pictures_to_pdf(
         *list_of_pictures,
-        pdf_file='green.pdf',
+        pdf_file='oldies.pdf',
         page_size='A5',
         landscape=True,
-        margin=36,
-        layout=(2, 2),
+        margin=18,
+        layout=(3, 3),
         stretch_small=True,
         force_overwrite=True
     )
 
 Result:
 
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_green.png
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_oldies.png
 
 
 The ``page_size`` and ``layout`` parameters can be specified either by a string (just like in the command line interface) or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
