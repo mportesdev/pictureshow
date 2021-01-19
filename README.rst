@@ -27,7 +27,7 @@ Usage:
 
     positional arguments:
       PIC                   one or more input picture file paths
-      PDF                   output PDF file path
+      PDF                   target PDF file path
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -42,7 +42,7 @@ Usage:
                             1x1
       -s, --stretch-small   scale small pictures up to fit drawing area
       -f, --force-overwrite
-                            save output file even if filename exists
+                            save target file even if filename exists
       -q, --quiet           suppress printing to stdout
       -v, --version         show program's version number and exit
 
