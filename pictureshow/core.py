@@ -1,6 +1,7 @@
 from collections import namedtuple
 from pathlib import Path
 
+from PIL import UnidentifiedImageError
 from reportlab.lib import pagesizes
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
@@ -88,7 +89,12 @@ class PictureShow:
         for pic_file in self.pic_files:
             try:
                 picture = ImageReader(pic_file)
-            except Exception:
+            except UnidentifiedImageError:
+                # file not recognized as picture
+                self.errors += 1
+                continue
+            except OSError:
+                # file does not exist or is a dir
                 self.errors += 1
                 continue
             else:

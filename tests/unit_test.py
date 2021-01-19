@@ -1,6 +1,7 @@
 from unittest.mock import patch, Mock
 
 import pytest
+from PIL import UnidentifiedImageError as ImageError
 
 from pictureshow.core import PictureShow
 from pictureshow.exceptions import PageSizeError, MarginError, LayoutError
@@ -75,14 +76,14 @@ class TestSavePdf:
         (
             pytest.param([fake_pic()], (1, 0), id='1 valid'),
             pytest.param([fake_pic(), fake_pic()], (2, 0), id='2 valid'),
-            pytest.param([fake_pic(), ValueError, fake_pic()], (2, 1),
+            pytest.param([fake_pic(), ImageError, fake_pic()], (2, 1),
                          id='2 valid + 1 invalid'),
-            pytest.param([ValueError, fake_pic(), ValueError], (1, 2),
+            pytest.param([ImageError, fake_pic(), ImageError], (1, 2),
                          id='2 invalid + 1 valid'),
-            pytest.param([ValueError], (0, 1), id='1 invalid'),
-            pytest.param([ValueError, ValueError], (0, 2), id='2 invalid'),
-            pytest.param([IsADirectoryError], (0, 1), id='dir'),
-            pytest.param([FileNotFoundError], (0, 1), id='missing'),
+            pytest.param([ImageError], (0, 1), id='1 invalid'),
+            pytest.param([ImageError, ImageError], (0, 2), id='2 invalid'),
+            pytest.param([OSError], (0, 1), id='dir'),
+            pytest.param([OSError], (0, 1), id='missing'),
         )
     )
     @patch('pictureshow.core.Canvas')
@@ -254,14 +255,14 @@ class TestValidPictures:
         (
             pytest.param(['1'], ['1'], id='1 valid'),
             pytest.param(['1', '2'], ['1', '2'], id='2 valid'),
-            pytest.param(['1', ValueError, '2'], ['1', '2'],
+            pytest.param(['1', ImageError, '2'], ['1', '2'],
                          id='2 valid + 1 invalid'),
-            pytest.param([ValueError, '1', ValueError], ['1'],
+            pytest.param([ImageError, '1', ImageError], ['1'],
                          id='2 invalid + 1 valid'),
-            pytest.param([ValueError], [], id='1 invalid'),
-            pytest.param([ValueError, ValueError], [], id='2 invalid'),
-            pytest.param([IsADirectoryError], [], id='dir'),
-            pytest.param([FileNotFoundError], [], id='missing'),
+            pytest.param([ImageError], [], id='1 invalid'),
+            pytest.param([ImageError, ImageError], [], id='2 invalid'),
+            pytest.param([OSError], [], id='dir'),
+            pytest.param([OSError], [], id='missing'),
         )
     )
     def test_typical_cases(self, mock_side_effects, expected):
