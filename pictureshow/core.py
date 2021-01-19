@@ -57,12 +57,13 @@ class PictureShow:
             except AttributeError as err:
                 raise PageSizeError(f'unknown page size: {page_size}') from err
 
+        page_size_error = PageSizeError('two positive numbers expected')
         try:
             page_width, page_height = page_size
             if not (page_width > 0 and page_height > 0):
-                raise PageSizeError('two positive numbers expected')
+                raise page_size_error
         except (ValueError, TypeError) as err:
-            raise PageSizeError('two positive numbers expected') from err
+            raise page_size_error from err
 
         if page_width < page_height and landscape:
             page_size = page_height, page_width
@@ -70,15 +71,16 @@ class PictureShow:
 
     @staticmethod
     def _validate_layout(layout):
+        layout_error = LayoutError('two positive integers expected')
         try:
             if isinstance(layout, str):
                 layout = tuple(int(s) for s in layout.split('x'))
             columns, rows = layout
             if not (columns > 0 and isinstance(columns, int)
                     and rows > 0 and isinstance(rows, int)):
-                raise LayoutError('two positive integers expected')
+                raise layout_error
         except (ValueError, TypeError) as err:
-            raise LayoutError('two positive integers expected') from err
+            raise layout_error from err
 
         return columns, rows
 
