@@ -1,11 +1,11 @@
 .. image:: https://github.com/myrmica-habilis/pictureshow/workflows/pytest/badge.svg
 
-Save pictures to PDF — from the command line, or from your Python programs.
+Save pictures to PDF from the command line or from your Python programs.
 
 Requirements
 ------------
 
-Python 3.6 or higher is required. The only direct dependency is the wonderful `reportlab <https://pypi.org/project/reportlab/>`__ library.
+Python 3.6 or higher is required. The only third-party dependency is `reportlab <https://pypi.org/project/reportlab/>`__.
 
 Installation
 ------------
@@ -155,7 +155,7 @@ The ``page_size`` and ``layout`` parameters can be specified either by a string 
 Footnotes
 ~~~~~~~~~
 
-.. [#] Please note that glob patterns are not expanded by the Windows command line.
+.. [#] Note that glob patterns are not expanded by the Windows command line shell.
 .. [#] Available page sizes are:
     A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10,
     B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10,
