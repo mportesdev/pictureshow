@@ -59,11 +59,13 @@ class PictureShow:
 
         try:
             page_width, page_height = page_size
-            if page_width < page_height and landscape:
-                page_size = page_height, page_width
+            if not (page_width > 0 and page_height > 0):
+                raise PageSizeError('two positive numbers expected')
         except (ValueError, TypeError) as err:
-            raise PageSizeError('two positive floats expected') from err
+            raise PageSizeError('two positive numbers expected') from err
 
+        if page_width < page_height and landscape:
+            page_size = page_height, page_width
         return page_size
 
     @staticmethod
@@ -72,9 +74,10 @@ class PictureShow:
             if isinstance(layout, str):
                 layout = tuple(int(s) for s in layout.split('x'))
             columns, rows = layout
-            assert columns > 0 and isinstance(columns, int)
-            assert rows > 0 and isinstance(rows, int)
-        except (ValueError, AssertionError, TypeError) as err:
+            if not (columns > 0 and isinstance(columns, int)
+                    and rows > 0 and isinstance(rows, int)):
+                raise LayoutError('two positive integers expected')
+        except (ValueError, TypeError) as err:
             raise LayoutError('two positive integers expected') from err
 
         return columns, rows

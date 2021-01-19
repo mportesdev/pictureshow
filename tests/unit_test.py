@@ -123,6 +123,8 @@ class TestValidatePageSize:
             pytest.param(A4, True, A4_LANDSCAPE),
             pytest.param(A4_LANDSCAPE, False, A4_LANDSCAPE),
             pytest.param(A4_LANDSCAPE, True, A4_LANDSCAPE),
+            pytest.param((120 * 72, 120 * 72), False, (120 * 72, 120 * 72),
+                         id='(int, int)'),
         )
     )
     def test_page_size_as_tuple(self, page_size, landscape, expected):
@@ -177,13 +179,16 @@ class TestValidatePageSize:
         (
             pytest.param((100,), id='invalid length (1)'),
             pytest.param((100, 100, 100), id='invalid length (3)'),
-            pytest.param((500.0, '500.0'), id='invalid type (int, str)'),
+            pytest.param((500.0, '500.0'), id='invalid type (float, str)'),
+            pytest.param((500.0, 0), id='invalid values (positive, zero)'),
+            pytest.param((500.0, -200.0), id='invalid values (positive, negative)'),
+            pytest.param(('200', '100'), id='invalid type (str, str)'),
             pytest.param(1, id='invalid type (int)'),
             pytest.param(1.0, id='invalid type (float)'),
         )
     )
     def test_invalid_page_size_raises_error(self, page_size):
-        with pytest.raises(PageSizeError, match='two positive floats expected'):
+        with pytest.raises(PageSizeError, match='two positive numbers expected'):
             PictureShow()._validate_page_size(page_size, False)
 
     @pytest.mark.parametrize(
@@ -233,6 +238,7 @@ class TestValidateLayout:
             pytest.param('1x0.5', id='1x0.5'),
             pytest.param(0, id='0'),
             pytest.param(object(), id='object()'),
+            pytest.param(('1', '1'), id="('1', '1')"),
         )
     )
     def test_invalid_input_raises_error(self, layout):
