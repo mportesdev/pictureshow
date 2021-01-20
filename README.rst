@@ -1,8 +1,4 @@
-.. image:: https://img.shields.io/github/workflow/status/myrmica-habilis/pictureshow/pytest
-.. image:: https://img.shields.io/github/v/release/myrmica-habilis/pictureshow.svg
-.. image:: https://img.shields.io/pypi/pyversions/pictureshow
-.. image:: https://img.shields.io/pypi/format/pictureshow
-.. image:: https://img.shields.io/github/license/myrmica-habilis/pictureshow.svg
+|build| |release| |pyversions| |format| |license|
 
 Save pictures to PDF from the command line or from your Python programs.
 
@@ -166,3 +162,9 @@ Footnotes
     C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10,
     LETTER, LEGAL, ELEVENSEVENTEEN,
     JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER
+
+.. |build| image:: https://img.shields.io/github/workflow/status/myrmica-habilis/pictureshow/pytest
+.. |release| image:: https://img.shields.io/github/v/release/myrmica-habilis/pictureshow.svg
+.. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
+.. |format| image:: https://img.shields.io/pypi/format/pictureshow
+.. |license| image:: https://img.shields.io/github/license/myrmica-habilis/pictureshow.svg
