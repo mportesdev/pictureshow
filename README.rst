@@ -1,4 +1,8 @@
-.. image:: https://github.com/myrmica-habilis/pictureshow/workflows/pytest/badge.svg
+.. image:: https://img.shields.io/github/workflow/status/myrmica-habilis/pictureshow/pytest
+.. image:: https://img.shields.io/github/v/release/myrmica-habilis/pictureshow.svg
+.. image:: https://img.shields.io/pypi/pyversions/pictureshow
+.. image:: https://img.shields.io/pypi/format/pictureshow
+.. image:: https://img.shields.io/github/license/myrmica-habilis/pictureshow.svg
 
 Save pictures to PDF from the command line or from your Python programs.
 
