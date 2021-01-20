@@ -1,4 +1,4 @@
-|build| |release| |pyversions| |format| |license|
+|pytest| |pylint| |release| |pyversions| |format| |license|
 
 Save pictures to PDF from the command line or from your Python programs.
 
@@ -163,7 +163,8 @@ Footnotes
     LETTER, LEGAL, ELEVENSEVENTEEN,
     JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER
 
-.. |build| image:: https://img.shields.io/github/workflow/status/myrmica-habilis/pictureshow/pytest
+.. |pytest| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pytest/badge.svg
+.. |pylint| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pylint/badge.svg
 .. |release| image:: https://img.shields.io/github/v/release/myrmica-habilis/pictureshow.svg
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
 .. |format| image:: https://img.shields.io/pypi/format/pictureshow

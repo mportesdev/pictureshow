@@ -24,4 +24,4 @@ jobs:
         if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
     - name: Analysing the code with pylint
       run: |
-        pylint -d C0114,C0115,C0116 pictureshow
+        pylint --exit-zero pictureshow
