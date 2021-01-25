@@ -1,4 +1,4 @@
-|pytest| |pylint| |release| |pyversions| |format| |license|
+|pytest| |pylint| |release| |license| |pyversions| |format|
 
 Save pictures to PDF from the command line or from your Python programs.
 
@@ -64,7 +64,7 @@ Result:
 Example 2
 ~~~~~~~~~
 
-Select pictures using a glob pattern, set page to landscape Letter-sized [#]_.
+Select pictures using a glob pattern [#]_, set page to landscape Letter-sized [#]_.
 
 .. code::
 
@@ -79,7 +79,7 @@ Result:
 Example 3
 ~~~~~~~~~
 
-Select pictures using a glob pattern [#]_, set half-inch margin and layout with 1x3 pictures per page.
+Select pictures using a glob pattern, set half-inch margin and layout with 1x3 pictures per page.
 
 .. code::
 
