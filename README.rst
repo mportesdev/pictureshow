@@ -64,6 +64,21 @@ Result:
 Example 2
 ~~~~~~~~~
 
+Select pictures using a glob pattern, set page to landscape Letter-sized [#]_.
+
+.. code::
+
+    $ pictureshow pics/plots/gauss* gauss.pdf -LpLETTER
+    Saved 2 pictures to '/.../gauss.pdf'
+
+Result:
+
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_gauss.png
+
+
+Example 3
+~~~~~~~~~
+
 Select pictures using a glob pattern [#]_, set half-inch margin and layout with 1x3 pictures per page.
 
 .. code::
@@ -74,21 +89,6 @@ Select pictures using a glob pattern [#]_, set half-inch margin and layout with 
 Result:
 
 .. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_noise.png
-
-
-Example 3
-~~~~~~~~~
-
-Select pictures using a glob pattern, set page to landscape Letter-sized [#]_, 2x2 pictures per page.
-
-.. code::
-
-    $ pictureshow pics/*.jpg jpg_pics.pdf -pLETTER -L -l2x2
-    Saved 4 pictures to '/.../jpg_pics.pdf'
-
-Result:
-
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_jpg_pics.png
 
 
 As a Python library
@@ -166,6 +166,6 @@ Footnotes
 .. |pytest| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pytest/badge.svg
 .. |pylint| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pylint/badge.svg
 .. |release| image:: https://img.shields.io/github/v/release/myrmica-habilis/pictureshow.svg
+.. |license| image:: https://img.shields.io/github/license/myrmica-habilis/pictureshow.svg
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
 .. |format| image:: https://img.shields.io/pypi/format/pictureshow
-.. |license| image:: https://img.shields.io/github/license/myrmica-habilis/pictureshow.svg
