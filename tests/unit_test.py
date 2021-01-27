@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest.mock import patch, Mock
 
 import pytest
@@ -18,10 +19,10 @@ def fake_pic():
     return Mock(**{'getSize.return_value': (640, 400)})
 
 
+@patch('pictureshow.core.PictureShow._save_pdf')
 class TestPictureShowSavePdf:
     """Test core.PictureShow.save_pdf"""
 
-    @patch('pictureshow.core.PictureShow._save_pdf')
     @patch('pictureshow.core.Path')
     def test_nonexistent_target_file(self, mock_path_class, mock_save_pdf):
         mock_path_class.configure_mock(
@@ -36,7 +37,6 @@ class TestPictureShowSavePdf:
             fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
         )
 
-    @patch('pictureshow.core.PictureShow._save_pdf')
     @patch('pictureshow.core.Path')
     def test_existing_target_file_raises_error(self, mock_path_class,
                                                mock_save_pdf):
@@ -44,14 +44,13 @@ class TestPictureShowSavePdf:
             **{'return_value.exists.return_value': True}
         )
         fake_pdf_name = 'foo.pdf'
-        with pytest.raises(FileExistsError, match=f'file .* exists'):
+        with pytest.raises(FileExistsError, match="file '.*' exists"):
             PictureShow().save_pdf(fake_pdf_name)
 
         mock_path_class.assert_called_once_with(fake_pdf_name)
         mock_path_class().exists.assert_called_once_with()
         mock_save_pdf.assert_not_called()
 
-    @patch('pictureshow.core.PictureShow._save_pdf')
     @patch('pictureshow.core.Path')
     def test_force_overwrite_existing_file(self, mock_path_class,
                                            mock_save_pdf):
@@ -63,6 +62,17 @@ class TestPictureShowSavePdf:
 
         mock_path_class.assert_called_once_with(fake_pdf_name)
         mock_path_class().exists.assert_called_once_with()
+        mock_save_pdf.assert_called_once_with(
+            fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
+        )
+
+    def test_target_path_as_path(self, mock_save_pdf):
+        """Call `save_pdf` with a Path, assert that _save_pdf is called
+        with a str.
+        """
+        fake_pdf_name = 'foo.pdf'
+        PictureShow().save_pdf(Path(fake_pdf_name))
+
         mock_save_pdf.assert_called_once_with(
             fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
         )

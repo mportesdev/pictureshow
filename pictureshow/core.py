@@ -18,13 +18,18 @@ class PictureShow:
 
     def save_pdf(self, pdf_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, force_overwrite=False):
-        if Path(pdf_file).exists() and not force_overwrite:
-            raise FileExistsError(f'file {pdf_file!r} exists')
+        target_str = str(pdf_file)
+        target_path = Path(pdf_file)
+
+        if target_path.exists() and not force_overwrite:
+            raise FileExistsError(f'file {target_str!r} exists')
 
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
-        return self._save_pdf(pdf_file, page_size, margin, layout, stretch_small)
+        return self._save_pdf(
+            target_str, page_size, margin, layout, stretch_small
+        )
 
     def _save_pdf(self, pdf_file, page_size, margin, layout, stretch_small):
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
