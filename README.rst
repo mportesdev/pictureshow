@@ -150,7 +150,13 @@ Result:
 .. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_oldies.png
 
 
+*New in version 0.3.2*
+
 The ``page_size`` and ``layout`` parameters can be specified either by a string (just like in the command line interface) or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
+
+*New in version 0.3.6*
+
+The ``pdf_file`` parameter can be specified either by a string (just like in the command line interface) or by a path-like object.
 
 Footnotes
 ~~~~~~~~~
