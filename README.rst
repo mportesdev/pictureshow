@@ -83,12 +83,12 @@ Select pictures using a glob pattern, set half-inch margin and layout with 1x3 p
 
 .. code::
 
-    $ pictureshow --margin=36 --layout=1x3 pics/noise*.* noise.pdf
-    Saved 5 pictures to '/.../noise.pdf'
+    $ pictureshow --margin=36 --layout=1x3 pics/*alpha.png alpha_pngs.pdf
+    Saved 6 pictures to '/.../alpha_pngs.pdf'
 
 Result:
 
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_noise.png
+.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_alpha.png
 
 
 As a Python library
@@ -100,7 +100,7 @@ Using the ``PictureShow`` class:
 
     from pictureshow import PictureShow
 
-    pic_show = PictureShow('pics/mandelbrot.jpg', 'pics/darkcyan.png')
+    pic_show = PictureShow('pics/mandelbrot.jpg', 'pics/noise_sigma_32.png')
     pic_show.save_pdf('pictures.pdf')
 
 Result:
@@ -114,7 +114,7 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pics/mandelbrot.jpg', 'pics/darkcyan.png', 'pictures.pdf')
+    pictures_to_pdf('pics/mandelbrot.jpg', 'pics/noise_sigma_32.png', 'pictures.pdf')
 
 The example above will work as long as the output file is passed as the last positional argument. It is however recommended to always use a keyword argument:
 
@@ -122,7 +122,7 @@ The example above will work as long as the output file is passed as the last pos
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = ['pics/mandelbrot.jpg', 'pics/darkcyan.png']
+    list_of_pictures = ['pics/mandelbrot.jpg', 'pics/noise_sigma_32.png']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
 Another example, demonstrating all available keyword parameters:
@@ -133,7 +133,7 @@ Another example, demonstrating all available keyword parameters:
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = sorted(Path.cwd().glob('pics/oldies/*'))
+    list_of_pictures = sorted(Path.cwd().glob('pics/oldies/*/*'))
     pictures_to_pdf(
         *list_of_pictures,
         pdf_file='oldies.pdf',
