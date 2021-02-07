@@ -14,6 +14,10 @@ A4_LANDSCAPE = A4_LENGTH, A4_WIDTH
 A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
 A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
 
+DEFAULTS = {
+    'page_size': A4, 'margin': 72, 'layout': (1, 1), 'stretch_small': False
+}
+
 
 def fake_pic():
     return Mock(**{'getSize.return_value': (640, 400)})
@@ -78,11 +82,13 @@ class TestPictureShowSavePdf:
         )
 
 
+@patch('pictureshow.core.Canvas')
+@patch('pictureshow.core.ImageReader')
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
     @pytest.mark.parametrize(
-        'mock_side_effects, expected',
+        'reader_side_effects, expected',
         (
             pytest.param([fake_pic()], (1, 0), id='1 valid'),
             pytest.param([fake_pic(), fake_pic()], (2, 0), id='2 valid'),
@@ -90,38 +96,86 @@ class TestSavePdf:
                          id='2 valid + 1 invalid'),
             pytest.param([ImageError, fake_pic(), ImageError], (1, 2),
                          id='2 invalid + 1 valid'),
+        )
+    )
+    def test_valid_input_result(self, mock_reader, _, reader_side_effects,
+                                expected):
+        fake_pic_files = ['foo.png'] * len(reader_side_effects)
+        fake_pdf_name = 'foo.pdf'
+        mock_reader.configure_mock(side_effect=reader_side_effects)
+        result = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
+                                                        **DEFAULTS)
+        assert result == expected
+
+    @pytest.mark.parametrize(
+        'reader_side_effects, num_valid',
+        (
+            pytest.param([fake_pic()], 1, id='1 valid'),
+            pytest.param([fake_pic(), fake_pic()], 2, id='2 valid'),
+            pytest.param([fake_pic(), ImageError, fake_pic()], 2,
+                         id='2 valid + 1 invalid'),
+            pytest.param([ImageError, fake_pic(), ImageError], 1,
+                         id='2 invalid + 1 valid'),
+        )
+    )
+    def test_valid_input_calls(self, mock_reader, mock_canvas,
+                               reader_side_effects, num_valid):
+        fake_pic_files = ['foo.png'] * len(reader_side_effects)
+        fake_pdf_name = 'foo.pdf'
+        mock_reader.configure_mock(side_effect=reader_side_effects)
+        PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name, **DEFAULTS)
+
+        mock_canvas.assert_called_once_with(fake_pdf_name, pagesize=A4)
+
+        # trace method calls of mocked Canvas object
+        mock_canvas_obj = mock_canvas()
+        mock_canvas_obj.drawImage.assert_called()
+        assert mock_canvas_obj.drawImage.call_count == num_valid
+        mock_canvas_obj.showPage.assert_called_with()
+        assert mock_canvas_obj.showPage.call_count == num_valid
+        mock_canvas_obj.save.assert_called_once_with()
+
+    @pytest.mark.parametrize(
+        'reader_side_effects, expected',
+        (
             pytest.param([ImageError], (0, 1), id='1 invalid'),
             pytest.param([ImageError, ImageError], (0, 2), id='2 invalid'),
             pytest.param([OSError], (0, 1), id='dir'),
             pytest.param([OSError], (0, 1), id='missing'),
         )
     )
-    @patch('pictureshow.core.Canvas')
-    def test_valid_and_invalid_input(self, mock_canvas_class, mock_side_effects,
-                                     expected):
-        fake_pic_files = ['foo.png'] * len(mock_side_effects)
+    def test_invalid_input_result(self, mock_reader, _, reader_side_effects,
+                                  expected):
+        fake_pic_files = ['foo.png'] * len(reader_side_effects)
         fake_pdf_name = 'foo.pdf'
-        with patch('pictureshow.core.ImageReader',
-                   side_effect=mock_side_effects):
-            result = PictureShow(*fake_pic_files)._save_pdf(
-                fake_pdf_name, A4, 72, (1, 1), False
-            )
+        mock_reader.configure_mock(side_effect=reader_side_effects)
+        result = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
+                                                        **DEFAULTS)
         assert result == expected
-        mock_canvas_class.assert_called_once_with(fake_pdf_name, pagesize=A4)
 
-        # test the mocked canvas' method calls
-        mock_canvas = mock_canvas_class()
-        num_valid_pics = expected[0]
-        if num_valid_pics > 0:
-            mock_canvas.drawImage.assert_called()
-            assert mock_canvas.drawImage.call_count == num_valid_pics
-            mock_canvas.showPage.assert_called_with()
-            assert mock_canvas.showPage.call_count == num_valid_pics
-            mock_canvas.save.assert_called_once_with()
-        else:
-            mock_canvas.drawImage.assert_not_called()
-            mock_canvas.showPage.assert_not_called()
-            mock_canvas.save.assert_not_called()
+    @pytest.mark.parametrize(
+        'reader_side_effects',
+        (
+            pytest.param([ImageError], id='1 invalid'),
+            pytest.param([ImageError, ImageError], id='2 invalid'),
+            pytest.param([OSError], id='dir'),
+            pytest.param([OSError], id='missing'),
+        )
+    )
+    def test_invalid_input_calls(self, mock_reader, mock_canvas,
+                                 reader_side_effects):
+        fake_pic_files = ['foo.png'] * len(reader_side_effects)
+        fake_pdf_name = 'foo.pdf'
+        mock_reader.configure_mock(side_effect=reader_side_effects)
+        PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name, **DEFAULTS)
+
+        mock_canvas.assert_called_once_with(fake_pdf_name, pagesize=A4)
+
+        # trace method calls of mocked Canvas object
+        mock_canvas_obj = mock_canvas()
+        mock_canvas_obj.drawImage.assert_not_called()
+        mock_canvas_obj.showPage.assert_not_called()
+        mock_canvas_obj.save.assert_not_called()
 
 
 class TestValidatePageSize:
