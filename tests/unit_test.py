@@ -70,9 +70,9 @@ class TestPictureShowSavePdf:
             fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
         )
 
-    def test_target_path_as_path(self, mock_save_pdf):
-        """Call `save_pdf` with a Path, assert that _save_pdf is called
-        with a str.
+    def test_target_path_as_pathlike(self, mock_save_pdf):
+        """Call `save_pdf` with a Path object as target file,
+        assert that `_save_pdf` was called with a str.
         """
         fake_pdf_name = 'foo.pdf'
         PictureShow().save_pdf(Path(fake_pdf_name))
@@ -182,44 +182,41 @@ class TestValidatePageSize:
     """Test core.PictureShow._validate_page_size"""
 
     @pytest.mark.parametrize(
-        'page_size, landscape, expected',
+        'page_size',
         (
-            pytest.param(A4, False, A4),
-            pytest.param(A4, True, A4_LANDSCAPE),
-            pytest.param(A4_LANDSCAPE, False, A4_LANDSCAPE),
-            pytest.param(A4_LANDSCAPE, True, A4_LANDSCAPE),
-            pytest.param((120 * 72, 120 * 72), False, (120 * 72, 120 * 72),
-                         id='(int, int)'),
+            pytest.param(A4, id='A4'),
+            pytest.param(A4_LANDSCAPE, id='A4 landscape'),
+            pytest.param((8 * 72, 11 * 72), id='(int, int)'),
+            pytest.param((11.5 * 72, 8.5 * 72), id='(float, float)'),
         )
     )
-    def test_page_size_as_tuple(self, page_size, landscape, expected):
-        result = PictureShow()._validate_page_size(page_size, landscape)
-        assert result == expected
+    def test_page_size_as_tuple(self, page_size):
+        result = PictureShow()._validate_page_size(page_size, landscape=False)
+        assert result == page_size
 
     @pytest.mark.parametrize(
-        'page_size, landscape, expected',
+        'page_size, expected',
         (
-            pytest.param('A4', False, A4),
-            pytest.param('A4', True, A4_LANDSCAPE),
-            pytest.param('LETTER', False, (72 * 8.5, 72 * 11)),
-            pytest.param('LETTER', True, (72 * 11, 72 * 8.5)),
+            pytest.param('A4', A4, id="'A4'"),
+            pytest.param('LETTER', (72 * 8.5, 72 * 11), id="'LETTER'"),
+            pytest.param('c5', (162 / 25.4 * 72, 229 / 25.4 * 72), id="'c5'"),
         )
     )
-    def test_page_size_as_str(self, page_size, landscape, expected):
-        result = PictureShow()._validate_page_size(page_size, landscape)
+    def test_page_size_as_str(self, page_size, expected):
+        result = PictureShow()._validate_page_size(page_size, landscape=False)
         assert result == pytest.approx(expected)
 
     @pytest.mark.parametrize(
         'page_size, expected_mm',
         (
-            pytest.param('A4', [210, 297], id='A4'),
-            pytest.param('A5', [148, 210], id='A5'),
-            pytest.param('a4', [210, 297], id='a4'),
-            pytest.param('b0', [1000, 1414], id='b0'),
+            pytest.param('A4', [210, 297], id="'A4'"),
+            pytest.param('A5', [148, 210], id="'A5'"),
+            pytest.param('a4', [210, 297], id="'a4'"),
+            pytest.param('b0', [1000, 1414], id="'b0'"),
         )
     )
     def test_valid_names_mm(self, page_size, expected_mm):
-        result = PictureShow()._validate_page_size(page_size, False)
+        result = PictureShow()._validate_page_size(page_size, landscape=False)
         assert isinstance(result, tuple)
         assert len(result) == 2
         assert [n / 72 * 25.4 for n in result] == pytest.approx(expected_mm)
@@ -227,26 +224,44 @@ class TestValidatePageSize:
     @pytest.mark.parametrize(
         'page_size, expected_inches',
         (
-            pytest.param('LETTER', [8.5, 11], id='LETTER'),
-            pytest.param('letter', [8.5, 11], id='letter'),
-            pytest.param('LEGAL', [8.5, 14], id='LEGAL'),
-            pytest.param('legal', [8.5, 14], id='legal'),
+            pytest.param('LETTER', [8.5, 11], id="'LETTER'"),
+            pytest.param('letter', [8.5, 11], id="'letter'"),
+            pytest.param('LEGAL', [8.5, 14], id="'LEGAL'"),
+            pytest.param('legal', [8.5, 14], id="'legal'"),
         )
     )
     def test_valid_names_inches(self, page_size, expected_inches):
-        result = PictureShow()._validate_page_size(page_size, False)
+        result = PictureShow()._validate_page_size(page_size, landscape=False)
         assert isinstance(result, tuple)
         assert len(result) == 2
         assert [n / 72 for n in result] == pytest.approx(expected_inches)
+
+    @pytest.mark.parametrize(
+        'page_size, expected',
+        (
+            pytest.param(A4, A4_LANDSCAPE, id='A4'),
+            pytest.param((5 * 72, 8 * 72), (8 * 72, 5 * 72), id='5" x 8"'),
+            pytest.param((8.5 * 72, 10.5 * 72), (10.5 * 72, 8.5 * 72),
+                         id='custom'),
+            pytest.param('A3', [420 / 25.4 * 72, 297 / 25.4 * 72], id="'A3'"),
+            pytest.param('gov_letter', [10.5 * 72, 8 * 72], id="'gov_letter'"),
+            pytest.param(A4_LANDSCAPE, A4_LANDSCAPE, id='A4 landscape'),
+            pytest.param((10.5 * 72, 8.5 * 72), (10.5 * 72, 8.5 * 72),
+                         id='custom landscape'),
+        )
+    )
+    def test_convert_to_landscape(self, page_size, expected):
+        result = PictureShow()._validate_page_size(page_size, landscape=True)
+        assert result == pytest.approx(expected)
 
     @pytest.mark.parametrize(
         'page_size',
         (
             pytest.param((100,), id='invalid length (1)'),
             pytest.param((100, 100, 100), id='invalid length (3)'),
+            pytest.param((500.0, 0), id='invalid value (zero)'),
+            pytest.param((500.0, -200.0), id='invalid value (negative)'),
             pytest.param((500.0, '500.0'), id='invalid type (float, str)'),
-            pytest.param((500.0, 0), id='invalid values (positive, zero)'),
-            pytest.param((500.0, -200.0), id='invalid values (positive, negative)'),
             pytest.param(('200', '100'), id='invalid type (str, str)'),
             pytest.param(1, id='invalid type (int)'),
             pytest.param(1.0, id='invalid type (float)'),
@@ -254,19 +269,20 @@ class TestValidatePageSize:
     )
     def test_invalid_page_size_raises_error(self, page_size):
         with pytest.raises(PageSizeError, match='two positive numbers expected'):
-            PictureShow()._validate_page_size(page_size, False)
+            PictureShow()._validate_page_size(page_size, landscape=False)
 
     @pytest.mark.parametrize(
         'page_size',
         (
-            pytest.param('A11', id='A11'),
-            pytest.param('landscape', id='landscape'),
-            pytest.param('portrait', id='portrait'),
+            pytest.param('A11', id="'A11'"),
+            pytest.param('210x297', id="'210x297'"),
+            pytest.param('inch', id="'inch'"),
+            pytest.param('portrait', id="'portrait'"),
         )
     )
     def test_invalid_page_size_name_raises_error(self, page_size):
         with pytest.raises(PageSizeError, match='unknown page size: .+'):
-            PictureShow()._validate_page_size(page_size, False)
+            PictureShow()._validate_page_size(page_size, landscape=False)
 
 
 class TestValidateLayout:
@@ -276,70 +292,138 @@ class TestValidateLayout:
         'layout, expected',
         (
             pytest.param((1, 1), (1, 1), id='(1, 1)'),
-            pytest.param([1, 1], (1, 1), id='[1, 1]'),
+            pytest.param((4, 1), (4, 1), id='(4, 1)'),
             pytest.param((2, 3), (2, 3), id='(2, 3)'),
-            pytest.param(iter([4, 3]), (4, 3), id='iter([4, 3])'),
+        )
+    )
+    def test_layout_as_tuple(self, layout, expected):
+        result = PictureShow()._validate_layout(layout)
+        assert result == expected
+
+    @pytest.mark.parametrize(
+        'layout, expected',
+        (
+            pytest.param([2, 2], (2, 2), id='list'),
+            pytest.param(b'\t\n', (9, 10), id='bytes'),
+            pytest.param(iter([4, 3]), (4, 3), id='iter'),
+        )
+    )
+    def test_layout_as_other_iterable(self, layout, expected):
+        result = PictureShow()._validate_layout(layout)
+        assert result == expected
+
+    @pytest.mark.parametrize(
+        'layout, expected',
+        (
             pytest.param('1x1', (1, 1), id='1x1'),
             pytest.param('010x005', (10, 5), id='010x005'),
             pytest.param(' 1 x 1 ', (1, 1), id=' 1 x 1 '),
         )
     )
-    def test_valid_input(self, layout, expected):
+    def test_layout_as_str(self, layout, expected):
         result = PictureShow()._validate_layout(layout)
         assert result == expected
 
     @pytest.mark.parametrize(
         'layout',
         (
-            pytest.param((1,), id='(1,)'),
-            pytest.param('1', id='1'),
-            pytest.param((1, 1, 1), id='(1, 1, 1)'),
-            pytest.param('1x1x1', id='1x1x1'),
-            pytest.param((0, 1), id='(0, 1)'),
-            pytest.param('0x1', id='0x1'),
-            pytest.param((-1, 3), id='(-1, 3)'),
-            pytest.param('-1x3', id='-1x3'),
-            pytest.param((1, 0.5), id='(1, 0.5)'),
-            pytest.param('1x0.5', id='1x0.5'),
-            pytest.param(0, id='0'),
-            pytest.param(object(), id='object()'),
-            pytest.param(('1', '1'), id="('1', '1')"),
+            pytest.param((1,), id='invalid length (1)'),
+            pytest.param((1, 1, 1), id='invalid length (3)'),
+            pytest.param((0, 1), id='invalid value (zero)'),
+            pytest.param((-1, 3), id='invalid value (negative)'),
+            pytest.param((1, 0.5), id='invalid type (float)'),
+            pytest.param(('1', '1'), id='invalid type (str, str)'),
+            pytest.param(('A', 'B'), id='non-numeric'),
+            pytest.param(0, id='non-iterable (int)'),
+            pytest.param(object(), id='non-iterable (object())'),
         )
     )
-    def test_invalid_input_raises_error(self, layout):
+    def test_invalid_layout_raises_error(self, layout):
+        with pytest.raises(LayoutError, match='two positive integers expected'):
+            PictureShow()._validate_layout(layout)
+
+    @pytest.mark.parametrize(
+        'layout',
+        (
+            pytest.param('1', id='invalid length (1)'),
+            pytest.param('1x1x1', id='invalid length (3)'),
+            pytest.param('0x1', id='invalid value (zero)'),
+            pytest.param('-1x3', id='invalid value (negative)'),
+            pytest.param('1x0.5', id='invalid type (float)'),
+            pytest.param('AxB', id='non-numeric'),
+        )
+    )
+    def test_invalid_layout_str_raises_error(self, layout):
         with pytest.raises(LayoutError, match='two positive integers expected'):
             PictureShow()._validate_layout(layout)
 
 
+@patch('pictureshow.core.ImageReader')
 class TestValidPictures:
     """Test core.PictureShow._valid_pictures"""
 
     @pytest.mark.parametrize(
-        'mock_side_effects, expected',
+        'reader_side_effects',
         (
-            pytest.param(['1'], ['1'], id='1 valid'),
-            pytest.param(['1', '2'], ['1', '2'], id='2 valid'),
+            pytest.param(['1'], id='1 valid'),
+            pytest.param(['1', '2'], id='2 valid'),
+            pytest.param(['1', '2', '3', '4', '5'], id='5 valid'),
+        )
+    )
+    def test_all_valid_pictures(self, mock_reader, reader_side_effects):
+        fake_pic_files = ['foo.png'] * len(reader_side_effects)
+        pic_show = PictureShow(*fake_pic_files)
+        mock_reader.configure_mock(side_effect=reader_side_effects)
+        result = list(pic_show._valid_pictures())
+
+        mock_reader.assert_called_with('foo.png')
+        assert mock_reader.call_count == len(fake_pic_files)
+
+        assert result == reader_side_effects
+        assert pic_show.errors == 0
+
+    @pytest.mark.parametrize(
+        'reader_side_effects, expected',
+        (
             pytest.param(['1', ImageError, '2'], ['1', '2'],
                          id='2 valid + 1 invalid'),
             pytest.param([ImageError, '1', ImageError], ['1'],
                          id='2 invalid + 1 valid'),
-            pytest.param([ImageError], [], id='1 invalid'),
-            pytest.param([ImageError, ImageError], [], id='2 invalid'),
-            pytest.param([OSError], [], id='dir'),
-            pytest.param([OSError], [], id='missing'),
         )
     )
-    def test_typical_cases(self, mock_side_effects, expected):
-        fake_pic_files = ['foo.png'] * len(mock_side_effects)
+    def test_valid_and_invalid_pictures(self, mock_reader, reader_side_effects,
+                                        expected):
+        fake_pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*fake_pic_files)
-        with patch('pictureshow.core.ImageReader',
-                   side_effect=mock_side_effects) as mock:
-            result = list(pic_show._valid_pictures())
-            mock.assert_called_with('foo.png')
-            assert mock.call_count == len(fake_pic_files)
+        mock_reader.configure_mock(side_effect=reader_side_effects)
+
+        result = list(pic_show._valid_pictures())
+        mock_reader.assert_called_with('foo.png')
+        assert mock_reader.call_count == len(fake_pic_files)
 
         assert result == expected
         assert pic_show.errors == len(fake_pic_files) - len(expected)
+
+    @pytest.mark.parametrize(
+        'reader_side_effects',
+        (
+            pytest.param([ImageError], id='1 invalid'),
+            pytest.param([ImageError, ImageError], id='2 invalid'),
+            pytest.param([OSError], id='dir'),
+            pytest.param([OSError], id='missing'),
+        )
+    )
+    def test_all_invalid_pictures(self, mock_reader, reader_side_effects):
+        fake_pic_files = ['foo.png'] * len(reader_side_effects)
+        pic_show = PictureShow(*fake_pic_files)
+        mock_reader.configure_mock(side_effect=reader_side_effects)
+
+        result = list(pic_show._valid_pictures())
+        mock_reader.assert_called_with('foo.png')
+        assert mock_reader.call_count == len(fake_pic_files)
+
+        assert result == []
+        assert pic_show.errors == len(fake_pic_files)
 
 
 class TestPositionAndSize:
