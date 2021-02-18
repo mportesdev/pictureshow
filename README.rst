@@ -170,8 +170,14 @@ Footnotes
     JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER
 
 .. |pytest| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pytest/badge.svg
+    :target: https://github.com/myrmica-habilis/pictureshow/actions
 .. |pylint| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pylint/badge.svg
+    :target: https://github.com/myrmica-habilis/pictureshow/actions
 .. |release| image:: https://img.shields.io/github/v/release/myrmica-habilis/pictureshow.svg
+    :target: https://github.com/myrmica-habilis/pictureshow/releases/tag/0.3.6
 .. |license| image:: https://img.shields.io/github/license/myrmica-habilis/pictureshow.svg
+    :target: https://github.com/myrmica-habilis/pictureshow/blob/master/LICENSE
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
+    :target: https://pypi.org/project/pictureshow
 .. |format| image:: https://img.shields.io/pypi/format/pictureshow
+    :target: https://pypi.org/project/pictureshow/#files
