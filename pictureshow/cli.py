@@ -31,12 +31,13 @@ def get_args(parser):
 
 
 def report_results(num_ok, errors, target_path, verbose=False):
-    num_errors = len(errors)
+    unique_errors = dict(errors)
+    num_errors = len(unique_errors)
     if num_errors != 0:
         print(f'{num_errors} file{"s" if num_errors > 1 else ""} skipped'
               ' due to error.')
         if verbose:
-            for pic_file, error in errors:
+            for pic_file, error in unique_errors.items():
                 print(f'{pic_file}:\n{error.__class__.__name__}: {error}\n')
 
     if num_ok != 0:
