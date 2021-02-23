@@ -15,7 +15,7 @@ setup(
     description='Save pictures to PDF',
     long_description=long_description,
     long_description_content_type='text/x-rst',
-    url='https://github.com/myrmica-habilis/pictureshow.git',
+    url='https://github.com/mportesdev/pictureshow',
     license='MIT License',
     classifiers=[
         'Programming Language :: Python :: 3',

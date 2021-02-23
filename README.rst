@@ -58,7 +58,7 @@ Save a single picture to PDF.
 
 Result:
 
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_mandelbrot.png
+.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_mandelbrot.png
 
 
 Example 2
@@ -73,7 +73,7 @@ Select pictures using a glob pattern [#]_, set page to landscape Letter-sized [#
 
 Result:
 
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_gauss.png
+.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_gauss.png
 
 
 Example 3
@@ -88,7 +88,7 @@ Select pictures using a glob pattern, set half-inch margin and layout with 1x3 p
 
 Result:
 
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_alpha.png
+.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_alpha.png
 
 
 As a Python library
@@ -105,7 +105,7 @@ Using the ``PictureShow`` class:
 
 Result:
 
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_pictures.png
+.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_pictures.png
 
 
 Using the ``pictures_to_pdf`` shortcut function:
@@ -147,7 +147,7 @@ Another example, demonstrating all available keyword parameters:
 
 Result:
 
-.. image:: https://raw.githubusercontent.com/myrmica-habilis/pictureshow/master/pics/sample_pdf_oldies.png
+.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_oldies.png
 
 
 *New in version 0.3.2*
@@ -169,14 +169,14 @@ Footnotes
     LETTER, LEGAL, ELEVENSEVENTEEN,
     JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER
 
-.. |pytest| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pytest/badge.svg
-    :target: https://github.com/myrmica-habilis/pictureshow/actions
-.. |pylint| image:: https://github.com/myrmica-habilis/pictureshow/workflows/pylint/badge.svg
-    :target: https://github.com/myrmica-habilis/pictureshow/actions
-.. |release| image:: https://img.shields.io/github/v/release/myrmica-habilis/pictureshow.svg
-    :target: https://github.com/myrmica-habilis/pictureshow/releases/tag/0.3.6
-.. |license| image:: https://img.shields.io/github/license/myrmica-habilis/pictureshow.svg
-    :target: https://github.com/myrmica-habilis/pictureshow/blob/master/LICENSE
+.. |pytest| image:: https://github.com/mportesdev/pictureshow/workflows/pytest/badge.svg
+    :target: https://github.com/mportesdev/pictureshow/actions
+.. |pylint| image:: https://github.com/mportesdev/pictureshow/workflows/pylint/badge.svg
+    :target: https://github.com/mportesdev/pictureshow/actions
+.. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow.svg
+    :target: https://github.com/mportesdev/pictureshow/releases/tag/0.3.6
+.. |license| image:: https://img.shields.io/github/license/mportesdev/pictureshow.svg
+    :target: https://github.com/mportesdev/pictureshow/blob/master/LICENSE
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
     :target: https://pypi.org/project/pictureshow
 .. |format| image:: https://img.shields.io/pypi/format/pictureshow
