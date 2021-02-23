@@ -23,16 +23,22 @@ def get_args(parser):
                         help='save target file even if filename exists')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='suppress printing to stdout')
-    parser.add_argument('-v', '--version', action='version')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='provide details on files skipped due to error')
+    parser.add_argument('-V', '--version', action='version')
 
     return parser.parse_args()
 
 
-def report_results(num_ok, errors, target_path):
+def report_results(num_ok, errors, target_path, verbose=False):
     num_errors = len(errors)
-    if num_errors:
+    if num_errors != 0:
         print(f'{num_errors} file{"s" if num_errors > 1 else ""} skipped'
-              ' because of error.')
+              ' due to error.')
+        if verbose:
+            for pic_file, error in errors:
+                print(f'{pic_file}:\n{error.__class__.__name__}: {error}\n')
+
     if num_ok != 0:
         print(f'Saved {num_ok} picture{"s" if num_ok > 1 else ""}'
               f' to {target_path!r}')
@@ -67,4 +73,4 @@ def main():
         parser.error(f'{err.__class__.__name__}: {err}')
     else:
         if not args.quiet:
-            report_results(num_ok, errors, pdf_path)
+            report_results(num_ok, errors, pdf_path, args.verbose)
