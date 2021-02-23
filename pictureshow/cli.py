@@ -21,10 +21,13 @@ def get_args(parser):
                         help='scale small pictures up to fit drawing area')
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save target file even if filename exists')
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='suppress printing to stdout')
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='provide details on files skipped due to error')
+
+    verbosity_group = parser.add_mutually_exclusive_group()
+    verbosity_group.add_argument('-q', '--quiet', action='store_true',
+                                 help='suppress printing to stdout')
+    verbosity_group.add_argument('-v', '--verbose', action='store_true',
+                                 help='provide details on files skipped due to error')
+
     parser.add_argument('-V', '--version', action='version')
 
     return parser.parse_args()
