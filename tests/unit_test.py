@@ -380,7 +380,7 @@ class TestValidPictures:
         assert mock_reader.call_count == len(fake_pic_files)
 
         assert result == reader_side_effects
-        assert pic_show.errors == 0
+        assert len(pic_show.errors) == 0
 
     @pytest.mark.parametrize(
         'reader_side_effects, expected',
@@ -402,7 +402,7 @@ class TestValidPictures:
         assert mock_reader.call_count == len(fake_pic_files)
 
         assert result == expected
-        assert pic_show.errors == len(fake_pic_files) - len(expected)
+        assert len(pic_show.errors) == len(fake_pic_files) - len(expected)
 
     @pytest.mark.parametrize(
         'reader_side_effects',
@@ -423,7 +423,7 @@ class TestValidPictures:
         assert mock_reader.call_count == len(fake_pic_files)
 
         assert result == []
-        assert pic_show.errors == len(fake_pic_files)
+        assert len(pic_show.errors) == len(fake_pic_files)
 
 
 class TestPositionAndSize:

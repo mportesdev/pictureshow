@@ -14,7 +14,7 @@ DrawingArea = namedtuple('DrawingArea', 'x y width height')
 class PictureShow:
     def __init__(self, *pic_files):
         self.pic_files = pic_files
-        self.errors = 0
+        self.errors = []
 
     def save_pdf(self, pdf_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, force_overwrite=False):
@@ -34,7 +34,7 @@ class PictureShow:
     def _save_pdf(self, pdf_file, page_size, margin, layout, stretch_small):
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
         valid_pics = self._valid_pictures()
-        num_ok, self.errors = 0, 0
+        num_ok = 0
         areas = tuple(self._areas(layout, page_size, margin))
         while True:
             for area in areas:
@@ -43,7 +43,7 @@ class PictureShow:
                 except StopIteration:
                     if num_ok != 0:
                         pdf_canvas.save()
-                    return num_ok, self.errors
+                    return num_ok, len(self.errors)
                 x, y, pic_width, pic_height = self._position_and_size(
                     picture.getSize(), (area.width, area.height), stretch_small
                 )
@@ -91,16 +91,17 @@ class PictureShow:
         return columns, rows
 
     def _valid_pictures(self):
+        self.errors = []
         for pic_file in self.pic_files:
             try:
                 picture = ImageReader(pic_file)
-            except UnidentifiedImageError:
+            except UnidentifiedImageError as err:
                 # file not recognized as picture
-                self.errors += 1
+                self.errors.append((pic_file, err))
                 continue
-            except OSError:
+            except OSError as err:
                 # file does not exist or is a dir
-                self.errors += 1
+                self.errors.append((pic_file, err))
                 continue
             else:
                 yield picture
