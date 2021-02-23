@@ -28,7 +28,8 @@ def get_args(parser):
     return parser.parse_args()
 
 
-def report_results(num_ok, num_errors, target_path):
+def report_results(num_ok, errors, target_path):
+    num_errors = len(errors)
     if num_errors:
         print(f'{num_errors} file{"s" if num_errors > 1 else ""} skipped'
               ' because of error.')
@@ -52,7 +53,7 @@ def main():
     pdf_path = os.path.abspath(args.PDF)
 
     try:
-        num_ok, num_errors = pictureshow.pictures_to_pdf(
+        num_ok, errors = pictureshow.pictures_to_pdf(
             *picture_paths,
             pdf_file=pdf_path,
             page_size=args.page_size,
@@ -66,4 +67,4 @@ def main():
         parser.error(f'{err.__class__.__name__}: {err}')
     else:
         if not args.quiet:
-            report_results(num_ok, num_errors, pdf_path)
+            report_results(num_ok, errors, pdf_path)

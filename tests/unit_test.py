@@ -88,24 +88,25 @@ class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
     @pytest.mark.parametrize(
-        'reader_side_effects, expected',
+        'reader_side_effects, expected_ok, expected_errors',
         (
-            pytest.param([fake_pic()], (1, 0), id='1 valid'),
-            pytest.param([fake_pic(), fake_pic()], (2, 0), id='2 valid'),
-            pytest.param([fake_pic(), ImageError, fake_pic()], (2, 1),
+            pytest.param([fake_pic()], 1, 0, id='1 valid'),
+            pytest.param([fake_pic(), fake_pic()], 2, 0, id='2 valid'),
+            pytest.param([fake_pic(), ImageError, fake_pic()], 2, 1,
                          id='2 valid + 1 invalid'),
-            pytest.param([ImageError, fake_pic(), ImageError], (1, 2),
+            pytest.param([ImageError, fake_pic(), ImageError], 1, 2,
                          id='2 invalid + 1 valid'),
         )
     )
     def test_valid_input_result(self, mock_reader, _, reader_side_effects,
-                                expected):
+                                expected_ok, expected_errors):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         fake_pdf_name = 'foo.pdf'
         mock_reader.configure_mock(side_effect=reader_side_effects)
-        result = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
+        num_ok, errors = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
                                                         **DEFAULTS)
-        assert result == expected
+        assert num_ok == expected_ok
+        assert len(errors) == expected_errors
 
     @pytest.mark.parametrize(
         'reader_side_effects, num_valid',
@@ -136,22 +137,23 @@ class TestSavePdf:
         mock_canvas_obj.save.assert_called_once_with()
 
     @pytest.mark.parametrize(
-        'reader_side_effects, expected',
+        'reader_side_effects, expected_errors',
         (
-            pytest.param([ImageError], (0, 1), id='1 invalid'),
-            pytest.param([ImageError, ImageError], (0, 2), id='2 invalid'),
-            pytest.param([OSError], (0, 1), id='dir'),
-            pytest.param([OSError], (0, 1), id='missing'),
+            pytest.param([ImageError], 1, id='1 invalid'),
+            pytest.param([ImageError, ImageError], 2, id='2 invalid'),
+            pytest.param([OSError], 1, id='dir'),
+            pytest.param([OSError], 1, id='missing'),
         )
     )
     def test_invalid_input_result(self, mock_reader, _, reader_side_effects,
-                                  expected):
+                                  expected_errors):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         fake_pdf_name = 'foo.pdf'
         mock_reader.configure_mock(side_effect=reader_side_effects)
-        result = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
+        num_ok, errors = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
                                                         **DEFAULTS)
-        assert result == expected
+        assert num_ok == 0
+        assert len(errors) == expected_errors
 
     @pytest.mark.parametrize(
         'reader_side_effects',

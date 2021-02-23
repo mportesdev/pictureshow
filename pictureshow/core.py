@@ -43,7 +43,7 @@ class PictureShow:
                 except StopIteration:
                     if num_ok != 0:
                         pdf_canvas.save()
-                    return num_ok, len(self.errors)
+                    return num_ok, self.errors
                 x, y, pic_width, pic_height = self._position_and_size(
                     picture.getSize(), (area.width, area.height), stretch_small
                 )
