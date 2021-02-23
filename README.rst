@@ -21,8 +21,8 @@ Usage:
 
 .. code::
 
-    usage: pictureshow [-h] [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT] [-s] [-f] [-q]
-                       [-v]
+    usage: pictureshow [-h] [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT] [-s] [-f]
+                       [-q | -v] [-V]
                        PIC [PIC ...] PDF
 
     positional arguments:
@@ -44,7 +44,8 @@ Usage:
       -f, --force-overwrite
                             save target file even if filename exists
       -q, --quiet           suppress printing to stdout
-      -v, --version         show program's version number and exit
+      -v, --verbose         provide details on files skipped due to error
+      -V, --version         show program's version number and exit
 
 Example 1
 ~~~~~~~~~
@@ -174,7 +175,7 @@ Footnotes
 .. |pylint| image:: https://github.com/mportesdev/pictureshow/workflows/pylint/badge.svg
     :target: https://github.com/mportesdev/pictureshow/actions
 .. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow.svg
-    :target: https://github.com/mportesdev/pictureshow/releases/tag/0.3.6
+    :target: https://github.com/mportesdev/pictureshow/releases/tag/0.3.7
 .. |license| image:: https://img.shields.io/github/license/mportesdev/pictureshow.svg
     :target: https://github.com/mportesdev/pictureshow/blob/master/LICENSE
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
