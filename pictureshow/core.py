@@ -148,13 +148,11 @@ class PictureShow:
                 yield DrawingArea(area_x, area_y, area_width, area_height)
 
 
-def pictures_to_pdf(*pic_files, pdf_file=None, page_size='A4',
-                    landscape=False, margin=72, layout=(1, 1),
-                    stretch_small=False, force_overwrite=False):
-    if pdf_file is None:
-        *pic_files, pdf_file = pic_files
-
+def pictures_to_pdf(*pic_files, pdf_file, page_size='A4', landscape=False,
+                    margin=72, layout=(1, 1), stretch_small=False,
+                    force_overwrite=False):
     pic_show = PictureShow(*pic_files)
+
     return pic_show.save_pdf(
         pdf_file, page_size, landscape, margin, layout, stretch_small,
         force_overwrite
