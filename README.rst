@@ -115,18 +115,12 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pics/mandelbrot.png', 'pics/mandelbrot.jpg', 'pictures.pdf')
-
-The example above will work as long as the output file is passed as the last positional argument. It is however recommended to always use a keyword argument:
-
-.. code-block:: python
-
-    from pictureshow import pictures_to_pdf
-
     list_of_pictures = ['pics/mandelbrot.png', 'pics/mandelbrot.jpg']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
-Another example, demonstrating all available keyword parameters:
+Please note that unlike the command line interface, ``pdf_file`` must be specified as a keyword argument:
+
+Another example, demonstrating all available keyword-only arguments:
 
 .. code-block:: python
 
@@ -150,19 +144,25 @@ Result:
 
 .. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_oldies.png
 
+Notable changes
+~~~~~~~~~~~~~~~
 
-*New in version 0.3.2*
+**version 0.3.2**
 
-The ``page_size`` and ``layout`` parameters can be specified either by a string (just like in the command line interface) or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
+The ``page_size`` and ``layout`` arguments can now be specified either by a string (just like in the command line interface) or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
 
-*New in version 0.3.6*
+**version 0.3.6**
 
-The ``pdf_file`` parameter can be specified either by a string (just like in the command line interface) or by a path-like object.
+The ``pdf_file`` argument can now be specified either by a string (just like in the command line interface) or by a path-like object.
+
+**version 0.4.0**
+
+``pdf_file`` is now a required keyword-only argument of the ``pictures_to_pdf`` function. All positional arguments are treated as paths to input picture files.
 
 Footnotes
 ~~~~~~~~~
 
-.. [#] Note that glob patterns are not expanded by the Windows command line shell.
+.. [#] Please note that glob patterns are not expanded by the Windows command line shell.
 .. [#] Available page sizes are:
     A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10,
     B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10,
@@ -175,7 +175,7 @@ Footnotes
 .. |pylint| image:: https://github.com/mportesdev/pictureshow/workflows/pylint/badge.svg
     :target: https://github.com/mportesdev/pictureshow/actions
 .. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow.svg
-    :target: https://github.com/mportesdev/pictureshow/releases/tag/0.3.7
+    :target: https://github.com/mportesdev/pictureshow/releases/tag/0.4.0
 .. |license| image:: https://img.shields.io/github/license/mportesdev/pictureshow.svg
     :target: https://github.com/mportesdev/pictureshow/blob/master/LICENSE
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
