@@ -37,9 +37,9 @@ class TestPictureShowSavePdf:
 
         mock_path_class.assert_called_once_with(fake_pdf_name)
         mock_path_class().exists.assert_called_once_with()
-        mock_save_pdf.assert_called_once_with(
-            fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
-        )
+        mock_save_pdf.assert_called_once()
+        # test only the first positional arg
+        assert mock_save_pdf.call_args[0][0] == fake_pdf_name
 
     @patch('pictureshow.core.Path')
     def test_existing_target_file_raises_error(self, mock_path_class,
@@ -66,9 +66,9 @@ class TestPictureShowSavePdf:
 
         mock_path_class.assert_called_once_with(fake_pdf_name)
         mock_path_class().exists.assert_called_once_with()
-        mock_save_pdf.assert_called_once_with(
-            fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
-        )
+        mock_save_pdf.assert_called_once()
+        # test only the first positional arg
+        assert mock_save_pdf.call_args[0][0] == fake_pdf_name
 
     def test_target_path_as_pathlike(self, mock_save_pdf):
         """Call `save_pdf` with a Path object as target file,
@@ -77,9 +77,9 @@ class TestPictureShowSavePdf:
         fake_pdf_name = 'foo.pdf'
         PictureShow().save_pdf(Path(fake_pdf_name))
 
-        mock_save_pdf.assert_called_once_with(
-            fake_pdf_name, pytest.approx(A4), 72, (1, 1), False
-        )
+        mock_save_pdf.assert_called_once()
+        # test only the first positional arg
+        assert mock_save_pdf.call_args[0][0] == fake_pdf_name
 
 
 @patch('pictureshow.core.Canvas')
@@ -104,7 +104,7 @@ class TestSavePdf:
         fake_pdf_name = 'foo.pdf'
         mock_reader.configure_mock(side_effect=reader_side_effects)
         num_ok, errors = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
-                                                        **DEFAULTS)
+                                                                **DEFAULTS)
         assert num_ok == expected_ok
         assert len(errors) == expected_errors
 
@@ -151,7 +151,7 @@ class TestSavePdf:
         fake_pdf_name = 'foo.pdf'
         mock_reader.configure_mock(side_effect=reader_side_effects)
         num_ok, errors = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
-                                                        **DEFAULTS)
+                                                                **DEFAULTS)
         assert num_ok == 0
         assert len(errors) == expected_errors
 
