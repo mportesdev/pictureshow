@@ -80,7 +80,7 @@ Result:
 Example 3
 ~~~~~~~~~
 
-Select pictures using a glob pattern, set half-inch margin and layout with 1x3 pictures per page.
+Select pictures using a glob pattern, set half-inch margin and layout of 1x3 pictures per page.
 
 .. code::
 
@@ -118,7 +118,7 @@ Using the ``pictures_to_pdf`` shortcut function:
     list_of_pictures = ['pics/mandelbrot.png', 'pics/mandelbrot.jpg']
     pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
 
-Please note that unlike the command line interface, ``pdf_file`` must be specified as a keyword argument:
+Please note that unlike the command line interface, ``pdf_file`` must be specified as a keyword argument.
 
 Another example, demonstrating all available keyword-only arguments:
 
@@ -144,8 +144,8 @@ Result:
 
 .. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_oldies.png
 
-Notable changes
-~~~~~~~~~~~~~~~
+Changelog
+~~~~~~~~~
 
 **version 0.3.2**
 
