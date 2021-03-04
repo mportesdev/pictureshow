@@ -8,6 +8,13 @@ from reportlab.pdfgen.canvas import Canvas
 
 from pictureshow import PageSizeError, MarginError, LayoutError
 
+PAGE_SIZES = {
+    name: size
+    for name, size in pagesizes.__dict__.items()
+    # use isupper() to exclude deprecated names and function names
+    if name.isupper()
+}
+
 DrawingArea = namedtuple('DrawingArea', 'x y width height')
 
 
@@ -58,10 +65,12 @@ class PictureShow:
     def _validate_page_size(page_size, landscape):
         if isinstance(page_size, str):
             try:
-                # use upper() to exclude deprecated names and function names
-                page_size = getattr(pagesizes, page_size.upper())
-            except AttributeError as err:
-                raise PageSizeError(f'unknown page size: {page_size}') from err
+                page_size = PAGE_SIZES[page_size.upper()]
+            except KeyError as err:
+                raise PageSizeError(
+                    f'unknown page size {page_size!r},'
+                    f' please use one of: {", ".join(PAGE_SIZES)}'
+                ) from err
 
         page_size_error = PageSizeError('two positive numbers expected')
         try:

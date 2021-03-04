@@ -270,7 +270,8 @@ class TestValidatePageSize:
         )
     )
     def test_invalid_page_size_raises_error(self, page_size):
-        with pytest.raises(PageSizeError, match='two positive numbers expected'):
+        with pytest.raises(PageSizeError,
+                           match='two positive numbers expected'):
             PictureShow()._validate_page_size(page_size, landscape=False)
 
     @pytest.mark.parametrize(
@@ -283,7 +284,9 @@ class TestValidatePageSize:
         )
     )
     def test_invalid_page_size_name_raises_error(self, page_size):
-        with pytest.raises(PageSizeError, match='unknown page size: .+'):
+        with pytest.raises(PageSizeError,
+                           match='unknown page size .+,'
+                                 ' please use one of: A0, A1.+'):
             PictureShow()._validate_page_size(page_size, landscape=False)
 
 
