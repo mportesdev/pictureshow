@@ -311,16 +311,15 @@ class TestValidateLayout:
     """Test core.PictureShow._validate_layout"""
 
     @pytest.mark.parametrize(
-        'layout, expected',
+        'layout',
         (
-            pytest.param((1, 1), (1, 1), id='(1, 1)'),
-            pytest.param((4, 1), (4, 1), id='(4, 1)'),
-            pytest.param((2, 3), (2, 3), id='(2, 3)'),
+            pytest.param((1, 1), id='(1, 1)'),
+            pytest.param((4, 1), id='(4, 1)'),
+            pytest.param((2, 3), id='(2, 3)'),
         )
     )
-    def test_layout_as_tuple(self, layout, expected):
-        result = PictureShow()._validate_layout(layout)
-        assert result == expected
+    def test_layout_as_tuple(self, layout):
+        assert PictureShow()._validate_layout(layout) == layout
 
     @pytest.mark.parametrize(
         'layout, expected',
