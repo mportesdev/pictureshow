@@ -104,14 +104,10 @@ class PictureShow:
         for pic_file in self.pic_files:
             try:
                 picture = ImageReader(pic_file)
-            except UnidentifiedImageError as err:
-                # file not recognized as picture
+            except (UnidentifiedImageError, OSError) as err:
+                # UnidentifiedImageError: file not recognized as picture
+                # OSError: file does not exist or is a dir
                 self.errors.append((pic_file, err))
-                continue
-            except OSError as err:
-                # file does not exist or is a dir
-                self.errors.append((pic_file, err))
-                continue
             else:
                 yield picture
 
