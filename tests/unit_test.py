@@ -339,7 +339,10 @@ class TestValidateLayout:
         (
             pytest.param('1x1', (1, 1), id='1x1'),
             pytest.param('010x005', (10, 5), id='010x005'),
-            pytest.param(' 1 x 1 ', (1, 1), id=' 1 x 1 '),
+            pytest.param(' 3 x 1 ', (3, 1), id=' 3 x 1 '),
+            pytest.param('1,1', (1, 1), id='1,1'),
+            pytest.param('02,03', (2, 3), id='02,03'),
+            pytest.param(' 2 , 2 ', (2, 2), id=' 2 , 2 '),
         )
     )
     def test_layout_as_str(self, layout, expected):

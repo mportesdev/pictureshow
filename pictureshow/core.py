@@ -1,5 +1,6 @@
 from collections import namedtuple
 from pathlib import Path
+import re
 
 from PIL import UnidentifiedImageError
 from reportlab.lib import pagesizes
@@ -14,6 +15,8 @@ PAGE_SIZES = {
     # use isupper() to exclude deprecated names and function names
     if name.isupper()
 }
+
+DELIMITER = re.compile('[x,]')
 
 DrawingArea = namedtuple('DrawingArea', 'x y width height')
 
@@ -89,7 +92,7 @@ class PictureShow:
         layout_error = LayoutError('two positive integers expected')
         try:
             if isinstance(layout, str):
-                layout = tuple(int(s) for s in layout.split('x'))
+                layout = tuple(int(s) for s in DELIMITER.split(layout))
             columns, rows = layout
             if not (columns > 0 and isinstance(columns, int)
                     and rows > 0 and isinstance(rows, int)):
