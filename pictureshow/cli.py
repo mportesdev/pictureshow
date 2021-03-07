@@ -14,9 +14,10 @@ def get_args(parser):
                         help='force landscape orientation of page')
     parser.add_argument('-m', '--margin', type=float, default=72,
                         help='set width of empty space around pictures;'
-                             ' default is 72 points (1 inch)')
+                             ' default is 72 (72 points = 1 inch)')
     parser.add_argument('-l', '--layout', default='1x1',
-                        help='specify grid layout of pictures on page; default is 1x1')
+                        help='specify grid layout of pictures on page,'
+                             'e.g. 2x3 or 2,3; default is 1x1')
     parser.add_argument('-s', '--stretch-small', action='store_true',
                         help='scale small pictures up to fit drawing area')
     parser.add_argument('-f', '--force-overwrite', action='store_true',
