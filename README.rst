@@ -174,9 +174,9 @@ Footnotes
     :target: https://github.com/mportesdev/pictureshow/actions
 .. |pylint| image:: https://github.com/mportesdev/pictureshow/workflows/pylint/badge.svg
     :target: https://github.com/mportesdev/pictureshow/actions
-.. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow.svg
-    :target: https://github.com/mportesdev/pictureshow/releases/tag/0.4.0
-.. |license| image:: https://img.shields.io/github/license/mportesdev/pictureshow.svg
+.. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow
+    :target: https://github.com/mportesdev/pictureshow/releases/latest
+.. |license| image:: https://img.shields.io/github/license/mportesdev/pictureshow
     :target: https://github.com/mportesdev/pictureshow/blob/master/LICENSE
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
     :target: https://pypi.org/project/pictureshow
