@@ -57,10 +57,6 @@ Save a single picture to PDF.
     $ pictureshow pics/mandelbrot.png mandelbrot.pdf
     Saved 1 picture to '/.../mandelbrot.pdf'
 
-Result:
-
-.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_mandelbrot.png
-
 
 Example 2
 ~~~~~~~~~
@@ -87,10 +83,6 @@ Select pictures using a glob pattern, set half-inch margin and layout of 1x3 pic
     $ pictureshow --margin=36 --layout=1x3 pics/*alpha.png alpha_pngs.pdf
     Saved 6 pictures to '/.../alpha_pngs.pdf'
 
-Result:
-
-.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_alpha.png
-
 
 As a Python library
 -------------------
@@ -103,10 +95,6 @@ Using the ``PictureShow`` class:
 
     pic_show = PictureShow('pics/mandelbrot.png', 'pics/mandelbrot.jpg')
     pic_show.save_pdf('pictures.pdf')
-
-Result:
-
-.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_pictures.png
 
 
 Using the ``pictures_to_pdf`` shortcut function:
@@ -140,9 +128,6 @@ Another example, demonstrating all available keyword-only arguments:
         force_overwrite=True
     )
 
-Result:
-
-.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_oldies.png
 
 Changelog
 ~~~~~~~~~
