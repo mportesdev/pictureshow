@@ -1,10 +1,10 @@
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import create_autospec
 
 import pytest
 from PIL import UnidentifiedImageError as ImageError
 
-from pictureshow.core import PictureShow
+from pictureshow.core import PictureShow, ImageReader
 from pictureshow.exceptions import PageSizeError, MarginError, LayoutError
 
 A4_WIDTH = 72 * 210 / 25.4
@@ -20,7 +20,9 @@ DEFAULTS = {
 
 
 def fake_pic():
-    return Mock(**{'getSize.return_value': (640, 400)})
+    mock = create_autospec(ImageReader, instance=True)
+    mock.getSize.return_value = (640, 400)
+    return mock
 
 
 class TestPictureShowSavePdf:
