@@ -50,6 +50,7 @@ def report_results(num_ok, errors, target_path, verbose=False):
 
 
 def _number(number, noun):
+    """Return a repr of amount in correct grammatical number."""
     suffix = 's' if number > 1 else ''
     return f'{number} {noun}{suffix}'
 

@@ -21,6 +21,7 @@ DEFAULTS = {
 
 
 def picture():
+    """Return a mock to replace ImageReader objects in tests."""
     image_reader = create_autospec(ImageReader, instance=True)
     image_reader.getSize.return_value = (640, 400)
     return image_reader
