@@ -29,26 +29,24 @@ class TestPictureShowSavePdf:
     """Test core.PictureShow.save_pdf"""
 
     def test_nonexistent_target_file(self, mocker):
-        Path = mocker.patch(
-            'pictureshow.core.Path',
-            **{'return_value.exists.return_value': False}
-        )
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf')
+        Path = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path.return_value.exists.return_value = False
+        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
+                                 autospec=True)
         fake_pdf_name = 'foo.pdf'
         PictureShow().save_pdf(fake_pdf_name)
 
         Path.assert_called_once_with(fake_pdf_name)
         Path().exists.assert_called_once_with()
         _save_pdf.assert_called_once()
-        # test only the first positional arg
-        assert _save_pdf.call_args[0][0] == fake_pdf_name
+        # test only the second positional arg (first after self)
+        assert _save_pdf.call_args[0][1] == fake_pdf_name
 
     def test_existing_target_file_raises_error(self, mocker):
-        Path = mocker.patch(
-            'pictureshow.core.Path',
-            **{'return_value.exists.return_value': True}
-        )
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf')
+        Path = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path.return_value.exists.return_value = True
+        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
+                                 autospec=True)
         fake_pdf_name = 'foo.pdf'
         with pytest.raises(FileExistsError, match="file '.*' exists"):
             PictureShow().save_pdf(fake_pdf_name)
@@ -58,35 +56,33 @@ class TestPictureShowSavePdf:
         _save_pdf.assert_not_called()
 
     def test_force_overwrite_existing_file(self, mocker):
-        Path = mocker.patch(
-            'pictureshow.core.Path',
-            **{'return_value.exists.return_value': True}
-        )
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf')
+        Path = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path.return_value.exists.return_value = True
+        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
+                                 autospec=True)
         fake_pdf_name = 'foo.pdf'
         PictureShow().save_pdf(fake_pdf_name, force_overwrite=True)
 
         Path.assert_called_once_with(fake_pdf_name)
         Path().exists.assert_called_once_with()
         _save_pdf.assert_called_once()
-        # test only the first positional arg
-        assert _save_pdf.call_args[0][0] == fake_pdf_name
+        # test only the second positional arg (first after self)
+        assert _save_pdf.call_args[0][1] == fake_pdf_name
 
     def test_target_path_as_pathlike(self, mocker):
         """Call `save_pdf` with a Path object as target file,
         assert that `_save_pdf` was called with a str.
         """
-        mocker.patch(
-            'pictureshow.core.Path',
-            **{'return_value.exists.return_value': False}
-        )
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf')
+        Path_mock = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path_mock.return_value.exists.return_value = False
+        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
+                                 autospec=True)
         fake_pdf_name = 'foo.pdf'
         PictureShow().save_pdf(Path(fake_pdf_name))
 
         _save_pdf.assert_called_once()
-        # test only the first positional arg
-        assert _save_pdf.call_args[0][0] == fake_pdf_name
+        # test only the second positional arg (first after self)
+        assert _save_pdf.call_args[0][1] == fake_pdf_name
 
 
 class TestSavePdf:
@@ -107,11 +103,9 @@ class TestSavePdf:
                                 expected_ok, expected_errors):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         fake_pdf_name = 'foo.pdf'
-        mocker.patch(
-            'pictureshow.core.ImageReader',
-            side_effect=reader_side_effects
-        )
-        mocker.patch('pictureshow.core.Canvas')
+        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+                     side_effect=reader_side_effects)
+        mocker.patch('pictureshow.core.Canvas', autospec=True)
         num_ok, errors = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
                                                                 **DEFAULTS)
         assert num_ok == expected_ok
@@ -131,17 +125,15 @@ class TestSavePdf:
     def test_valid_input_calls(self, mocker, reader_side_effects, num_valid):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         fake_pdf_name = 'foo.pdf'
-        mocker.patch(
-            'pictureshow.core.ImageReader',
-            side_effect=reader_side_effects
-        )
-        Canvas = mocker.patch('pictureshow.core.Canvas')
+        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+                     side_effect=reader_side_effects)
+        Canvas = mocker.patch('pictureshow.core.Canvas', autospec=True)
         PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name, **DEFAULTS)
 
         Canvas.assert_called_once_with(fake_pdf_name, pagesize=A4)
 
         # trace method calls of mocked Canvas object
-        canvas = Canvas()
+        canvas = Canvas(fake_pdf_name)
         canvas.drawImage.assert_called()
         assert canvas.drawImage.call_count == num_valid
         canvas.showPage.assert_called_with()
@@ -161,11 +153,9 @@ class TestSavePdf:
                                   expected_errors):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         fake_pdf_name = 'foo.pdf'
-        mocker.patch(
-            'pictureshow.core.ImageReader',
-            side_effect=reader_side_effects
-        )
-        mocker.patch('pictureshow.core.Canvas')
+        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+                     side_effect=reader_side_effects)
+        mocker.patch('pictureshow.core.Canvas', autospec=True)
         num_ok, errors = PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name,
                                                                 **DEFAULTS)
         assert num_ok == 0
@@ -183,17 +173,15 @@ class TestSavePdf:
     def test_invalid_input_calls(self, mocker, reader_side_effects):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         fake_pdf_name = 'foo.pdf'
-        mocker.patch(
-            'pictureshow.core.ImageReader',
-            side_effect=reader_side_effects
-        )
-        Canvas = mocker.patch('pictureshow.core.Canvas')
+        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+                     side_effect=reader_side_effects)
+        Canvas = mocker.patch('pictureshow.core.Canvas', autospec=True)
         PictureShow(*fake_pic_files)._save_pdf(fake_pdf_name, **DEFAULTS)
 
         Canvas.assert_called_once_with(fake_pdf_name, pagesize=A4)
 
         # trace method calls of mocked Canvas object
-        canvas = Canvas()
+        canvas = Canvas(fake_pdf_name)
         canvas.drawImage.assert_not_called()
         canvas.showPage.assert_not_called()
         canvas.save.assert_not_called()
@@ -398,10 +386,9 @@ class TestValidPictures:
     def test_all_valid_pictures(self, mocker, reader_side_effects):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*fake_pic_files)
-        image_reader = mocker.patch(
-            'pictureshow.core.ImageReader',
-            side_effect=reader_side_effects
-        )
+        image_reader = mocker.patch('pictureshow.core.ImageReader',
+                                    autospec=True,
+                                    side_effect=reader_side_effects)
         result = list(pic_show._valid_pictures())
 
         image_reader.assert_called_with('foo.png')
@@ -423,10 +410,9 @@ class TestValidPictures:
                                         expected):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*fake_pic_files)
-        image_reader = mocker.patch(
-            'pictureshow.core.ImageReader',
-            side_effect=reader_side_effects
-        )
+        image_reader = mocker.patch('pictureshow.core.ImageReader',
+                                    autospec=True,
+                                    side_effect=reader_side_effects)
 
         result = list(pic_show._valid_pictures())
         image_reader.assert_called_with('foo.png')
@@ -447,10 +433,9 @@ class TestValidPictures:
     def test_all_invalid_pictures(self, mocker, reader_side_effects):
         fake_pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*fake_pic_files)
-        image_reader = mocker.patch(
-            'pictureshow.core.ImageReader',
-            side_effect=reader_side_effects
-        )
+        image_reader = mocker.patch('pictureshow.core.ImageReader',
+                                    autospec=True,
+                                    side_effect=reader_side_effects)
 
         result = list(pic_show._valid_pictures())
         image_reader.assert_called_with('foo.png')
