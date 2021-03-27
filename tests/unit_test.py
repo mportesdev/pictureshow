@@ -4,6 +4,7 @@ from unittest.mock import create_autospec
 import pytest
 from PIL import UnidentifiedImageError as ImageError
 
+from pictureshow.cli import _number
 from pictureshow.core import PictureShow, ImageReader
 from pictureshow.exceptions import PageSizeError, MarginError, LayoutError
 
@@ -677,3 +678,21 @@ class TestAreas:
     def test_high_margin_raises_error(self, layout, page_size, margin):
         with pytest.raises(MarginError, match='margin value too high: .+'):
             list(PictureShow()._areas(layout, page_size, margin))
+
+
+@pytest.mark.current
+@pytest.mark.parametrize(
+    'number, noun, expected',
+    (
+            pytest.param(1, 'file', '1 file', id='1 file'),
+            pytest.param(2, 'file', '2 files', id='2 files'),
+            pytest.param(1, 'picture', '1 picture', id='1 picture'),
+            pytest.param(3, 'picture', '3 pictures', id='3 pictures'),
+            pytest.param(1, 'page', '1 page', id='1 page'),
+            pytest.param(4, 'page', '4 pages', id='4 pages'),
+            pytest.param(1, 'error', '1 error', id='1 error'),
+            pytest.param(5, 'error', '5 errors', id='5 errors'),
+    )
+)
+def test_number(number, noun, expected):
+    assert _number(number, noun) == expected

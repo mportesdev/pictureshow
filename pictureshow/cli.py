@@ -38,17 +38,20 @@ def report_results(num_ok, errors, target_path, verbose=False):
     unique_errors = dict(errors)
     num_errors = len(unique_errors)
     if num_errors != 0:
-        print(f'{num_errors} file{"s" if num_errors > 1 else ""} skipped'
-              ' due to error.')
+        print(f'{_number(num_errors, "file")} skipped due to error.')
         if verbose:
             for pic_file, error in unique_errors.items():
                 print(f'{pic_file}:\n{error.__class__.__name__}: {error}\n')
 
     if num_ok != 0:
-        print(f'Saved {num_ok} picture{"s" if num_ok > 1 else ""}'
-              f' to {target_path!r}')
+        print(f'Saved {_number(num_ok, "picture")} to {target_path!r}')
     else:
         print('No PDF file generated.')
+
+
+def _number(number, noun):
+    suffix = 's' if number > 1 else ''
+    return f'{number} {noun}{suffix}'
 
 
 def main():
