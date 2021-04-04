@@ -1,0 +1,8 @@
+reportlab
+pytest
+pytest-mock
+pytest-cov
+mypy
+pylint
+twine
+wheel

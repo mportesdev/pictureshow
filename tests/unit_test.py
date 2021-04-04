@@ -681,7 +681,6 @@ class TestAreas:
             list(PictureShow()._areas(layout, page_size, margin))
 
 
-@pytest.mark.current
 @pytest.mark.parametrize(
     'number, noun, expected',
     (
