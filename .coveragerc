@@ -1,0 +1,6 @@
+[run]
+source = pictureshow
+branch = True
+
+[report]
+show_missing = True
