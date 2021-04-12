@@ -65,12 +65,8 @@ Select pictures using a glob pattern [#]_, set page to landscape Letter-sized [#
 
 .. code::
 
-    $ pictureshow pics/plots/gauss* gauss.pdf -LpLETTER
+    $ pictureshow pics/plots/gauss* gauss.pdf --landscape --page-size=LETTER
     Saved 2 pictures to '/.../gauss.pdf'
-
-Result:
-
-.. image:: https://raw.githubusercontent.com/mportesdev/pictureshow/master/pics/sample_pdf_gauss.png
 
 
 Example 3
@@ -80,8 +76,8 @@ Select pictures using a glob pattern, set half-inch margin and layout of 1x3 pic
 
 .. code::
 
-    $ pictureshow --margin=36 --layout=1x3 pics/*alpha.png alpha_pngs.pdf
-    Saved 6 pictures to '/.../alpha_pngs.pdf'
+    $ pictureshow -m36 -l1x3 pics/blender/* 3d_pics.pdf
+    Saved 4 pictures to '/.../3d_pics.pdf'
 
 
 As a Python library
@@ -116,10 +112,10 @@ Another example, demonstrating all available keyword-only arguments:
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = sorted(Path.cwd().glob('pics/oldies/*/*'))
+    list_of_pictures = sorted(Path.cwd().glob('pics/blender/*'))
     pictures_to_pdf(
         *list_of_pictures,
-        pdf_file='oldies.pdf',
+        pdf_file='3d_pics.pdf',
         page_size='A5',
         landscape=True,
         margin=18,
@@ -128,21 +124,6 @@ Another example, demonstrating all available keyword-only arguments:
         force_overwrite=True
     )
 
-
-Changelog
-~~~~~~~~~
-
-**version 0.3.2**
-
-The ``page_size`` and ``layout`` arguments can now be specified either by a string (just like in the command line interface) or by a sequence of two numbers. For example, ``page_size='LETTER', layout='2x3'`` is equivalent to ``page_size=(72 * 8.5, 72 * 11), layout=(2, 3)``.
-
-**version 0.3.6**
-
-The ``pdf_file`` argument can now be specified either by a string (just like in the command line interface) or by a path-like object.
-
-**version 0.4.0**
-
-``pdf_file`` is now a required keyword-only argument of the ``pictures_to_pdf`` function. All positional arguments are treated as paths to input picture files.
 
 Footnotes
 ~~~~~~~~~
