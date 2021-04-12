@@ -61,7 +61,7 @@ class TestOutput:
         assert proc.returncode == 0
         assert f'Saved {num_pics} to ' in std_out
         assert 'skipped' not in std_out
-        assert 'generated' not in std_out
+        assert 'Nothing' not in std_out
 
     @pytest.mark.parametrize(
         'pic_files, num_valid, num_invalid',
@@ -81,7 +81,7 @@ class TestOutput:
         assert proc.returncode == 0
         assert f'{num_invalid} skipped due to error.' in std_out
         assert f'Saved {num_valid} to ' in std_out
-        assert 'generated' not in std_out
+        assert 'Nothing' not in std_out
 
     @pytest.mark.parametrize(
         'pic_files, num_invalid',
@@ -100,7 +100,7 @@ class TestOutput:
         assert proc.returncode == 0
         assert f'{num_invalid} skipped due to error.' in std_out
         assert 'Saved' not in std_out
-        assert 'No PDF file generated.' in std_out
+        assert 'Nothing to save.' in std_out
 
 
 def assert_pdf(path, num_pages):

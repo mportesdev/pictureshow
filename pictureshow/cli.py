@@ -46,7 +46,7 @@ def report_results(num_ok, errors, target_path, verbose=False):
     if num_ok != 0:
         print(f'Saved {_number(num_ok, "picture")} to {target_path!r}')
     else:
-        print('No PDF file generated.')
+        print('Nothing to save.')
 
 
 def _number(number, noun):
