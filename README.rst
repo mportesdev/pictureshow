@@ -1,4 +1,4 @@
-|pytest| |release| |license| |pyversions| |format| |downloads|
+|pytest| |codecov| |release| |license| |pyversions| |format| |downloads|
 
 Save pictures to PDF from the command line or from your Python programs.
 
@@ -157,6 +157,8 @@ Footnotes
 
 .. |pytest| image:: https://github.com/mportesdev/pictureshow/workflows/pytest/badge.svg
     :target: https://github.com/mportesdev/pictureshow/actions
+.. |codecov| image:: https://codecov.io/gh/mportesdev/pictureshow/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/mportesdev/pictureshow
 .. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow
     :target: https://github.com/mportesdev/pictureshow/releases/latest
 .. |license| image:: https://img.shields.io/github/license/mportesdev/pictureshow
