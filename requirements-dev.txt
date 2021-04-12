@@ -2,6 +2,7 @@ reportlab
 pytest
 pytest-mock
 pytest-cov
+PyPDF2
 mypy
 pylint
 twine
