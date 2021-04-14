@@ -128,7 +128,10 @@ class TestOutput:
         )
     )
     def test_multiple_pictures_layout(self, app_exec, temp_pdf, layout):
-        command = f'{app_exec} -l{layout} {" ".join(PICS_2_GOOD*3)} {temp_pdf}'
+        # 6 pictures
+        pic_files = PICS_2_GOOD * 3
+
+        command = f'{app_exec} -l{layout} {" ".join(pic_files)} {temp_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
@@ -165,6 +168,52 @@ class TestOutput:
 
         assert proc.returncode == 0
         assert 'Saved 1 picture to ' in std_out
+
+    def test_quiet_does_not_print_to_stdout(self, app_exec, temp_pdf):
+        command = f'{app_exec} -q {PIC_FILE} {temp_pdf}'
+        proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        std_out = proc.stdout.decode()
+
+        assert proc.returncode == 0
+        assert std_out == ''
+
+    def test_quiet_does_not_suppress_stderr(self, app_exec, temp_existing):
+        command = f'{app_exec} -q {PIC_FILE} {temp_existing}'
+        proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        std_err = proc.stderr.decode()
+
+        assert proc.returncode == 2
+        assert 'FileExistsError:' in std_err
+
+    def test_verbose(self, app_exec, temp_pdf):
+        command = f'{app_exec} -v {" ".join(PICS_1_GOOD_1_BAD)} {temp_pdf}'
+        proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        std_out = proc.stdout.decode()
+
+        assert proc.returncode == 0
+        assert '1 file skipped due to error.' in std_out
+        assert 'UnidentifiedImageError' in std_out
+
+    def test_verbose_shows_only_unique_files(self, app_exec, temp_pdf):
+        # duplicate items
+        pic_files = PICS_2_BAD * 2
+
+        command = f'{app_exec} -v {" ".join(pic_files)} {temp_pdf}'
+        proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        std_out = proc.stdout.decode()
+
+        assert proc.returncode == 0
+        # only unique items reported
+        assert '2 files skipped due to error.' in std_out
+
+    def test_quiet_and_verbose_are_mutually_exclusive(self, app_exec, temp_pdf):
+        command = f'{app_exec} -qv {PIC_FILE} {temp_pdf}'
+        proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        std_err = proc.stderr.decode()
+
+        assert proc.returncode == 2
+        assert 'error: argument -v' in std_err
+        assert 'not allowed with argument -q' in std_err
 
 
 def assert_pdf(path, num_pages):
@@ -233,7 +282,10 @@ class TestGeneratedFile:
     )
     def test_multiple_pictures_layout(self, app_exec, temp_pdf, layout,
                                       num_pages):
-        command = f'{app_exec} -l{layout} {" ".join(PICS_2_GOOD*3)} {temp_pdf}'
+        # 6 pictures
+        pic_files = PICS_2_GOOD * 3
+
+        command = f'{app_exec} -l{layout} {" ".join(pic_files)} {temp_pdf}'
         subprocess.run(command, shell=True, stdout=subprocess.PIPE)
 
         assert_pdf(temp_pdf, num_pages=num_pages)
@@ -265,6 +317,6 @@ class TestGeneratedFile:
         command = f'{app_exec} -f {PIC_FILE} {temp_existing}'
         subprocess.run(command, shell=True, stdout=subprocess.PIPE)
 
-        # target file has been overwritten
-        assert temp_existing.exists()
+        # target file has been overwritten by PDF content
+        assert_pdf(temp_existing, num_pages=1)
         assert temp_existing.read_bytes() != file_contents
