@@ -27,66 +27,6 @@ def picture():
     return image_reader
 
 
-class TestPictureShowSavePdf:
-    """Test core.PictureShow.save_pdf"""
-
-    def test_nonexistent_target_file(self, mocker):
-        Path = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path.return_value.exists.return_value = False
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
-                                 autospec=True)
-        fake_pdf_name = 'foo.pdf'
-        PictureShow().save_pdf(fake_pdf_name)
-
-        Path.assert_called_once_with(fake_pdf_name)
-        Path().exists.assert_called_once_with()
-        _save_pdf.assert_called_once()
-        # test only the second positional arg (first after self)
-        assert _save_pdf.call_args[0][1] == fake_pdf_name
-
-    def test_existing_target_file_raises_error(self, mocker):
-        Path = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path.return_value.exists.return_value = True
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
-                                 autospec=True)
-        fake_pdf_name = 'foo.pdf'
-        with pytest.raises(FileExistsError, match="file '.*' exists"):
-            PictureShow().save_pdf(fake_pdf_name)
-
-        Path.assert_called_once_with(fake_pdf_name)
-        Path().exists.assert_called_once_with()
-        _save_pdf.assert_not_called()
-
-    def test_force_overwrite_existing_file(self, mocker):
-        Path = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path.return_value.exists.return_value = True
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
-                                 autospec=True)
-        fake_pdf_name = 'foo.pdf'
-        PictureShow().save_pdf(fake_pdf_name, force_overwrite=True)
-
-        Path.assert_called_once_with(fake_pdf_name)
-        Path().exists.assert_called_once_with()
-        _save_pdf.assert_called_once()
-        # test only the second positional arg (first after self)
-        assert _save_pdf.call_args[0][1] == fake_pdf_name
-
-    def test_target_path_as_pathlike(self, mocker):
-        """Call `save_pdf` with a Path object as target file,
-        assert that `_save_pdf` was called with a str.
-        """
-        Path_mock = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path_mock.return_value.exists.return_value = False
-        _save_pdf = mocker.patch('pictureshow.core.PictureShow._save_pdf',
-                                 autospec=True)
-        fake_pdf_name = 'foo.pdf'
-        PictureShow().save_pdf(Path(fake_pdf_name))
-
-        _save_pdf.assert_called_once()
-        # test only the second positional arg (first after self)
-        assert _save_pdf.call_args[0][1] == fake_pdf_name
-
-
 class TestSavePdf:
     """Test core.PictureShow._save_pdf"""
 
@@ -187,6 +127,45 @@ class TestSavePdf:
         canvas.drawImage.assert_not_called()
         canvas.showPage.assert_not_called()
         canvas.save.assert_not_called()
+
+
+class TestValidateTargetPath:
+    """Test core.PictureShow._validate_target_path"""
+
+    def test_nonexistent_target_file(self, mocker):
+        Path = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path.return_value.exists.return_value = False
+        pdf_file = 'foo.pdf'
+
+        result = PictureShow()._validate_target_path(pdf_file,
+                                                     force_overwrite=False)
+        assert result == pdf_file
+
+    def test_existing_target_file_raises_error(self, mocker):
+        Path = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path.return_value.exists.return_value = True
+
+        with pytest.raises(FileExistsError, match="file '.*' exists"):
+            PictureShow()._validate_target_path('foo.pdf',
+                                                force_overwrite=False)
+
+    def test_force_overwrite_existing_file(self, mocker):
+        Path = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path.return_value.exists.return_value = True
+        pdf_file = 'foo.pdf'
+
+        result = PictureShow()._validate_target_path(pdf_file,
+                                                     force_overwrite=True)
+        assert result == pdf_file
+
+    def test_target_path_as_pathlike(self, mocker):
+        Path_mock = mocker.patch('pictureshow.core.Path', autospec=True)
+        Path_mock.return_value.exists.return_value = False
+        pdf_file = 'foo.pdf'
+
+        result = PictureShow()._validate_target_path(Path(pdf_file),
+                                                     force_overwrite=False)
+        assert result == pdf_file
 
 
 class TestValidatePageSize:

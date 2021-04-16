@@ -28,12 +28,7 @@ class PictureShow:
 
     def save_pdf(self, pdf_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, force_overwrite=False):
-        target_str = str(pdf_file)
-        target_path = Path(pdf_file)
-
-        if target_path.exists() and not force_overwrite:
-            raise FileExistsError(f'file {target_str!r} exists')
-
+        target_str = self._validate_target_path(pdf_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
@@ -63,6 +58,16 @@ class PictureShow:
                 )
                 num_ok += 1
             pdf_canvas.showPage()
+
+    @staticmethod
+    def _validate_target_path(file_path, force_overwrite):
+        target_str = str(file_path)
+        target_path = Path(file_path)
+
+        if target_path.exists() and not force_overwrite:
+            raise FileExistsError(f'file {target_str!r} exists')
+
+        return target_str
 
     @staticmethod
     def _validate_page_size(page_size, landscape):
