@@ -4,6 +4,8 @@ import subprocess
 from PyPDF2 import PdfFileReader
 import pytest
 
+from pictureshow.cli import _number
+
 A4_WIDTH = 72 * 210 / 25.4
 
 PIC_FILE = 'pics/mandelbrot.png'
@@ -42,6 +44,19 @@ def temp_existing():
     # teardown
     if pdf_path.exists():
         pdf_path.unlink()
+
+
+@pytest.mark.parametrize(
+    'number, noun, expected',
+    (
+            pytest.param(1, 'file', '1 file', id='1 file'),
+            pytest.param(2, 'file', '2 files', id='2 files'),
+            pytest.param(1, 'picture', '1 picture', id='3 pictures'),
+            pytest.param(3, 'page', '3 pages', id='3 pages'),
+    )
+)
+def test_number(number, noun, expected):
+    assert _number(number, noun) == expected
 
 
 class TestCallsToCore:
