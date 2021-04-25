@@ -42,10 +42,11 @@ class TestSavePdf:
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.core.Canvas', autospec=True)
-        num_ok, errors = PictureShow(*pic_files)._save_pdf(pdf_file, **DEFAULTS)
+        result = PictureShow(*pic_files)._save_pdf(pdf_file, **DEFAULTS)
 
-        assert num_ok == expected_ok
-        assert len(errors) == expected_errors
+        assert result.num_ok == expected_ok
+        assert len(result.errors) == expected_errors
+        assert result.num_pages == expected_ok
 
     @pytest.mark.parametrize(
         'reader_side_effects, expected_errors',
@@ -61,10 +62,32 @@ class TestSavePdf:
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.core.Canvas', autospec=True)
-        num_ok, errors = PictureShow(*pic_files)._save_pdf(pdf_file, **DEFAULTS)
+        result = PictureShow(*pic_files)._save_pdf(pdf_file, **DEFAULTS)
 
-        assert num_ok == 0
-        assert len(errors) == expected_errors
+        assert result.num_ok == 0
+        assert len(result.errors) == expected_errors
+        assert result.num_pages == 0
+
+    @pytest.mark.parametrize(
+        'reader_side_effects, expected_ok, expected_pages',
+        (
+            pytest.param([picture(), picture()], 2, 1, id='2 valid'),
+            pytest.param([picture(), picture(), picture()], 3, 2, id='3 valid'),
+        )
+    )
+    def test_multipage_layout(self, mocker, reader_side_effects, expected_ok,
+                              expected_pages):
+        pic_files = ['foo.png'] * len(reader_side_effects)
+        pdf_file = 'foo.pdf'
+        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+                     side_effect=reader_side_effects)
+        mocker.patch('pictureshow.core.Canvas', autospec=True)
+        params = {**DEFAULTS, 'layout': (1, 2)}
+        result = PictureShow(*pic_files)._save_pdf(pdf_file, **params)
+
+        assert result.num_ok == expected_ok
+        assert len(result.errors) == 0
+        assert result.num_pages == expected_pages
 
 
 class TestValidateTargetPath:

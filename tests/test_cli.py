@@ -71,20 +71,21 @@ class TestOutput:
     pass
 
     @pytest.mark.parametrize(
-        'pic_files, num_pics',
+        'pic_files, num_pics, num_pages',
         (
-            pytest.param(PICS_1_GOOD, '1 picture', id='1 good'),
-            pytest.param(PICS_2_GOOD, '2 pictures', id='2 good'),
-            pytest.param(PICS_GLOB, '2 pictures', id='glob'),
+            pytest.param(PICS_1_GOOD, '1 picture', '1 page', id='1 good'),
+            pytest.param(PICS_2_GOOD, '2 pictures', '2 pages', id='2 good'),
+            pytest.param(PICS_GLOB, '2 pictures', '2 pages', id='glob'),
         )
     )
-    def test_valid_input(self, app_exec, temp_pdf, pic_files, num_pics):
+    def test_valid_input(self, app_exec, temp_pdf, pic_files, num_pics,
+                         num_pages):
         command = f'{app_exec} {" ".join(pic_files)} {temp_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
-        assert f'Saved {num_pics} to ' in std_out
+        assert f'Saved {num_pics} ({num_pages}) to ' in std_out
         assert 'skipped' not in std_out
         assert 'Nothing' not in std_out
 
@@ -95,7 +96,7 @@ class TestOutput:
 
         assert proc.returncode == 0
         assert '1 file skipped due to error.' in std_out
-        assert 'Saved 1 picture to ' in std_out
+        assert 'Saved 1 picture (1 page) to ' in std_out
         assert 'Nothing' not in std_out
 
     @pytest.mark.parametrize(
@@ -135,14 +136,15 @@ class TestOutput:
         assert 'error: MarginError: margin value too high: ' in std_err
 
     @pytest.mark.parametrize(
-        'layout',
+        'layout, num_pages',
         (
-            pytest.param('1x3', id='1x3'),
-            pytest.param('3,2', id='3,2'),
-            pytest.param('1,1', id='1,1'),
+            pytest.param('1x3', '2 pages', id='1x3'),
+            pytest.param('3,2', '1 page', id='3,2'),
+            pytest.param('1,1', '6 pages', id='1,1'),
         )
     )
-    def test_multiple_pictures_layout(self, app_exec, temp_pdf, layout):
+    def test_multiple_pictures_layout(self, app_exec, temp_pdf, layout,
+                                      num_pages):
         # 6 pictures
         pic_files = PICS_2_GOOD * 3
 
@@ -151,7 +153,7 @@ class TestOutput:
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
-        assert 'Saved 6 pictures to ' in std_out
+        assert f'Saved 6 pictures ({num_pages}) to ' in std_out
 
     @pytest.mark.parametrize(
         'layout',
@@ -182,7 +184,7 @@ class TestOutput:
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
-        assert 'Saved 1 picture to ' in std_out
+        assert 'Saved 1 picture (1 page) to ' in std_out
 
     def test_quiet_does_not_print_to_stdout(self, app_exec, temp_pdf):
         command = f'{app_exec} -q {PIC_FILE} {temp_pdf}'
