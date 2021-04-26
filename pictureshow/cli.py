@@ -34,8 +34,8 @@ def get_args(parser):
     return parser.parse_args()
 
 
-def report_results(num_ok, errors, target_path, verbose=False):
-    unique_errors = dict(errors)
+def report_results(result, target_path, verbose=False):
+    unique_errors = dict(result.errors)
     num_errors = len(unique_errors)
     if num_errors != 0:
         print(f'{_number(num_errors, "file")} skipped due to error.')
@@ -43,8 +43,9 @@ def report_results(num_ok, errors, target_path, verbose=False):
             for pic_file, error in unique_errors.items():
                 print(f'{pic_file}:\n{error.__class__.__name__}: {error}\n')
 
-    if num_ok != 0:
-        print(f'Saved {_number(num_ok, "picture")} to {target_path!r}')
+    if result.num_ok != 0:
+        print(f'Saved {_number(result.num_ok, "picture")}'
+              f' ({_number(result.num_pages, "page")}) to {target_path!r}')
     else:
         print('Nothing to save.')
 
@@ -68,7 +69,7 @@ def main():
     pdf_path = os.path.abspath(args.PDF)
 
     try:
-        num_ok, errors = pictureshow.pictures_to_pdf(
+        result = pictureshow.pictures_to_pdf(
             *picture_paths,
             pdf_file=pdf_path,
             page_size=args.page_size,
@@ -82,4 +83,4 @@ def main():
         parser.error(f'{err.__class__.__name__}: {err}')
     else:
         if not args.quiet:
-            report_results(num_ok, errors, pdf_path, args.verbose)
+            report_results(result, pdf_path, args.verbose)
