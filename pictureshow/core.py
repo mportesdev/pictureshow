@@ -20,6 +20,8 @@ DELIMITER = re.compile('[x,]')
 
 DrawingArea = namedtuple('DrawingArea', 'x y width height')
 
+Result = namedtuple('Result', 'num_ok errors num_pages')
+
 
 class PictureShow:
     def __init__(self, *pic_files):
@@ -40,15 +42,19 @@ class PictureShow:
         pdf_canvas = Canvas(pdf_file, pagesize=page_size)
         valid_pics = self._valid_pictures()
         num_ok = 0
+        num_pages = 0
         areas = tuple(self._areas(layout, page_size, margin))
         while True:
+            last_page_empty = True
             for area in areas:
                 try:
                     picture = next(valid_pics)
                 except StopIteration:
+                    if not last_page_empty:
+                        num_pages += 1
                     if num_ok != 0:
                         pdf_canvas.save()
-                    return num_ok, self.errors
+                    return Result(num_ok, self.errors, num_pages)
                 x, y, pic_width, pic_height = self._position_and_size(
                     picture.getSize(), (area.width, area.height), stretch_small
                 )
@@ -56,8 +62,10 @@ class PictureShow:
                     picture, area.x + x, area.y + y, pic_width, pic_height,
                     mask='auto'
                 )
+                last_page_empty = False
                 num_ok += 1
             pdf_canvas.showPage()
+            num_pages += 1
 
     @staticmethod
     def _validate_target_path(file_path, force_overwrite):
