@@ -55,7 +55,7 @@ Save a single picture to PDF.
 .. code::
 
     $ pictureshow pics/mandelbrot.png mandelbrot.pdf
-    Saved 1 picture to '/.../mandelbrot.pdf'
+    Saved 1 picture (1 page) to '/.../mandelbrot.pdf'
 
 
 Example 2
@@ -66,7 +66,7 @@ Select pictures using a glob pattern [#]_, set page to landscape Letter-sized [#
 .. code::
 
     $ pictureshow pics/plots/gauss* gauss.pdf --landscape --page-size=LETTER
-    Saved 2 pictures to '/.../gauss.pdf'
+    Saved 2 pictures (2 pages) to '/.../gauss.pdf'
 
 
 Example 3
@@ -77,7 +77,7 @@ Select pictures using a glob pattern, set half-inch margin and layout of 1x3 pic
 .. code::
 
     $ pictureshow -m36 -l1x3 pics/blender/* 3d_pics.pdf
-    Saved 4 pictures to '/.../3d_pics.pdf'
+    Saved 4 pictures (2 pages) to '/.../3d_pics.pdf'
 
 
 As a Python library
