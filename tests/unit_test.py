@@ -119,14 +119,14 @@ class TestValidateTargetPath:
                                                      force_overwrite=True)
         assert result == pdf_file
 
-    def test_target_path_as_pathlike(self, mocker):
+    def test_target_pathlike_converted_to_str(self, mocker):
         Path_mock = mocker.patch('pictureshow.core.Path', autospec=True)
         Path_mock.return_value.exists.return_value = False
-        pdf_file = 'foo.pdf'
+        pdf_file = Path('foo.pdf')
 
-        result = PictureShow()._validate_target_path(Path(pdf_file),
+        result = PictureShow()._validate_target_path(pdf_file,
                                                      force_overwrite=False)
-        assert result == pdf_file
+        assert result == str(pdf_file)
 
 
 class TestValidatePageSize:
