@@ -1,5 +1,4 @@
 import argparse
-import os
 
 import pictureshow
 
@@ -65,8 +64,8 @@ def main():
     parser.version = pictureshow.__version__
     args = get_args(parser)
 
-    picture_paths = [os.path.abspath(pic_file) for pic_file in args.PIC]
-    pdf_path = os.path.abspath(args.PDF)
+    picture_paths = args.PIC
+    pdf_path = args.PDF
 
     try:
         result = pictureshow.pictures_to_pdf(
