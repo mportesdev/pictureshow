@@ -9,8 +9,10 @@ from pictureshow.cli import _number
 A4_WIDTH = 72 * 210 / 25.4
 
 PIC_FILE = 'pics/mandelbrot.png'
+PIC_URL = 'https://avatars.githubusercontent.com/u/43098013'
 PICS_1_GOOD = (PIC_FILE,)
 PICS_2_GOOD = (PIC_FILE, 'pics/blender/chain_render.jpg')
+PICS_1_URL = (PIC_URL,)
 PICS_GLOB = ('pics/plots/gauss*',)
 PICS_1_GOOD_1_BAD = (PIC_FILE, 'pics/not_jpg.jpg')
 PICS_1_BAD = ('pics/not_jpg.jpg',)
@@ -68,7 +70,6 @@ class TestCallsToCore:
 
 class TestOutput:
     """Test stdout/stderr and return code of the command line app."""
-    pass
 
     @pytest.mark.parametrize(
         'pic_files, num_pics, num_pages',
@@ -76,6 +77,7 @@ class TestOutput:
             pytest.param(PICS_1_GOOD, '1 picture', '1 page', id='1 good'),
             pytest.param(PICS_2_GOOD, '2 pictures', '2 pages', id='2 good'),
             pytest.param(PICS_GLOB, '2 pictures', '2 pages', id='glob'),
+            pytest.param(PICS_1_URL, '1 picture', '1 page', id='1 good url'),
         )
     )
     def test_valid_input(self, app_exec, temp_pdf, pic_files, num_pics,
@@ -248,6 +250,7 @@ class TestGeneratedFile:
             pytest.param(PICS_1_GOOD, 1, id='1 good'),
             pytest.param(PICS_2_GOOD, 2, id='2 good'),
             pytest.param(PICS_GLOB, 2, id='glob'),
+            pytest.param(PICS_1_URL, 1, id='1 good url'),
         )
     )
     def test_valid_input(self, app_exec, temp_pdf, pic_files, num_pics):
