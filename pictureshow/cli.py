@@ -58,7 +58,7 @@ def _number(number, noun):
 def main():
     parser = argparse.ArgumentParser(
         prog='pictureshow',
-        description='Save pictures to PDF',
+        description='Save pictures to PDF.',
         epilog='https://pypi.org/project/pictureshow/'
     )
     parser.version = pictureshow.__version__

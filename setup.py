@@ -12,7 +12,7 @@ setup(
     version=pictureshow.__version__,
     author='Michal Porteš',
     author_email='michalportes1@gmail.com',
-    description='Save pictures to PDF',
+    description='Save pictures to PDF.',
     long_description=long_description,
     long_description_content_type='text/x-rst',
     url='https://github.com/mportesdev/pictureshow',

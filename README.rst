@@ -3,21 +3,24 @@
 Save pictures to PDF from the command line or from your Python programs.
 
 Requirements
-------------
+============
 
-Python 3.6 or higher is required. The only third-party dependency is `reportlab <https://pypi.org/project/reportlab/>`__.
+- Python 3.6 or higher
+- `Pillow <https://pypi.org/project/Pillow/>`__
+- `reportlab <https://pypi.org/project/reportlab/>`__
 
 Installation
-------------
+============
 
 .. code::
 
     pip install pictureshow
 
+Usage
+=====
+
 As a command line tool
 ----------------------
-
-Usage:
 
 .. code::
 
@@ -55,29 +58,29 @@ Save a single picture to PDF.
 .. code::
 
     $ pictureshow pics/mandelbrot.png mandelbrot.pdf
-    Saved 1 picture (1 page) to '/.../mandelbrot.pdf'
+    Saved 1 picture (1 page) to 'mandelbrot.pdf'
 
 
 Example 2
 ~~~~~~~~~
 
-Select pictures using a glob pattern [#]_, set page to landscape Letter-sized [#]_.
+Save pictures using a glob pattern [#]_, set page to landscape Letter-sized [#]_.
 
 .. code::
 
     $ pictureshow pics/plots/gauss* gauss.pdf --landscape --page-size=LETTER
-    Saved 2 pictures (2 pages) to '/.../gauss.pdf'
+    Saved 2 pictures (2 pages) to 'gauss.pdf'
 
 
 Example 3
 ~~~~~~~~~
 
-Select pictures using a glob pattern, set half-inch margin and layout of 1x3 pictures per page.
+Save pictures using a URL pattern, set layout of 1x2 pictures per page.
 
 .. code::
 
-    $ pictureshow -m36 -l1x3 pics/blender/* 3d_pics.pdf
-    Saved 4 pictures (2 pages) to '/.../3d_pics.pdf'
+    $ pictureshow -l1x2 https://wiki.openttd.org/uploads/en/Manual/Town-{2x2,3x3}.png towns.pdf
+    Saved 2 pictures (1 page) to 'towns.pdf'
 
 
 As a Python library
@@ -126,7 +129,7 @@ Another example, demonstrating all available keyword-only arguments:
 
 
 Footnotes
-~~~~~~~~~
+=========
 
 .. [#] Please note that glob patterns are not expanded by the Windows command line shell.
 .. [#] Available page sizes are:
