@@ -1,9 +1,4 @@
-Pillow
-reportlab
-pytest
-pytest-mock
-pytest-cov
-PyPDF2
+-r requirements-ci.txt
 mypy
 pylint
 twine
