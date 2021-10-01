@@ -27,6 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         echo "Activated venv: $VIRTUAL_ENV"
+        echo "Current directory: $(pwd)"
         pip install --upgrade pip setuptools wheel
         pip install -r requirements-ci.txt
 
@@ -40,9 +41,9 @@ jobs:
 
     - name: Run tests
       run: |
-        CODE_PATH="$(find -wholename *site-packages/pictureshow)"
+        CODE_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
         echo "Code path for coverage: $CODE_PATH"
         pytest --cov
-      
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
