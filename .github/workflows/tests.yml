@@ -1,4 +1,4 @@
-name: Tests
+name: Build & test (publish & release)
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  tests:
+  main:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -50,6 +50,7 @@ jobs:
       uses: codecov/codecov-action@v1
 
     - name: Publish and release
+      if: matrix.python-version == '3.9'
       run: |
         RELEASE_VERSION="$(git tag --contains HEAD)"
         [ -z $RELEASE_VERSION ] && exit || echo 'Current commit has a tag. Uploading wheel to PyPI.'
