@@ -48,3 +48,10 @@ jobs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
+
+    - name: Publish and release
+      run: |
+        RELEASE_VERSION="$(git tag --contains HEAD)"
+        [ -z $RELEASE_VERSION ] && exit || echo 'Current commit has a tag. Uploading wheel to PyPI.'
+        WHEEL_PATH="$(ls -1r dist/* | head -n 1)"
+        twine upload --username=${{ secrets.PYPI_USERNAME }} --password=${{ secrets.PYPI_PASSWORD }} $WHEEL_PATH
