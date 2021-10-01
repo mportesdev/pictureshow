@@ -26,12 +26,22 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install --upgrade pip setuptools
+        echo "Activated venv: $VIRTUAL_ENV"
+        pip install --upgrade pip setuptools wheel
         pip install -r requirements-ci.txt
-        pip install .
+
+    - name: Build and install wheel
+      run: |
+        python setup.py bdist_wheel
+        WHEEL_PATH = "$(ls -1r dist/* | head -n 1)"
+        echo "Wheel path: $WHEEL_PATH"
+        pip install $WHEEL_PATH
+        echo "Wheel installed at $(pip show pictureshow | grep Location)"
 
     - name: Run tests
-      run: pytest --cov
+      run: |
+        echo "Code path for coverage: $(find -wholename *site-packages/pictureshow)"
+        pytest --cov
       
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
