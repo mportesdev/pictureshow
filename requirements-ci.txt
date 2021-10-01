@@ -3,3 +3,5 @@ pytest
 pytest-mock
 pytest-cov
 PyPDF2
+twine
+wheel

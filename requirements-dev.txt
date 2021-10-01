@@ -1,5 +1,3 @@
 -r requirements-ci.txt
 mypy
 pylint
-twine
-wheel
