@@ -33,14 +33,15 @@ jobs:
     - name: Build and install wheel
       run: |
         python setup.py bdist_wheel
-        WHEEL_PATH = "$(ls -1r dist/* | head -n 1)"
+        WHEEL_PATH="$(ls -1r dist/* | head -n 1)"
         echo "Wheel path: $WHEEL_PATH"
         pip install $WHEEL_PATH
         echo "Wheel installed at $(pip show pictureshow | grep Location)"
 
     - name: Run tests
       run: |
-        echo "Code path for coverage: $(find -wholename *site-packages/pictureshow)"
+        CODE_PATH="$(find -wholename *site-packages/pictureshow)"
+        echo "Code path for coverage: $CODE_PATH"
         pytest --cov
       
     - name: Upload coverage to Codecov
