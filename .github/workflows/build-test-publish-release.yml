@@ -29,15 +29,16 @@ jobs:
         pip install --upgrade pip setuptools
         pip install -r requirements-ci.txt
 
-    - name: Build and install wheel
+    - name: Build and install wheel, remove source
       run: |
         python setup.py bdist_wheel
         WHEEL_PATH="$(ls -1r dist/* | head -n 1)"
         echo "Wheel path: $WHEEL_PATH"
         pip install $WHEEL_PATH
         echo "Wheel installed at $(pip show pictureshow | grep Location)"
+        rm -rf pictureshow
 
-    - name: Run tests
+    - name: Run tests and coverage against installed package
       run: |
         CODE_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
         echo "Code path for coverage: $CODE_PATH"
@@ -46,7 +47,7 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
 
-    - name: Publish and release
+    - name: Publish and release if commit is tagged
       if: matrix.python-version == '3.9'
       run: |
         RELEASE_VERSION="$(git tag --contains HEAD)"
