@@ -41,7 +41,7 @@ jobs:
       run: |
         CODE_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
         echo "Code path for coverage: $CODE_PATH"
-        pytest --import-mode=append --cov
+        pytest --import-mode=append --cov=$CODE_PATH
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
