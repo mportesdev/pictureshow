@@ -1,4 +1,4 @@
-|tests| |coverage| |release| |license| |pyversions| |format| |downloads|
+|build-test| |coverage| |release| |license| |pyversions| |format| |downloads|
 
 Save pictures to PDF from the command line or from your Python programs.
 
@@ -139,7 +139,7 @@ Footnotes
     LETTER, LEGAL, ELEVENSEVENTEEN,
     JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER
 
-.. |tests| image:: https://github.com/mportesdev/pictureshow/workflows/tests/badge.svg
+.. |build-test| image:: https://github.com/mportesdev/pictureshow/actions/workflows/build-test.yml/badge.svg
     :target: https://github.com/mportesdev/pictureshow/actions
 .. |coverage| image:: https://img.shields.io/codecov/c/gh/mportesdev/pictureshow
     :target: https://codecov.io/gh/mportesdev/pictureshow

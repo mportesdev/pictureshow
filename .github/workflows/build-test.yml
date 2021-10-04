@@ -1,4 +1,4 @@
-name: Build & test (publish & release)
+name: Build & test
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-test-publish-release:
+  build-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
