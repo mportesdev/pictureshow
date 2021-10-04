@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  main:
+  build-test-publish-release:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,9 +26,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        echo "Current directory: $(pwd)"
-        which -a python
-        which -a pip
         pip install --upgrade pip setuptools
         pip install -r requirements-ci.txt
 
@@ -44,7 +41,7 @@ jobs:
       run: |
         CODE_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
         echo "Code path for coverage: $CODE_PATH"
-        pytest --cov
+        pytest --import-mode==append --cov
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
