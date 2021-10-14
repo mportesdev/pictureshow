@@ -17,7 +17,8 @@ jobs:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -29,7 +30,7 @@ jobs:
         pip install --upgrade pip setuptools
         pip install -r requirements-ci.txt
 
-    - name: Build and install wheel, remove source
+    - name: Build wheel, delete source, install wheel
       id: build_wheel
       run: |
         python setup.py bdist_wheel
@@ -49,7 +50,7 @@ jobs:
         pytest --cov=$CODE_PATH
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
 
     - name: Publish and release if commit is tagged
       if: matrix.python-version == '3.9'
