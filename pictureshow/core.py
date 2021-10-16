@@ -30,6 +30,13 @@ class PictureShow:
 
     def save_pdf(self, pdf_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, force_overwrite=False):
+        """Save pictures stored in `self.pic_files` to a PDF document.
+
+        Return a named tuple of three values:
+        `num_ok` - number of successfully saved pictures
+        `errors` - list of items skipped due to error
+        `num_pages` - number of pages of the resulting PDF document
+        """
         target_str = self._validate_target_path(pdf_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
@@ -172,6 +179,13 @@ class PictureShow:
 def pictures_to_pdf(*pic_files, pdf_file, page_size='A4', landscape=False,
                     margin=72, layout=(1, 1), stretch_small=False,
                     force_overwrite=False):
+    """Save one or more pictures to a PDF document.
+
+    Return a named tuple of three values:
+    `num_ok` - number of successfully saved pictures
+    `errors` - list of items skipped due to error
+    `num_pages` - number of pages of the resulting PDF document
+    """
     pic_show = PictureShow(*pic_files)
 
     return pic_show.save_pdf(

@@ -33,7 +33,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages=['pictureshow'],
-    install_requires=['reportlab'],
+    install_requires=['reportlab==3.6.2'],
     python_requires='>=3.6',
     entry_points={'console_scripts': ['pictureshow=pictureshow.cli:main']},
 )
