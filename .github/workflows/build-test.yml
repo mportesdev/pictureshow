@@ -44,18 +44,15 @@ jobs:
         echo "::set-output name=INSTALLED_PATH::$INSTALLED_PATH"
 
     - name: Run tests and coverage against installed package
-      id: run_tests
       run: |
         CODE_PATH=${{ steps.build_wheel.outputs.INSTALLED_PATH }}
         echo "Code path for coverage: $CODE_PATH"
-        COV_REPORT="$HOME/coverage.xml"
-        pytest --cov=$CODE_PATH --cov-report=xml":$COV_REPORT"
-        echo "::set-output name=COV_REPORT::$COV_REPORT"
+        pytest --cov=$CODE_PATH --cov-report=xml":$HOME/coverage.xml"
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
-        files: ${{ steps.run_tests.outputs.COV_REPORT }}
+        files: $HOME/coverage.xml
 
     - name: Publish and release if commit is tagged
       if: matrix.python-version == '3.9'
