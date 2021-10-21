@@ -36,27 +36,27 @@ jobs:
         python setup.py bdist_wheel
         rm -rf pictureshow
         WHEEL_PATH="$(ls -1r dist/* | head -n 1)"
-        echo "Wheel path: $WHEEL_PATH"
+        echo ">>>>> Wheel path: $WHEEL_PATH"
         pip install $WHEEL_PATH
         INSTALLED_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
-        echo "Wheel installed at $INSTALLED_PATH"
+        echo ">>>>> Wheel installed at $INSTALLED_PATH"
         echo "::set-output name=WHEEL_PATH::$WHEEL_PATH"
         echo "::set-output name=INSTALLED_PATH::$INSTALLED_PATH"
 
     - name: Run tests and coverage against installed package
       run: |
         CODE_PATH=${{ steps.build_wheel.outputs.INSTALLED_PATH }}
-        echo "Code path for coverage: $CODE_PATH"
+        echo ">>>>> Code path for coverage: $CODE_PATH"
         pytest --cov=$CODE_PATH --cov-report=xml":$HOME/coverage.xml"
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
-        files: $HOME/coverage.xml
+        files: "$HOME/coverage.xml"
 
     - name: Publish and release if commit is tagged
       if: matrix.python-version == '3.9'
       run: |
         RELEASE_VERSION="$(git tag --contains HEAD)"
-        [ -z $RELEASE_VERSION ] && exit || echo 'Current commit has a tag. Uploading wheel to PyPI.'
+        [ -z $RELEASE_VERSION ] && exit || echo '>>>>> Current commit has a tag. Uploading wheel to PyPI.'
         twine upload --username=${{ secrets.PYPI_USERNAME }} --password=${{ secrets.PYPI_PASSWORD }} ${{ steps.build_wheel.outputs.WHEEL_PATH }}
