@@ -47,12 +47,14 @@ jobs:
       run: |
         CODE_PATH=${{ steps.build_wheel.outputs.INSTALLED_PATH }}
         echo ">>>>> Code path for coverage: $CODE_PATH"
-        pytest --cov=$CODE_PATH --cov-report=xml":$HOME/coverage.xml"
+        COV_REPORT="$HOME/coverage.xml"
+        pytest --cov=$CODE_PATH --cov-report=xml":$COV_REPORT"
+        echo "COV_REPORT=$COV_REPORT" >> GITHUB_ENV
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
-        files: ${{ env.HOME }}/coverage.xml
+        files: ${{ env.COV_REPORT }}
 
     - name: Publish and release if commit is tagged
       if: matrix.python-version == '3.9'
