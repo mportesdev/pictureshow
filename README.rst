@@ -5,7 +5,7 @@ Save pictures to PDF from the command line or from your Python programs.
 Requirements
 ============
 
-- Python 3.6 or higher
+- Python 3.7 or higher
 - `Pillow <https://pypi.org/project/Pillow/>`__
 - `reportlab <https://pypi.org/project/reportlab/>`__
 

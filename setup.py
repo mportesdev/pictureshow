@@ -19,7 +19,6 @@ setup(
     license='MIT License',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -34,6 +33,6 @@ setup(
     ],
     packages=['pictureshow'],
     install_requires=['Pillow==9.1.0', 'reportlab==3.6.9'],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     entry_points={'console_scripts': ['pictureshow=pictureshow.cli:main']},
 )

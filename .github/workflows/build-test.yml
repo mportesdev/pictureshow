@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11.0-a - 3.11']
 
     steps:
     - name: Checkout
@@ -49,16 +49,17 @@ jobs:
         CODE_PATH=${{ steps.build_wheel.outputs.INSTALLED_PATH }}
         echo ">>>>> Code path for coverage: $CODE_PATH"
         COV_REPORT="$HOME/coverage.xml"
-        pytest --cov=$CODE_PATH --cov-report=xml":$COV_REPORT"
+        pytest --cov=$CODE_PATH --cov-report=xml":$COV_REPORT" --cov-report=term
         echo "::set-output name=COV_REPORT::$COV_REPORT"
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
+      if: matrix.python-version == '3.10'
       with:
         files: ${{ steps.run_tests.outputs.COV_REPORT }}
 
     - name: Publish and release if commit is tagged
-      if: matrix.python-version == '3.9'
+      if: matrix.python-version == '3.10'
       run: |
         RELEASE_VERSION="$(git tag --contains HEAD)"
         [ -z $RELEASE_VERSION ] && exit || echo '>>>>> Current commit has a tag. Uploading wheel to PyPI.'
