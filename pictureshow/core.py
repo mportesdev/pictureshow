@@ -1,4 +1,5 @@
 from collections import namedtuple
+import itertools
 from pathlib import Path
 import re
 
@@ -59,7 +60,7 @@ class PictureShow:
                 except StopIteration:
                     if not last_page_empty:
                         num_pages += 1
-                    if num_ok != 0:
+                    if num_ok > 0:
                         pdf_canvas.save()
                     return Result(num_ok, self.errors, num_pages)
                 x, y, pic_width, pic_height = self._position_and_size(
@@ -169,11 +170,14 @@ class PictureShow:
         area_width = (page_width - (columns + 1) * margin) / columns
         area_height = (page_height - (rows + 1) * margin) / rows
 
-        for row in range(1, rows + 1):
-            area_y = page_height - row * (area_height + margin)
-            for col in range(columns):
-                area_x = margin + col * (area_width + margin)
-                yield DrawingArea(area_x, area_y, area_width, area_height)
+        area_coords = itertools.product(
+            # areas' y-coordinates
+            (page_height - row * (area_height + margin) for row in range(1, rows + 1)),
+            # areas' x-coordinates
+            (margin + col * (area_width + margin) for col in range(columns))
+        )
+        for area_y, area_x in area_coords:
+            yield DrawingArea(area_x, area_y, area_width, area_height)
 
 
 def pictures_to_pdf(*pic_files, pdf_file, page_size='A4', landscape=False,

@@ -36,13 +36,13 @@ def get_args(parser):
 def report_results(result, target_path, verbose=False):
     unique_errors = dict(result.errors)
     num_errors = len(unique_errors)
-    if num_errors != 0:
+    if num_errors > 0:
         print(f'{_number(num_errors, "file")} skipped due to error.')
         if verbose:
             for pic_file, error in unique_errors.items():
                 print(f'{pic_file}:\n{error.__class__.__name__}: {error}\n')
 
-    if result.num_ok != 0:
+    if result.num_ok > 0:
         print(f'Saved {_number(result.num_ok, "picture")}'
               f' ({_number(result.num_pages, "page")}) to {target_path!r}')
     else:
