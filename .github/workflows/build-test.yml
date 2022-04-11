@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
   pull_request:
     branches:
       - master
@@ -38,9 +40,12 @@ jobs:
         WHEEL_PATH="$(ls -1r dist/* | head -n 1)"
         echo ">>>>> Wheel path: $WHEEL_PATH"
         pip install $WHEEL_PATH
+        VERSION="$(pictureshow --version)"
+        echo ">>>>> Version: $VERSION"
         INSTALLED_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
         echo ">>>>> Wheel installed at $INSTALLED_PATH"
         echo "::set-output name=WHEEL_PATH::$WHEEL_PATH"
+        echo "::set-output name=VERSION::$VERSION"
         echo "::set-output name=INSTALLED_PATH::$INSTALLED_PATH"
 
     - name: Run tests and coverage against installed package
@@ -48,7 +53,7 @@ jobs:
       run: |
         CODE_PATH=${{ steps.build_wheel.outputs.INSTALLED_PATH }}
         echo ">>>>> Code path for coverage: $CODE_PATH"
-        COV_REPORT="$HOME/coverage.xml"
+        COV_REPORT="${{ github.workspace }}/coverage.xml"
         pytest --cov=$CODE_PATH --cov-report=xml":$COV_REPORT" --cov-report=term
         echo "::set-output name=COV_REPORT::$COV_REPORT"
 
@@ -58,9 +63,13 @@ jobs:
       with:
         files: ${{ steps.run_tests.outputs.COV_REPORT }}
 
-    - name: Publish and release if commit is tagged
-      if: matrix.python-version == '3.10'
-      run: |
-        RELEASE_VERSION="$(git tag --contains HEAD)"
-        [ -z $RELEASE_VERSION ] && exit || echo '>>>>> Current commit has a tag. Uploading wheel to PyPI.'
-        twine upload --username=${{ secrets.PYPI_USERNAME }} --password=${{ secrets.PYPI_PASSWORD }} ${{ steps.build_wheel.outputs.WHEEL_PATH }}
+    - name: Publish to PyPI
+      if: matrix.python-version == '3.10' && startsWith(github.ref, 'refs/tags/')
+      run: twine upload --username=${{ secrets.PYPI_USERNAME }} --password=${{ secrets.PYPI_PASSWORD }} ${{ steps.build_wheel.outputs.WHEEL_PATH }}
+
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v1
+      if: matrix.python-version == '3.10' && startsWith(github.ref, 'refs/tags/')
+      with:
+        name: version ${{ steps.build_wheel.outputs.VERSION }}
+        files: ${{ steps.build_wheel.outputs.WHEEL_PATH }}
