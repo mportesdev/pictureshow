@@ -29,7 +29,7 @@ def app_exec(request):
 
 @pytest.fixture
 def temp_pdf():
-    pdf_path = Path('_test_temp_.pdf')
+    pdf_path = Path('_test_temp_.pdf').resolve()
     yield pdf_path
 
     # teardown
@@ -267,13 +267,13 @@ class TestGeneratedFile:
     )
     def test_valid_input(self, app_exec, temp_pdf, pic_files, num_pics):
         command = f'{app_exec} {" ".join(pic_files)} {temp_pdf}'
-        subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         assert_pdf(temp_pdf, num_pages=num_pics)
 
     def test_valid_and_invalid_input(self, app_exec, temp_pdf):
         command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} {temp_pdf}'
-        subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         assert_pdf(temp_pdf, num_pages=1)
 
@@ -288,19 +288,19 @@ class TestGeneratedFile:
     )
     def test_invalid_input(self, app_exec, temp_pdf, pic_files):
         command = f'{app_exec} {" ".join(pic_files)} {temp_pdf}'
-        subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         assert not temp_pdf.exists()
 
     def test_invalid_page_size(self, app_exec, temp_pdf):
         command = f'{app_exec} -pA11 {PIC_FILE} {temp_pdf}'
-        subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         assert not temp_pdf.exists()
 
     def test_high_margin(self, app_exec, temp_pdf):
         command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} {temp_pdf}'
-        subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         assert not temp_pdf.exists()
 
@@ -318,7 +318,7 @@ class TestGeneratedFile:
         pic_files = PICS_2_GOOD * 3
 
         command = f'{app_exec} -l{layout} {" ".join(pic_files)} {temp_pdf}'
-        subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         assert_pdf(temp_pdf, num_pages=num_pages)
 
@@ -331,14 +331,14 @@ class TestGeneratedFile:
     )
     def test_invalid_layout(self, app_exec, temp_pdf, layout):
         command = f'{app_exec} -l{layout} {PIC_FILE} {temp_pdf}'
-        subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         assert not temp_pdf.exists()
 
     def test_existing_target_file(self, app_exec, temp_existing):
         file_contents = temp_existing.read_bytes()
         command = f'{app_exec} {PIC_FILE} {temp_existing}'
-        subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         # target file exists and has not changed
         assert temp_existing.exists()
@@ -347,8 +347,34 @@ class TestGeneratedFile:
     def test_force_overwrite_existing_file(self, app_exec, temp_existing):
         file_contents = temp_existing.read_bytes()
         command = f'{app_exec} -f {PIC_FILE} {temp_existing}'
-        subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        subprocess.run(command, shell=True)
 
         # target file has been overwritten by PDF content
         assert_pdf(temp_existing, num_pages=1)
         assert temp_existing.read_bytes() != file_contents
+
+
+class TestPdfSuffix:
+    """Test handling of the output file's suffix."""
+
+    def test_pdf_suffix_added_if_suffix_missing(self, app_exec, temp_pdf):
+        without_suffix = temp_pdf.with_suffix('')
+        command = f'{app_exec} {PIC_FILE} {without_suffix}'
+        proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+        std_out = proc.stdout.decode()
+
+        assert not without_suffix.exists()
+        assert temp_pdf.exists()
+        assert f"'{temp_pdf}'" in std_out
+
+    def test_file_with_suffix_not_overwritten_if_exists(self, app_exec, temp_existing):
+        file_contents = temp_existing.read_bytes()
+        without_suffix = temp_existing.with_suffix('')
+        command = f'{app_exec} {PIC_FILE} {without_suffix}'
+        proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        std_err = proc.stderr.decode()
+
+        assert not without_suffix.exists()
+        assert f"error: FileExistsError: file '{temp_existing}' exists" in std_err
+        # target file has not changed
+        assert temp_existing.read_bytes() == file_contents
