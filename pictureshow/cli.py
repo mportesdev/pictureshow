@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 import pictureshow
 
@@ -55,6 +56,14 @@ def _number(number, noun):
     return f'{number} {noun}{suffix}'
 
 
+def _ensure_suffix(file_path):
+    """If `file_path` has no suffix, add '.pdf' to it."""
+    path = Path(file_path)
+    if path.suffix:
+        return file_path
+    return str(path.with_suffix('.pdf'))
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog='pictureshow',
@@ -65,7 +74,7 @@ def main():
     args = get_args(parser)
 
     picture_paths = args.PIC
-    pdf_path = args.PDF
+    pdf_path = _ensure_suffix(args.PDF)
 
     try:
         result = pictureshow.pictures_to_pdf(

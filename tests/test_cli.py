@@ -4,7 +4,7 @@ import subprocess
 from PyPDF2 import PdfFileReader
 import pytest
 
-from pictureshow.cli import _number
+from pictureshow.cli import _number, _ensure_suffix
 
 A4_WIDTH = 72 * 210 / 25.4
 
@@ -59,6 +59,18 @@ def temp_existing():
 )
 def test_number(number, noun, expected):
     assert _number(number, noun) == expected
+
+
+@pytest.mark.parametrize(
+    'path, expected',
+    (
+            pytest.param('pics', 'pics.pdf', id='str without suffix'),
+            pytest.param('pics.pdf', 'pics.pdf', id='str with .pdf suffix'),
+            pytest.param('pics.pics', 'pics.pics', id='str with other suffix'),
+    )
+)
+def test_ensure_suffix(path, expected):
+    assert _ensure_suffix(path) == expected
 
 
 class TestCallsToCore:
