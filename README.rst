@@ -2,12 +2,14 @@
 
 Save pictures to PDF from the command line or from your Python programs.
 
+
 Requirements
 ============
 
 - Python 3.7 or higher
 - `Pillow <https://pypi.org/project/Pillow/>`__
 - `reportlab <https://pypi.org/project/reportlab/>`__
+
 
 Installation
 ============
@@ -16,8 +18,10 @@ Installation
 
     pip install pictureshow
 
+
 Usage
 =====
+
 
 As a command line tool
 ----------------------
@@ -50,37 +54,42 @@ As a command line tool
       -v, --verbose         provide details on files skipped due to error
       -V, --version         show program's version number and exit
 
+
 Example 1
 ~~~~~~~~~
 
-Save a single picture to PDF.
+Save single picture to PDF.
 
 .. code::
 
-    $ pictureshow pics/mandelbrot.png mandelbrot.pdf
-    Saved 1 picture (1 page) to 'mandelbrot.pdf'
+    $ pictureshow pics/potato.jpg potato.pdf
+    Saved 1 picture (1 page) to 'potato.pdf'
 
 
 Example 2
 ~~~~~~~~~
 
-Save pictures using a glob pattern [#]_, set page to landscape Letter-sized [#]_.
+Save multiple pictures, four pictures per page (two columns, two rows),
+set page to landscape Letter-sized [#]_.
 
 .. code::
 
-    $ pictureshow pics/plots/gauss* gauss.pdf --landscape --page-size=LETTER
-    Saved 2 pictures (2 pages) to 'gauss.pdf'
+    $ pictureshow --page-size=LETTER --landscape --layout=2x2 photos/* photos
+    Saved 50 pictures (13 pages) to 'photos.pdf'
+
+Please note that if the target filename has no extension specified,
+``.pdf`` will be appended to it. This only applies for the command line tool.
 
 
 Example 3
 ~~~~~~~~~
 
-Save pictures using a URL pattern, set layout of 1x2 pictures per page.
+Save pictures from URLs, set smaller margin and stretch small pictures.
 
 .. code::
 
-    $ pictureshow -l1x2 https://wiki.openttd.org/uploads/en/Manual/Town-{2x2,3x3}.png towns.pdf
-    Saved 2 pictures (1 page) to 'towns.pdf'
+    $ pictureshow --margin=36 --stretch-small https://<picture.1.url> https://<picture.2.url> https://<picture.3.url> pics_from_web
+    Saved 3 pictures (3 pages) to 'pics_from_web.pdf'
 
 
 As a Python library
@@ -92,8 +101,8 @@ Using the ``PictureShow`` class:
 
     from pictureshow import PictureShow
 
-    pic_show = PictureShow('pics/mandelbrot.png', 'pics/mandelbrot.jpg')
-    pic_show.save_pdf('pictures.pdf')
+    pic_show = PictureShow('pics/cucumber.jpg', 'pics/onion.jpg')
+    pic_show.save_pdf('vegetables.pdf')
 
 
 Using the ``pictures_to_pdf`` shortcut function:
@@ -102,10 +111,11 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = ['pics/mandelbrot.png', 'pics/mandelbrot.jpg']
-    pictures_to_pdf(*list_of_pictures, pdf_file='pictures.pdf')
+    pictures_to_pdf('pics/cucumber.jpg', 'pics/onion.jpg', pdf_file='vegetables.pdf')
 
-Please note that unlike the command line interface, ``pdf_file`` must be specified as a keyword argument.
+Please note that contrary to the ``PictureShow.save_pdf`` method, ``pdf_file``
+must be specified as a keyword argument in the above example, because the
+``pictures_to_pdf`` function treats all positional arguments as input files.
 
 Another example, demonstrating all available keyword-only arguments:
 
@@ -115,14 +125,14 @@ Another example, demonstrating all available keyword-only arguments:
 
     from pictureshow import pictures_to_pdf
 
-    list_of_pictures = sorted(Path.cwd().glob('pics/blender/*'))
+    list_of_pictures = Path.cwd().glob('pics/*')
     pictures_to_pdf(
         *list_of_pictures,
-        pdf_file='3d_pics.pdf',
+        pdf_file='pictures.pdf',
         page_size='A5',
         landscape=True,
         margin=18,
-        layout=(3, 3),
+        layout=(3, 2),
         stretch_small=True,
         force_overwrite=True
     )
@@ -131,7 +141,6 @@ Another example, demonstrating all available keyword-only arguments:
 Footnotes
 =========
 
-.. [#] Please note that glob patterns are not expanded by the Windows command line shell.
 .. [#] Available page sizes are:
     A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10,
     B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10,
