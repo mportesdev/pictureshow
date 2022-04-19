@@ -36,17 +36,18 @@ As a command line tool
       PIC                   one or more input picture file paths
       PDF                   target PDF file path
 
-    optional arguments:
+    options:
       -h, --help            show this help message and exit
       -p SIZE, --page-size SIZE
                             specify page size; default is A4
-      -L, --landscape       force landscape orientation of page
+      -L, --landscape       set landscape orientation of page; default is
+                            portrait
       -m MARGIN, --margin MARGIN
                             set width of empty space around pictures; default is
                             72 (72 points = 1 inch)
       -l LAYOUT, --layout LAYOUT
-                            specify grid layout of pictures on page, e.g. 2x3 or
-                            2,3; default is 1x1
+                            specify grid layout (columns x rows) of pictures on
+                            page, e.g. 2x3 or 2,3; default is 1x1
       -s, --stretch-small   scale small pictures up to fit drawing area
       -f, --force-overwrite
                             save target file even if filename exists

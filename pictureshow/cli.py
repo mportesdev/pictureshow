@@ -11,12 +11,12 @@ def get_args(parser):
     parser.add_argument('-p', '--page-size', default='A4', metavar='SIZE',
                         help='specify page size; default is A4')
     parser.add_argument('-L', '--landscape', action='store_true',
-                        help='force landscape orientation of page')
+                        help='set landscape orientation of page; default is portrait')
     parser.add_argument('-m', '--margin', type=float, default=72,
                         help='set width of empty space around pictures;'
                              ' default is 72 (72 points = 1 inch)')
     parser.add_argument('-l', '--layout', default='1x1',
-                        help='specify grid layout of pictures on page,'
+                        help='specify grid layout (columns x rows) of pictures on page,'
                              ' e.g. 2x3 or 2,3; default is 1x1')
     parser.add_argument('-s', '--stretch-small', action='store_true',
                         help='scale small pictures up to fit drawing area')
