@@ -159,25 +159,25 @@ class PictureShow:
 
     @staticmethod
     def _areas(layout, page_size, margin):
-        columns, rows = layout
+        num_columns, num_rows = layout
         page_width, page_height = page_size
 
-        margins_too_wide = margin * (columns + 1) >= page_width
-        margins_too_high = margin * (rows + 1) >= page_height
-        if margins_too_wide or margins_too_high:
+        area_width = (page_width - (num_columns + 1) * margin) / num_columns
+        area_height = (page_height - (num_rows + 1) * margin) / num_rows
+        if area_width < 1 or area_height < 1:
             raise MarginError(f'margin value too high: {margin}')
 
-        area_width = (page_width - (columns + 1) * margin) / columns
-        area_height = (page_height - (rows + 1) * margin) / rows
-
-        area_coords = itertools.product(
-            # areas' y-coordinates
-            (page_height - row * (area_height + margin) for row in range(1, rows + 1)),
-            # areas' x-coordinates
-            (margin + col * (area_width + margin) for col in range(columns))
+        areas_y_coords = (
+            page_height - row * (area_height + margin)
+            for row in range(1, num_rows + 1)
         )
-        for area_y, area_x in area_coords:
-            yield DrawingArea(area_x, area_y, area_width, area_height)
+        areas_x_coords = (
+            margin + col * (area_width + margin)
+            for col in range(num_columns)
+        )
+        # yield areas row-wise
+        for y, x in itertools.product(areas_y_coords, areas_x_coords):
+            yield DrawingArea(x, y, area_width, area_height)
 
 
 def pictures_to_pdf(*pic_files, pdf_file, page_size='A4', landscape=False,
