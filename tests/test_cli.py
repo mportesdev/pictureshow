@@ -8,16 +8,19 @@ from pictureshow.cli import _number, _ensure_suffix
 
 A4_WIDTH = 72 * 210 / 25.4
 
-PIC_FILE = 'pics/mandelbrot.png'
+FILES = 'tests/files/'
+
+PIC_FILE = FILES + 'mandelbrot.png'
 PIC_URL = 'https://avatars.githubusercontent.com/u/43098013'
+
 PICS_1_GOOD = (PIC_FILE,)
-PICS_2_GOOD = (PIC_FILE, 'pics/blender/chain_render.jpg')
+PICS_2_GOOD = (PIC_FILE, FILES + 'blender/chain_render.jpg')
 PICS_1_URL = (PIC_URL,)
-PICS_GLOB = ('pics/plots/gauss*',)
-PICS_1_GOOD_1_BAD = (PIC_FILE, 'pics/not_jpg.jpg')
-PICS_1_BAD = ('pics/not_jpg.jpg',)
-PICS_2_BAD = ('pics/not_jpg.jpg', 'pics/empty.pdf')
-PICS_DIR = ('pics',)
+PICS_GLOB = (FILES + 'plots/gauss*',)
+PICS_1_GOOD_1_BAD = (PIC_FILE, FILES + 'not_jpg.jpg')
+PICS_1_BAD = (FILES + 'not_jpg.jpg',)
+PICS_2_BAD = (FILES + 'not_jpg.jpg', FILES + 'empty.pdf')
+PICS_DIR = (FILES,)
 PICS_MISSING = ('missing.png',)
 
 
