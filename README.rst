@@ -28,16 +28,17 @@ As a command line tool
 
 .. code::
 
-    usage: pictureshow [-h] [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT] [-s] [-f]
-                       [-q | -v] [-V]
-                       PIC [PIC ...] PDF
+    usage: pictureshow [-h] -o PATH [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT] [-s]
+                       [-f] [-q | -v] [-V]
+                       PICTURE [PICTURE ...]
 
     positional arguments:
-      PIC                   one or more input picture file paths
-      PDF                   target PDF file path
+      PICTURE               one or more picture paths or URLs
 
     options:
       -h, --help            show this help message and exit
+      -o PATH, --output-file PATH
+                            target PDF file path
       -p SIZE, --page-size SIZE
                             specify page size; default is A4
       -L, --landscape       set landscape orientation of page; default is
@@ -52,7 +53,7 @@ As a command line tool
       -f, --force-overwrite
                             save target file even if filename exists
       -q, --quiet           suppress printing to stdout
-      -v, --verbose         provide details on files skipped due to error
+      -v, --verbose         show details on files skipped due to error
       -V, --version         show program's version number and exit
 
 
