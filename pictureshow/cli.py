@@ -7,7 +7,8 @@ import pictureshow
 def get_args(parser):
     parser.add_argument('PIC', nargs='+',
                         help='one or more input picture file paths')
-    parser.add_argument('PDF', help='target PDF file path')
+    parser.add_argument('-o', '--output-file', required=True, metavar='PATH',
+                        help='target PDF file path')
     parser.add_argument('-p', '--page-size', default='A4', metavar='SIZE',
                         help='specify page size; default is A4')
     parser.add_argument('-L', '--landscape', action='store_true',
@@ -74,7 +75,7 @@ def main():
     args = get_args(parser)
 
     picture_paths = args.PIC
-    pdf_path = _ensure_suffix(args.PDF)
+    pdf_path = _ensure_suffix(args.output_file)
 
     try:
         result = pictureshow.pictures_to_pdf(
