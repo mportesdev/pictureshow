@@ -57,36 +57,28 @@ As a command line tool
       -V, --version         show program's version number and exit
 
 
-Example 1
-~~~~~~~~~
+Examples
+~~~~~~~~
 
-Save single picture to PDF.
+Save single picture to PDF:
 
 .. code::
 
     $ pictureshow pics/potato.jpg potato.pdf
     Saved 1 picture (1 page) to 'potato.pdf'
 
-
-Example 2
-~~~~~~~~~
-
 Save multiple pictures, four pictures per page (two columns, two rows),
-set page to landscape Letter-sized [#]_.
+set page to landscape Letter-sized [#]_:
 
 .. code::
 
     $ pictureshow --page-size=LETTER --landscape --layout=2x2 photos/* photos
     Saved 50 pictures (13 pages) to 'photos.pdf'
 
-Please note that if the target filename has no extension specified,
-``.pdf`` will be appended to it. This only applies for the command line tool.
+(Please note that if the target filename has no extension specified,
+``.pdf`` will be appended to it. This only applies for the command line tool.)
 
-
-Example 3
-~~~~~~~~~
-
-Save pictures from URLs, set smaller margin and stretch small pictures.
+Save pictures from URLs, set smaller margin and stretch small pictures:
 
 .. code::
 
@@ -97,7 +89,11 @@ Save pictures from URLs, set smaller margin and stretch small pictures.
 As a Python library
 -------------------
 
-Using the ``PictureShow`` class:
+
+``PictureShow`` class
+~~~~~~~~~~~~~~~~~~~~~
+
+Example:
 
 .. code-block:: python
 
@@ -106,8 +102,26 @@ Using the ``PictureShow`` class:
     pic_show = PictureShow('pics/cucumber.jpg', 'pics/onion.jpg')
     pic_show.save_pdf('vegetables.pdf')
 
+The keyword parameters of the ``save_pdf`` method and their default values
+correspond to the above shown command line options:
 
-Using the ``pictures_to_pdf`` shortcut function:
+.. code-block:: python
+
+    PictureShow.save_pdf(
+        pdf_file,
+        page_size='A4',
+        landscape=False,
+        margin=72,
+        layout=(1, 1),
+        stretch_small=False,
+        force_overwrite=False
+    )
+
+
+``pictures_to_pdf`` shortcut function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Example:
 
 .. code-block:: python
 
@@ -115,28 +129,24 @@ Using the ``pictures_to_pdf`` shortcut function:
 
     pictures_to_pdf('pics/cucumber.jpg', 'pics/onion.jpg', pdf_file='vegetables.pdf')
 
-Please note that contrary to the ``PictureShow.save_pdf`` method, ``pdf_file``
+(Please note that contrary to the ``PictureShow.save_pdf`` method, ``pdf_file``
 must be specified as a keyword argument in the above example, because the
-``pictures_to_pdf`` function treats all positional arguments as input files.
+``pictures_to_pdf`` function treats all positional arguments as input files.)
 
-Another example, demonstrating all available keyword-only arguments:
+The keyword parameters of the ``pictures_to_pdf`` function and their
+default values correspond to the above shown command line options:
 
 .. code-block:: python
 
-    from pathlib import Path
-
-    from pictureshow import pictures_to_pdf
-
-    list_of_pictures = Path.cwd().glob('pics/*')
     pictures_to_pdf(
-        *list_of_pictures,
-        pdf_file='pictures.pdf',
-        page_size='A5',
-        landscape=True,
-        margin=18,
-        layout=(3, 2),
-        stretch_small=True,
-        force_overwrite=True
+        *pic_files,
+        pdf_file,
+        page_size='A4',
+        landscape=False,
+        margin=72,
+        layout=(1, 1),
+        stretch_small=False,
+        force_overwrite=False
     )
 
 
