@@ -28,31 +28,34 @@ As a command line tool
 
 .. code::
 
-    usage: pictureshow [-h] -o PATH [-p SIZE] [-L] [-m MARGIN] [-l LAYOUT] [-s]
-                       [-f] [-q | -v] [-V]
-                       PICTURE [PICTURE ...]
+    usage: pictureshow [options] PICTURE [PICTURE ...] -o PATH
 
     positional arguments:
       PICTURE               one or more picture paths or URLs
 
     options:
       -h, --help            show this help message and exit
-      -o PATH, --output-file PATH
-                            target PDF file path
-      -p SIZE, --page-size SIZE
-                            specify page size; default is A4
+      -f, --force-overwrite
+                            save target file even if filename exists
       -L, --landscape       set landscape orientation of page; default is
                             portrait
-      -m MARGIN, --margin MARGIN
-                            set width of empty space around pictures; default is
-                            72 (72 points = 1 inch)
       -l LAYOUT, --layout LAYOUT
                             specify grid layout (columns x rows) of pictures on
                             page, e.g. 2x3 or 2,3; default is 1x1
-      -s, --stretch-small   scale small pictures up to fit drawing area
-      -f, --force-overwrite
-                            save target file even if filename exists
+      -m MARGIN, --margin MARGIN
+                            set width of empty space around pictures; default is
+                            72 (72 points = 1 inch)
+      -o PATH, --output-file PATH
+                            target PDF file path (required)
+      -p SIZE, --page-size SIZE
+                            specify page size; default is A4 (available sizes:
+                            A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, B0, B1,
+                            B2, B3, B4, B5, B6, B7, B8, B9, B10, C0, C1, C2, C3,
+                            C4, C5, C6, C7, C8, C9, C10, LETTER, LEGAL,
+                            ELEVENSEVENTEEN, JUNIOR_LEGAL, HALF_LETTER,
+                            GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER)
       -q, --quiet           suppress printing to stdout
+      -s, --stretch-small   scale small pictures up to fit drawing area
       -v, --verbose         show details on files skipped due to error
       -V, --version         show program's version number and exit
 
