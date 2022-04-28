@@ -27,41 +27,29 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - name: Build wheel, run tests
+      id: build_and_test
       run: |
         pip install --upgrade pip setuptools
         pip install -r requirements-ci.txt
-
-    - name: Build wheel, delete source, install wheel
-      id: build_wheel
-      run: |
         python setup.py bdist_wheel
         rm -rf pictureshow
-        WHEEL_PATH="$(ls -1r dist/* | head -n 1)"
-        echo ">>>>> Wheel path: $WHEEL_PATH"
+        WHEEL_PATH="$(ls dist/*)"
+        echo "WHEEL PATH: $WHEEL_PATH"
         pip install $WHEEL_PATH
-        VERSION="$(pictureshow --version)"
-        echo ">>>>> Version: $VERSION"
         INSTALLED_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
-        echo ">>>>> Wheel installed at $INSTALLED_PATH"
-        echo "::set-output name=WHEEL_PATH::$WHEEL_PATH"
-        echo "::set-output name=VERSION::$VERSION"
-        echo "::set-output name=INSTALLED_PATH::$INSTALLED_PATH"
-
-    - name: Run tests and coverage against installed package
-      id: run_tests
-      run: |
-        CODE_PATH=${{ steps.build_wheel.outputs.INSTALLED_PATH }}
-        echo ">>>>> Code path for coverage: $CODE_PATH"
+        echo "WHEEL INSTALLED TO: $INSTALLED_PATH"
         COV_REPORT="${{ github.workspace }}/coverage.xml"
-        pytest --cov=$CODE_PATH --cov-report=xml":$COV_REPORT" --cov-report=term
+        pytest --cov=$INSTALLED_PATH --cov-report=xml":$COV_REPORT" --cov-report=term
         echo "::set-output name=COV_REPORT::$COV_REPORT"
+        echo "::set-output name=VERSION::$(pictureshow --version)"
+        echo "::set-output name=WHEEL_PATH::$WHEEL_PATH"
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       if: matrix.python-version == '3.10'
       with:
-        files: ${{ steps.run_tests.outputs.COV_REPORT }}
+        files: ${{ steps.build_and_test.outputs.COV_REPORT }}
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
@@ -74,5 +62,5 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: matrix.python-version == '3.10' && startsWith(github.ref, 'refs/tags/')
       with:
-        name: version ${{ steps.build_wheel.outputs.VERSION }}
-        files: ${{ steps.build_wheel.outputs.WHEEL_PATH }}
+        name: version ${{ steps.build_and_test.outputs.VERSION }}
+        files: ${{ steps.build_and_test.outputs.WHEEL_PATH }}
