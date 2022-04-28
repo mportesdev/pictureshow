@@ -1,7 +1,8 @@
 import argparse
 from pathlib import Path
 
-import pictureshow
+from . import __version__
+from .core import pictures_to_pdf
 
 
 def get_args(parser):
@@ -71,14 +72,14 @@ def main():
         description='Save pictures to PDF.',
         epilog='https://pypi.org/project/pictureshow/'
     )
-    parser.version = pictureshow.__version__
+    parser.version = __version__
     args = get_args(parser)
 
     picture_paths = args.pictures
     pdf_path = _ensure_suffix(args.output_file)
 
     try:
-        result = pictureshow.pictures_to_pdf(
+        result = pictures_to_pdf(
             *picture_paths,
             pdf_file=pdf_path,
             page_size=args.page_size,

@@ -8,7 +8,7 @@ from reportlab.lib import pagesizes
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
-from pictureshow import PageSizeError, MarginError, LayoutError
+from .exceptions import PageSizeError, MarginError, LayoutError
 
 PAGE_SIZES = {
     name: size

@@ -1,5 +1,5 @@
-from pictureshow.exceptions import PageSizeError, MarginError, LayoutError
-from pictureshow.core import PictureShow, pictures_to_pdf
+from .exceptions import PageSizeError, MarginError, LayoutError
+from .core import PictureShow, pictures_to_pdf
 
 __version__ = '0.7.0'
 
