@@ -64,7 +64,9 @@ class PictureShow:
                         pdf_canvas.save()
                     return Result(num_ok, self.errors, num_pages)
                 x, y, pic_width, pic_height = self._position_and_size(
-                    picture.getSize(), (area.width, area.height), stretch_small
+                    picture.getSize(),
+                    area[2:],    # short for (area.width, area.height)
+                    stretch_small
                 )
                 pdf_canvas.drawImage(
                     picture, area.x + x, area.y + y, pic_width, pic_height,
@@ -96,13 +98,13 @@ class PictureShow:
                     f' please use one of: {", ".join(PAGE_SIZES)}'
                 ) from err
 
-        page_size_error = PageSizeError('two positive numbers expected')
+        error = PageSizeError('two positive numbers expected')
         try:
             page_width, page_height = page_size
             if not (page_width > 0 and page_height > 0):
-                raise page_size_error
+                raise error
         except (ValueError, TypeError) as err:
-            raise page_size_error from err
+            raise error from err
 
         if page_width < page_height and landscape:
             page_size = page_height, page_width
@@ -110,16 +112,16 @@ class PictureShow:
 
     @staticmethod
     def _validate_layout(layout):
-        layout_error = LayoutError('two positive integers expected')
+        error = LayoutError('two positive integers expected')
         try:
             if isinstance(layout, str):
                 layout = tuple(int(s) for s in DELIMITER.split(layout))
             columns, rows = layout
             if not (columns > 0 and isinstance(columns, int)
                     and rows > 0 and isinstance(rows, int)):
-                raise layout_error
+                raise error
         except (ValueError, TypeError) as err:
-            raise layout_error from err
+            raise error from err
 
         return columns, rows
 
@@ -148,8 +150,8 @@ class PictureShow:
         if pic_is_big or stretch_small:
             scale = (area_width / pic_width if pic_is_wide
                      else area_height / pic_height)
-            pic_width = pic_width * scale
-            pic_height = pic_height * scale
+            pic_width *= scale
+            pic_height *= scale
 
         # center picture to area
         x = (area_width - pic_width) / 2
