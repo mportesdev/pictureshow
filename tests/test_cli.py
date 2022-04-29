@@ -1,4 +1,3 @@
-from pathlib import Path
 import subprocess
 
 from PyPDF2 import PdfFileReader
@@ -31,24 +30,16 @@ def app_exec(request):
 
 
 @pytest.fixture
-def temp_pdf():
-    pdf_path = Path('_test_temp_.pdf').resolve()
-    yield pdf_path
-
-    # teardown
-    if pdf_path.exists():
-        pdf_path.unlink()
+def temp_pdf(tmp_path):
+    pdf_path = tmp_path / 'pictures.pdf'
+    return pdf_path
 
 
 @pytest.fixture
-def temp_existing():
-    pdf_path = Path('_test_temp_.pdf').resolve()
+def temp_existing(tmp_path):
+    pdf_path = tmp_path / 'pictures.pdf'
     pdf_path.write_bytes(b'foo')
-    yield pdf_path
-
-    # teardown
-    if pdf_path.exists():
-        pdf_path.unlink()
+    return pdf_path
 
 
 @pytest.mark.parametrize(
