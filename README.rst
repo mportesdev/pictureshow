@@ -3,12 +3,10 @@
 Save pictures to PDF from the command line or from your Python programs.
 
 
-Requirements
-============
+Prerequisites
+=============
 
 - Python 3.7 or higher
-- `Pillow <https://pypi.org/project/Pillow/>`__
-- `reportlab <https://pypi.org/project/reportlab/>`__
 
 
 Installation
@@ -17,6 +15,10 @@ Installation
 .. code::
 
     pip install pictureshow
+
+The third-party dependencies of this package are
+`reportlab <https://pypi.org/project/reportlab/>`__ and
+`Pillow <https://pypi.org/project/Pillow/>`__.
 
 
 Usage
@@ -67,15 +69,15 @@ Save single picture to PDF:
 
 .. code::
 
-    $ pictureshow pics/potato.jpg potato.pdf
+    $ pictureshow pics/potato.jpg -o potato.pdf
     Saved 1 picture (1 page) to 'potato.pdf'
 
 Save multiple pictures, four pictures per page (two columns, two rows),
-set page to landscape Letter-sized [#]_:
+set page orientation to landscape:
 
 .. code::
 
-    $ pictureshow --page-size=LETTER --landscape --layout=2x2 photos/* photos
+    $ pictureshow -l 2x2 -L photos/* -o photos
     Saved 50 pictures (13 pages) to 'photos.pdf'
 
 (Please note that if the target filename has no extension specified,
@@ -85,8 +87,8 @@ Save pictures from URLs, set smaller margin and stretch small pictures:
 
 .. code::
 
-    $ pictureshow --margin=36 --stretch-small https://<picture.1.url> https://<picture.2.url> https://<picture.3.url> pics_from_web
-    Saved 3 pictures (3 pages) to 'pics_from_web.pdf'
+    $ pictureshow -m 36 -s https://<picture.1.url> https://<picture.2.url> -o pics_from_web
+    Saved 2 pictures (2 pages) to 'pics_from_web.pdf'
 
 
 As a Python library
@@ -152,16 +154,6 @@ default values correspond to the above shown command line options:
         force_overwrite=False
     )
 
-
-Footnotes
-=========
-
-.. [#] Available page sizes are:
-    A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10,
-    B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10,
-    C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10,
-    LETTER, LEGAL, ELEVENSEVENTEEN,
-    JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER
 
 .. |build-test| image:: https://github.com/mportesdev/pictureshow/actions/workflows/build-test.yml/badge.svg
     :target: https://github.com/mportesdev/pictureshow/actions
