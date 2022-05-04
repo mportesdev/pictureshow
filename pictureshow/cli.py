@@ -81,7 +81,7 @@ def main():
     try:
         result = pictures_to_pdf(
             *picture_paths,
-            pdf_file=output_file,
+            output_file=output_file,
             page_size=args.page_size,
             landscape=args.landscape,
             margin=args.margin,

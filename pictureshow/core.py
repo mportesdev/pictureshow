@@ -29,7 +29,7 @@ class PictureShow:
         self.pic_files = pic_files
         self.errors = []
 
-    def save_pdf(self, pdf_file, page_size='A4', landscape=False, margin=72,
+    def save_pdf(self, output_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, force_overwrite=False):
         """Save pictures stored in `self.pic_files` to a PDF document.
 
@@ -38,7 +38,7 @@ class PictureShow:
         `errors` - list of items skipped due to error
         `num_pages` - number of pages of the resulting PDF document
         """
-        output_file = self._validate_target_path(pdf_file, force_overwrite)
+        output_file = self._validate_target_path(output_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
@@ -46,8 +46,8 @@ class PictureShow:
             output_file, page_size, margin, layout, stretch_small
         )
 
-    def _save_pdf(self, pdf_file, page_size, margin, layout, stretch_small):
-        pdf_canvas = Canvas(pdf_file, pagesize=page_size)
+    def _save_pdf(self, output_file, page_size, margin, layout, stretch_small):
+        pdf_canvas = Canvas(output_file, pagesize=page_size)
         valid_pics = self._valid_pictures()
         num_ok = 0
         num_pages = 0
@@ -182,7 +182,7 @@ class PictureShow:
             yield DrawingArea(x, y, area_width, area_height)
 
 
-def pictures_to_pdf(*pic_files, pdf_file, page_size='A4', landscape=False,
+def pictures_to_pdf(*pic_files, output_file, page_size='A4', landscape=False,
                     margin=72, layout=(1, 1), stretch_small=False,
                     force_overwrite=False):
     """Save one or more pictures to a PDF document.
@@ -195,6 +195,6 @@ def pictures_to_pdf(*pic_files, pdf_file, page_size='A4', landscape=False,
     pic_show = PictureShow(*pic_files)
 
     return pic_show.save_pdf(
-        pdf_file, page_size, landscape, margin, layout, stretch_small,
+        output_file, page_size, landscape, margin, layout, stretch_small,
         force_overwrite
     )

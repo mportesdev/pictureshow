@@ -113,7 +113,7 @@ correspond to the above shown command line options:
 .. code-block:: python
 
     PictureShow.save_pdf(
-        pdf_file,
+        output_file,
         page_size='A4',
         landscape=False,
         margin=72,
@@ -132,9 +132,9 @@ Example:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pics/cucumber.jpg', 'pics/onion.jpg', pdf_file='vegetables.pdf')
+    pictures_to_pdf('pics/cucumber.jpg', 'pics/onion.jpg', output_file='vegetables.pdf')
 
-(Please note that contrary to the ``PictureShow.save_pdf`` method, ``pdf_file``
+(Please note that contrary to the ``PictureShow.save_pdf`` method, ``output_file``
 must be specified as a keyword argument in the above example, because the
 ``pictures_to_pdf`` function treats all positional arguments as input files.)
 
@@ -145,7 +145,7 @@ default values correspond to the above shown command line options:
 
     pictures_to_pdf(
         *pic_files,
-        pdf_file,
+        output_file,
         page_size='A4',
         landscape=False,
         margin=72,
