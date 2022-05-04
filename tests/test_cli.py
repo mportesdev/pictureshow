@@ -30,13 +30,13 @@ def app_exec(request):
 
 
 @pytest.fixture
-def temp_pdf(tmp_path):
+def new_pdf(tmp_path):
     pdf_path = tmp_path / 'pictures.pdf'
     return pdf_path
 
 
 @pytest.fixture
-def temp_existing(tmp_path):
+def existing_pdf(tmp_path):
     pdf_path = tmp_path / 'pictures.pdf'
     pdf_path.write_bytes(b'foo')
     return pdf_path
@@ -86,9 +86,9 @@ class TestOutput:
             pytest.param(PICS_1_URL, '1 picture', '1 page', id='1 good url'),
         )
     )
-    def test_valid_input(self, app_exec, temp_pdf, pic_files, num_pics,
+    def test_valid_input(self, app_exec, new_pdf, pic_files, num_pics,
                          num_pages):
-        command = f'{app_exec} {" ".join(pic_files)} -o {temp_pdf}'
+        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
@@ -97,8 +97,8 @@ class TestOutput:
         assert 'skipped' not in std_out
         assert 'Nothing' not in std_out
 
-    def test_valid_and_invalid_input(self, app_exec, temp_pdf):
-        command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {temp_pdf}'
+    def test_valid_and_invalid_input(self, app_exec, new_pdf):
+        command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
@@ -116,8 +116,8 @@ class TestOutput:
             pytest.param(PICS_MISSING, '1 file', id='missing'),
         )
     )
-    def test_invalid_input(self, app_exec, temp_pdf, pic_files, num_invalid):
-        command = f'{app_exec} {" ".join(pic_files)} -o {temp_pdf}'
+    def test_invalid_input(self, app_exec, new_pdf, pic_files, num_invalid):
+        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
@@ -126,8 +126,8 @@ class TestOutput:
         assert 'Saved' not in std_out
         assert 'Nothing to save.' in std_out
 
-    def test_invalid_page_size_throws_error(self, app_exec, temp_pdf):
-        command = f'{app_exec} -pA11 {PIC_FILE} -o {temp_pdf}'
+    def test_invalid_page_size_throws_error(self, app_exec, new_pdf):
+        command = f'{app_exec} -pA11 {PIC_FILE} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
         std_err = proc.stderr.decode()
 
@@ -135,8 +135,8 @@ class TestOutput:
         assert 'error: PageSizeError:' in std_err
         assert f"unknown page size 'A11', please use one of" in std_err
 
-    def test_high_margin_throws_error(self, app_exec, temp_pdf):
-        command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {temp_pdf}'
+    def test_high_margin_throws_error(self, app_exec, new_pdf):
+        command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
         std_err = proc.stderr.decode()
 
@@ -151,12 +151,12 @@ class TestOutput:
             pytest.param('1,1', '6 pages', id='1,1'),
         )
     )
-    def test_multiple_pictures_layout(self, app_exec, temp_pdf, layout,
+    def test_multiple_pictures_layout(self, app_exec, new_pdf, layout,
                                       num_pages):
         # 6 pictures
         pic_files = PICS_2_GOOD * 3
 
-        command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {temp_pdf}'
+        command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
@@ -170,48 +170,48 @@ class TestOutput:
             pytest.param('0x1', id='invalid value'),
         )
     )
-    def test_invalid_layout_throws_error(self, app_exec, temp_pdf, layout):
-        command = f'{app_exec} -l{layout} {PIC_FILE} -o {temp_pdf}'
+    def test_invalid_layout_throws_error(self, app_exec, new_pdf, layout):
+        command = f'{app_exec} -l{layout} {PIC_FILE} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
         assert 'error: LayoutError: two positive integers expected' in std_err
 
-    def test_existing_target_file_throws_error(self, app_exec, temp_existing):
-        command = f'{app_exec} {PIC_FILE} -o {temp_existing}'
+    def test_existing_target_file_throws_error(self, app_exec, existing_pdf):
+        command = f'{app_exec} {PIC_FILE} -o {existing_pdf}'
         proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
-        assert f"error: FileExistsError: file '{temp_existing}' exists" in std_err
+        assert f"error: FileExistsError: file '{existing_pdf}' exists" in std_err
 
-    def test_force_overwrite_existing_file(self, app_exec, temp_existing):
-        command = f'{app_exec} -f {PIC_FILE} -o {temp_existing}'
+    def test_force_overwrite_existing_file(self, app_exec, existing_pdf):
+        command = f'{app_exec} -f {PIC_FILE} -o {existing_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
         assert 'Saved 1 picture (1 page) to ' in std_out
 
-    def test_quiet_does_not_print_to_stdout(self, app_exec, temp_pdf):
-        command = f'{app_exec} -q {PIC_FILE} -o {temp_pdf}'
+    def test_quiet_does_not_print_to_stdout(self, app_exec, new_pdf):
+        command = f'{app_exec} -q {PIC_FILE} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
         assert std_out == ''
 
-    def test_quiet_does_not_suppress_stderr(self, app_exec, temp_existing):
-        command = f'{app_exec} -q {PIC_FILE} -o {temp_existing}'
+    def test_quiet_does_not_suppress_stderr(self, app_exec, existing_pdf):
+        command = f'{app_exec} -q {PIC_FILE} -o {existing_pdf}'
         proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
         assert 'FileExistsError:' in std_err
 
-    def test_verbose(self, app_exec, temp_pdf):
-        command = f'{app_exec} -v {" ".join(PICS_1_GOOD_1_BAD)} -o {temp_pdf}'
+    def test_verbose(self, app_exec, new_pdf):
+        command = f'{app_exec} -v {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
@@ -219,11 +219,11 @@ class TestOutput:
         assert '1 file skipped due to error.' in std_out
         assert 'UnidentifiedImageError' in std_out
 
-    def test_verbose_shows_only_unique_files(self, app_exec, temp_pdf):
+    def test_verbose_shows_only_unique_files(self, app_exec, new_pdf):
         # duplicate items
         pic_files = PICS_2_BAD * 2
 
-        command = f'{app_exec} -v {" ".join(pic_files)} -o {temp_pdf}'
+        command = f'{app_exec} -v {" ".join(pic_files)} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
@@ -231,8 +231,8 @@ class TestOutput:
         # only unique items reported
         assert '2 files skipped due to error.' in std_out
 
-    def test_quiet_and_verbose_are_mutually_exclusive(self, app_exec, temp_pdf):
-        command = f'{app_exec} -qv {PIC_FILE} -o {temp_pdf}'
+    def test_quiet_and_verbose_are_mutually_exclusive(self, app_exec, new_pdf):
+        command = f'{app_exec} -qv {PIC_FILE} -o {new_pdf}'
         proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
         std_err = proc.stderr.decode()
 
@@ -259,17 +259,17 @@ class TestGeneratedFile:
             pytest.param(PICS_1_URL, 1, id='1 good url'),
         )
     )
-    def test_valid_input(self, app_exec, temp_pdf, pic_files, num_pics):
-        command = f'{app_exec} {" ".join(pic_files)} -o {temp_pdf}'
+    def test_valid_input(self, app_exec, new_pdf, pic_files, num_pics):
+        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
         subprocess.run(command, shell=True)
 
-        assert_pdf(temp_pdf, num_pages=num_pics)
+        assert_pdf(new_pdf, num_pages=num_pics)
 
-    def test_valid_and_invalid_input(self, app_exec, temp_pdf):
-        command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {temp_pdf}'
+    def test_valid_and_invalid_input(self, app_exec, new_pdf):
+        command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
         subprocess.run(command, shell=True)
 
-        assert_pdf(temp_pdf, num_pages=1)
+        assert_pdf(new_pdf, num_pages=1)
 
     @pytest.mark.parametrize(
         'pic_files',
@@ -280,23 +280,23 @@ class TestGeneratedFile:
             pytest.param(PICS_MISSING, id='missing'),
         )
     )
-    def test_invalid_input(self, app_exec, temp_pdf, pic_files):
-        command = f'{app_exec} {" ".join(pic_files)} -o {temp_pdf}'
+    def test_invalid_input(self, app_exec, new_pdf, pic_files):
+        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
         subprocess.run(command, shell=True)
 
-        assert not temp_pdf.exists()
+        assert not new_pdf.exists()
 
-    def test_invalid_page_size(self, app_exec, temp_pdf):
-        command = f'{app_exec} -pA11 {PIC_FILE} -o {temp_pdf}'
+    def test_invalid_page_size(self, app_exec, new_pdf):
+        command = f'{app_exec} -pA11 {PIC_FILE} -o {new_pdf}'
         subprocess.run(command, shell=True)
 
-        assert not temp_pdf.exists()
+        assert not new_pdf.exists()
 
-    def test_high_margin(self, app_exec, temp_pdf):
-        command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {temp_pdf}'
+    def test_high_margin(self, app_exec, new_pdf):
+        command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {new_pdf}'
         subprocess.run(command, shell=True)
 
-        assert not temp_pdf.exists()
+        assert not new_pdf.exists()
 
     @pytest.mark.parametrize(
         'layout, num_pages',
@@ -306,15 +306,15 @@ class TestGeneratedFile:
             pytest.param('1,1', 6, id='1,1'),
         )
     )
-    def test_multiple_pictures_layout(self, app_exec, temp_pdf, layout,
+    def test_multiple_pictures_layout(self, app_exec, new_pdf, layout,
                                       num_pages):
         # 6 pictures
         pic_files = PICS_2_GOOD * 3
 
-        command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {temp_pdf}'
+        command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {new_pdf}'
         subprocess.run(command, shell=True)
 
-        assert_pdf(temp_pdf, num_pages=num_pages)
+        assert_pdf(new_pdf, num_pages=num_pages)
 
     @pytest.mark.parametrize(
         'layout',
@@ -323,52 +323,52 @@ class TestGeneratedFile:
             pytest.param('0x1', id='invalid value'),
         )
     )
-    def test_invalid_layout(self, app_exec, temp_pdf, layout):
-        command = f'{app_exec} -l{layout} {PIC_FILE} -o {temp_pdf}'
+    def test_invalid_layout(self, app_exec, new_pdf, layout):
+        command = f'{app_exec} -l{layout} {PIC_FILE} -o {new_pdf}'
         subprocess.run(command, shell=True)
 
-        assert not temp_pdf.exists()
+        assert not new_pdf.exists()
 
-    def test_existing_target_file(self, app_exec, temp_existing):
-        file_contents = temp_existing.read_bytes()
-        command = f'{app_exec} {PIC_FILE} -o {temp_existing}'
+    def test_existing_target_file(self, app_exec, existing_pdf):
+        file_contents = existing_pdf.read_bytes()
+        command = f'{app_exec} {PIC_FILE} -o {existing_pdf}'
         subprocess.run(command, shell=True)
 
         # target file exists and has not changed
-        assert temp_existing.exists()
-        assert temp_existing.read_bytes() == file_contents
+        assert existing_pdf.exists()
+        assert existing_pdf.read_bytes() == file_contents
 
-    def test_force_overwrite_existing_file(self, app_exec, temp_existing):
-        file_contents = temp_existing.read_bytes()
-        command = f'{app_exec} -f {PIC_FILE} -o {temp_existing}'
+    def test_force_overwrite_existing_file(self, app_exec, existing_pdf):
+        file_contents = existing_pdf.read_bytes()
+        command = f'{app_exec} -f {PIC_FILE} -o {existing_pdf}'
         subprocess.run(command, shell=True)
 
         # target file has been overwritten by PDF content
-        assert_pdf(temp_existing, num_pages=1)
-        assert temp_existing.read_bytes() != file_contents
+        assert_pdf(existing_pdf, num_pages=1)
+        assert existing_pdf.read_bytes() != file_contents
 
 
 class TestPdfSuffix:
     """Test handling of the output file's suffix."""
 
-    def test_pdf_suffix_added_if_suffix_missing(self, app_exec, temp_pdf):
-        without_suffix = temp_pdf.with_suffix('')
+    def test_pdf_suffix_added_if_suffix_missing(self, app_exec, new_pdf):
+        without_suffix = new_pdf.with_suffix('')
         command = f'{app_exec} {PIC_FILE} -o {without_suffix}'
         proc = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
         std_out = proc.stdout.decode()
 
         assert not without_suffix.exists()
-        assert temp_pdf.exists()
-        assert f"'{temp_pdf}'" in std_out
+        assert new_pdf.exists()
+        assert f"'{new_pdf}'" in std_out
 
-    def test_file_with_suffix_not_overwritten_if_exists(self, app_exec, temp_existing):
-        file_contents = temp_existing.read_bytes()
-        without_suffix = temp_existing.with_suffix('')
+    def test_file_with_suffix_not_overwritten_if_exists(self, app_exec, existing_pdf):
+        file_contents = existing_pdf.read_bytes()
+        without_suffix = existing_pdf.with_suffix('')
         command = f'{app_exec} {PIC_FILE} -o {without_suffix}'
         proc = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
         std_err = proc.stderr.decode()
 
         assert not without_suffix.exists()
-        assert f"error: FileExistsError: file '{temp_existing}' exists" in std_err
+        assert f"error: FileExistsError: file '{existing_pdf}' exists" in std_err
         # target file has not changed
-        assert temp_existing.read_bytes() == file_contents
+        assert existing_pdf.read_bytes() == file_contents
