@@ -35,7 +35,7 @@ def get_args(parser):
     return parser.parse_args()
 
 
-def report_results(result, target_path, verbose=False):
+def report_results(result, output_file, verbose=False):
     unique_errors = dict(result.errors)
     num_errors = len(unique_errors)
     if num_errors > 0:
@@ -46,7 +46,7 @@ def report_results(result, target_path, verbose=False):
 
     if result.num_ok > 0:
         print(f'Saved {_number(result.num_ok, "picture")}'
-              f' ({_number(result.num_pages, "page")}) to {target_path!r}')
+              f' ({_number(result.num_pages, "page")}) to {output_file!r}')
     else:
         print('Nothing to save.')
 
@@ -76,12 +76,12 @@ def main():
     args = get_args(parser)
 
     picture_paths = args.pictures
-    pdf_path = _ensure_suffix(args.output_file)
+    output_file = _ensure_suffix(args.output_file)
 
     try:
         result = pictures_to_pdf(
             *picture_paths,
-            pdf_file=pdf_path,
+            pdf_file=output_file,
             page_size=args.page_size,
             landscape=args.landscape,
             margin=args.margin,
@@ -93,4 +93,4 @@ def main():
         parser.error(f'{err.__class__.__name__}: {err}')
     else:
         if not args.quiet:
-            report_results(result, pdf_path, args.verbose)
+            report_results(result, output_file, args.verbose)

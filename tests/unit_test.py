@@ -38,11 +38,11 @@ class TestSavePdf:
     def test_valid_input(self, mocker, reader_side_effects, expected_ok,
                          expected_errors):
         pic_files = ['foo.png'] * len(reader_side_effects)
-        pdf_file = 'foo.pdf'
+        output_file = 'foo.pdf'
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.core.Canvas', autospec=True)
-        result = PictureShow(*pic_files)._save_pdf(pdf_file, **DEFAULTS)
+        result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
 
         assert result.num_ok == expected_ok
         assert len(result.errors) == expected_errors
@@ -58,11 +58,11 @@ class TestSavePdf:
     )
     def test_invalid_input(self, mocker, reader_side_effects, expected_errors):
         pic_files = ['foo.png'] * len(reader_side_effects)
-        pdf_file = 'foo.pdf'
+        output_file = 'foo.pdf'
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.core.Canvas', autospec=True)
-        result = PictureShow(*pic_files)._save_pdf(pdf_file, **DEFAULTS)
+        result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
 
         assert result.num_ok == 0
         assert len(result.errors) == expected_errors
@@ -78,12 +78,12 @@ class TestSavePdf:
     def test_multipage_layout(self, mocker, reader_side_effects, expected_ok,
                               expected_pages):
         pic_files = ['foo.png'] * len(reader_side_effects)
-        pdf_file = 'foo.pdf'
+        output_file = 'foo.pdf'
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.core.Canvas', autospec=True)
         params = {**DEFAULTS, 'layout': (1, 2)}
-        result = PictureShow(*pic_files)._save_pdf(pdf_file, **params)
+        result = PictureShow(*pic_files)._save_pdf(output_file, **params)
 
         assert result.num_ok == expected_ok
         assert len(result.errors) == 0
@@ -96,11 +96,11 @@ class TestValidateTargetPath:
     def test_nonexistent_target_file(self, mocker):
         Path = mocker.patch('pictureshow.core.Path', autospec=True)
         Path.return_value.exists.return_value = False
-        pdf_file = 'foo.pdf'
+        output_file = 'foo.pdf'
 
-        result = PictureShow()._validate_target_path(pdf_file,
+        result = PictureShow()._validate_target_path(output_file,
                                                      force_overwrite=False)
-        assert result == pdf_file
+        assert result == output_file
 
     def test_existing_target_file_raises_error(self, mocker):
         Path = mocker.patch('pictureshow.core.Path', autospec=True)
@@ -113,20 +113,20 @@ class TestValidateTargetPath:
     def test_force_overwrite_existing_file(self, mocker):
         Path = mocker.patch('pictureshow.core.Path', autospec=True)
         Path.return_value.exists.return_value = True
-        pdf_file = 'foo.pdf'
+        output_file = 'foo.pdf'
 
-        result = PictureShow()._validate_target_path(pdf_file,
+        result = PictureShow()._validate_target_path(output_file,
                                                      force_overwrite=True)
-        assert result == pdf_file
+        assert result == output_file
 
     def test_target_pathlike_converted_to_str(self, mocker):
         Path_mock = mocker.patch('pictureshow.core.Path', autospec=True)
         Path_mock.return_value.exists.return_value = False
-        pdf_file = Path('foo.pdf')
+        output_file = Path('foo.pdf')
 
-        result = PictureShow()._validate_target_path(pdf_file,
+        result = PictureShow()._validate_target_path(output_file,
                                                      force_overwrite=False)
-        assert result == str(pdf_file)
+        assert result == str(output_file)
 
 
 class TestValidatePageSize:

@@ -38,12 +38,12 @@ class PictureShow:
         `errors` - list of items skipped due to error
         `num_pages` - number of pages of the resulting PDF document
         """
-        target_str = self._validate_target_path(pdf_file, force_overwrite)
+        output_file = self._validate_target_path(pdf_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
         return self._save_pdf(
-            target_str, page_size, margin, layout, stretch_small
+            output_file, page_size, margin, layout, stretch_small
         )
 
     def _save_pdf(self, pdf_file, page_size, margin, layout, stretch_small):
@@ -78,9 +78,9 @@ class PictureShow:
             num_pages += 1
 
     @staticmethod
-    def _validate_target_path(file_path, force_overwrite):
-        target_str = str(file_path)
-        target_path = Path(file_path)
+    def _validate_target_path(path, force_overwrite):
+        target_str = str(path)
+        target_path = Path(path)
 
         if target_path.exists() and not force_overwrite:
             raise FileExistsError(f'file {target_str!r} exists')
