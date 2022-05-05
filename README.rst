@@ -16,9 +16,10 @@ Installation
 
     pip install pictureshow
 
-The third-party dependencies of this package are
-`reportlab <https://pypi.org/project/reportlab/>`__ and
-`Pillow <https://pypi.org/project/Pillow/>`__.
+Third-party dependencies:
+
+- `Pillow <https://pypi.org/project/Pillow/>`__
+- `reportlab <https://pypi.org/project/reportlab/>`__
 
 
 Usage
@@ -38,24 +39,23 @@ As a command line tool
     options:
       -h, --help            show this help message and exit
       -f, --force-overwrite
-                            save target file even if filename exists
-      -L, --landscape       set landscape orientation of page; default is
-                            portrait
+                            save to output filename even if file exists
+      -L, --landscape       set landscape orientation of page; default is portrait
       -l LAYOUT, --layout LAYOUT
-                            specify grid layout (columns x rows) of pictures on
-                            page, e.g. 2x3 or 2,3; default is 1x1
+                            specify grid layout (columns x rows) of pictures on page,
+                            e.g. 2x3 or 2,3; default is 1x1
       -m MARGIN, --margin MARGIN
-                            set width of empty space around pictures; default is
-                            72 (72 points = 1 inch)
+                            set width of empty space around pictures; default is 72
+                            (72 points = 1 inch)
       -o PATH, --output-file PATH
-                            target PDF file path (required)
+                            path of the output PDF file (required)
       -p SIZE, --page-size SIZE
-                            specify page size; default is A4 (available sizes:
-                            A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, B0, B1,
-                            B2, B3, B4, B5, B6, B7, B8, B9, B10, C0, C1, C2, C3,
-                            C4, C5, C6, C7, C8, C9, C10, LETTER, LEGAL,
-                            ELEVENSEVENTEEN, JUNIOR_LEGAL, HALF_LETTER,
-                            GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER)
+                            specify page size; default is A4 (available sizes: A0,
+                            A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, B0, B1, B2, B3,
+                            B4, B5, B6, B7, B8, B9, B10, C0, C1, C2, C3, C4, C5, C6,
+                            C7, C8, C9, C10, LETTER, LEGAL, ELEVENSEVENTEEN,
+                            JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL,
+                            TABLOID, LEDGER)
       -q, --quiet           suppress printing to stdout
       -s, --stretch-small   scale small pictures up to fit drawing area
       -v, --verbose         show details on files skipped due to error
@@ -80,7 +80,7 @@ set page orientation to landscape:
     $ pictureshow -l 2x2 -L photos/* -o photos
     Saved 50 pictures (13 pages) to 'photos.pdf'
 
-(Please note that if the target filename has no extension specified,
+(Please note that if the output filename has no extension specified,
 ``.pdf`` will be appended to it. This only applies for the command line tool.)
 
 Save pictures from URLs, set smaller margin and stretch small pictures:
@@ -95,8 +95,8 @@ As a Python library
 -------------------
 
 
-``PictureShow`` class
-~~~~~~~~~~~~~~~~~~~~~
+Using the ``PictureShow`` class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Example:
 
@@ -104,8 +104,8 @@ Example:
 
     from pictureshow import PictureShow
 
-    pic_show = PictureShow('pics/cucumber.jpg', 'pics/onion.jpg')
-    pic_show.save_pdf('vegetables.pdf')
+    pictures = PictureShow('pics/cucumber.jpg', 'pics/onion.jpg')
+    pictures.save_pdf('vegetables.pdf')
 
 The keyword parameters of the ``save_pdf`` method and their default values
 correspond to the above shown command line options:
@@ -123,8 +123,8 @@ correspond to the above shown command line options:
     )
 
 
-``pictures_to_pdf`` shortcut function
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using the ``pictures_to_pdf`` shortcut function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Example:
 

@@ -9,7 +9,7 @@ def get_args(parser):
     parser.add_argument('pictures', nargs='+', metavar='PICTURE',
                         help='one or more picture paths or URLs')
     parser.add_argument('-f', '--force-overwrite', action='store_true',
-                        help='save target file even if filename exists')
+                        help='save to output filename even if file exists')
     parser.add_argument('-L', '--landscape', action='store_true',
                         help='set landscape orientation of page; default is portrait')
     parser.add_argument('-l', '--layout', default='1x1',
@@ -19,7 +19,7 @@ def get_args(parser):
                         help='set width of empty space around pictures;'
                              ' default is 72 (72 points = 1 inch)')
     parser.add_argument('-o', '--output-file', required=True, metavar='PATH',
-                        help='target PDF file path (required)')
+                        help='path of the output PDF file (required)')
     parser.add_argument('-p', '--page-size', default='A4', metavar='SIZE',
                         help=f'specify page size; default is A4'
                              f' (available sizes: {", ".join(PAGE_SIZES)})')
