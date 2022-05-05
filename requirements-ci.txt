@@ -5,3 +5,4 @@ pytest-mock==3.7.0
 pytest-cov==3.0.0
 pytest-xdist==2.5.0
 PyPDF2==1.27.12
+bandit==1.7.4
