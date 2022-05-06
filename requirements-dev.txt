@@ -1,3 +1,2 @@
 -r requirements-ci.txt
-mypy==0.950
-pylint==2.13.8
+pre-commit>=2.19.0

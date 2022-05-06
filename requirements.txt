@@ -1,2 +1,2 @@
-Pillow==9.1.0
-reportlab==3.6.9
+Pillow>=9.1.0
+reportlab>=3.6.9
