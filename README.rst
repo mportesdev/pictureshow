@@ -1,4 +1,4 @@
-|build-test| |coverage| |release| |license| |pyversions| |format| |downloads|
+|build-test| |coverage| |bandit| |pre-commit| |release| |pyversions| |downloads|
 
 Save pictures to PDF from the command line or from your Python programs.
 
@@ -77,18 +77,18 @@ set page orientation to landscape:
 
 .. code::
 
-    $ pictureshow -l 2x2 -L photos/* -o photos
-    Saved 50 pictures (13 pages) to 'photos.pdf'
+    $ pictureshow -l 2x2 -L vegetables/* -o vegetables
+    Saved 50 pictures (13 pages) to 'vegetables.pdf'
 
 (Please note that if the output filename has no extension specified,
 ``.pdf`` will be appended to it. This only applies for the command line tool.)
 
-Save pictures from URLs, set smaller margin and stretch small pictures:
+Save pictures from web URLs, set smaller margin and stretch small pictures:
 
 .. code::
 
-    $ pictureshow -m 36 -s https://<picture.1.url> https://<picture.2.url> -o pics_from_web
-    Saved 2 pictures (2 pages) to 'pics_from_web.pdf'
+    $ pictureshow -m 36 -s <carrot.1.url> <carrot.2.url> -o carrots_from_web
+    Saved 2 pictures (2 pages) to 'carrots_from_web.pdf'
 
 
 As a Python library
@@ -159,13 +159,13 @@ default values correspond to the above shown command line options:
     :target: https://github.com/mportesdev/pictureshow/actions
 .. |coverage| image:: https://img.shields.io/codecov/c/gh/mportesdev/pictureshow
     :target: https://codecov.io/gh/mportesdev/pictureshow
+.. |bandit| image:: https://img.shields.io/badge/security-bandit-yellow.svg
+    :target: https://github.com/PyCQA/bandit
+.. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit
+    :target: https://github.com/pre-commit/pre-commit
 .. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow
     :target: https://github.com/mportesdev/pictureshow/releases/latest
-.. |license| image:: https://img.shields.io/github/license/mportesdev/pictureshow
-    :target: https://github.com/mportesdev/pictureshow/blob/master/LICENSE
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
     :target: https://pypi.org/project/pictureshow
-.. |format| image:: https://img.shields.io/pypi/format/pictureshow
-    :target: https://pypi.org/project/pictureshow/#files
 .. |downloads| image:: https://pepy.tech/badge/pictureshow
     :target: https://pepy.tech/project/pictureshow

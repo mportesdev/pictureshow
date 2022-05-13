@@ -38,11 +38,11 @@ jobs:
         WHEEL_PATH="$(ls dist/*)"
         echo "WHEEL PATH: $WHEEL_PATH"
         pip install $WHEEL_PATH
-        INSTALLED_PATH="$(pip show pictureshow | grep -Po '(?<=Location: ).*$')/pictureshow"
+        INSTALLED_PATH="$(pip show pictureshow | grep Location | cut -d' ' -f2)/pictureshow"
         echo "WHEEL INSTALLED TO: $INSTALLED_PATH"
-        COV_REPORT="${{ github.workspace }}/coverage.xml"
-        pytest --cov=$INSTALLED_PATH --cov-report=xml":$COV_REPORT" --cov-report=term
-        echo "::set-output name=COV_REPORT::$COV_REPORT"
+        COV_REPORT_PATH="${{ github.workspace }}/coverage.xml"
+        pytest --cov=$INSTALLED_PATH --cov-report=xml":$COV_REPORT_PATH" --cov-report=term
+        echo "::set-output name=COV_REPORT_PATH::$COV_REPORT_PATH"
         echo "::set-output name=VERSION::$(pictureshow --version)"
         echo "::set-output name=WHEEL_PATH::$WHEEL_PATH"
 
@@ -50,7 +50,7 @@ jobs:
       uses: codecov/codecov-action@v3
       if: matrix.python-version == '3.10'
       with:
-        files: ${{ steps.build_and_test.outputs.COV_REPORT }}
+        files: ${{ steps.build_and_test.outputs.COV_REPORT_PATH }}
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
