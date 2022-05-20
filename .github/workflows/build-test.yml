@@ -33,6 +33,7 @@ jobs:
         pip install --upgrade pip setuptools
         pip install -r requirements-ci.txt
         bandit --recursive pictureshow
+        bandit --skip=B101,B404,B602 --recursive tests
         python setup.py bdist_wheel
         rm -rf pictureshow
         WHEEL_PATH="$(ls dist/*)"
