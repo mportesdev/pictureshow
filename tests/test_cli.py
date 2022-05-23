@@ -1,6 +1,6 @@
 import subprocess
 
-from PyPDF2 import PdfFileReader
+from PyPDF2 import PdfReader
 import pytest
 
 from pictureshow.cli import _number, _ensure_suffix
@@ -244,7 +244,7 @@ class TestOutput:
 def assert_pdf(path, num_pages):
     assert path.exists()
     assert path.stat().st_size > 0
-    assert PdfFileReader(str(path)).numPages == num_pages
+    assert len(PdfReader(str(path)).pages) == num_pages
 
 
 class TestGeneratedFile:
