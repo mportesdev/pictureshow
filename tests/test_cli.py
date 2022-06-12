@@ -244,7 +244,7 @@ class TestOutput:
 def assert_pdf(path, num_pages):
     assert path.exists()
     assert path.stat().st_size > 0
-    assert len(PdfReader(str(path)).pages) == num_pages
+    assert len(PdfReader(path).pages) == num_pages
 
 
 class TestGeneratedFile:
