@@ -1,4 +1,4 @@
-import subprocess
+import subprocess  # nosec: B404
 
 from PyPDF2 import PdfReader
 import pytest
@@ -87,7 +87,7 @@ class TestOutput:
     def test_valid_input(self, app_exec, new_pdf, pic_files, num_pics,
                          num_pages):
         command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -97,7 +97,7 @@ class TestOutput:
 
     def test_valid_and_invalid_input(self, app_exec, new_pdf):
         command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -116,7 +116,7 @@ class TestOutput:
     )
     def test_invalid_input(self, app_exec, new_pdf, pic_files, num_invalid):
         command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -126,7 +126,7 @@ class TestOutput:
 
     def test_invalid_page_size_throws_error(self, app_exec, new_pdf):
         command = f'{app_exec} -pA11 {PIC_FILE} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
@@ -135,7 +135,7 @@ class TestOutput:
 
     def test_high_margin_throws_error(self, app_exec, new_pdf):
         command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
@@ -155,7 +155,7 @@ class TestOutput:
         pic_files = PICS_2_GOOD * 3
 
         command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -170,7 +170,7 @@ class TestOutput:
     )
     def test_invalid_layout_throws_error(self, app_exec, new_pdf, layout):
         command = f'{app_exec} -l{layout} {PIC_FILE} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
@@ -178,7 +178,7 @@ class TestOutput:
 
     def test_existing_target_file_throws_error(self, app_exec, existing_pdf):
         command = f'{app_exec} {PIC_FILE} -o {existing_pdf}'
-        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
@@ -186,7 +186,7 @@ class TestOutput:
 
     def test_force_overwrite_existing_file(self, app_exec, existing_pdf):
         command = f'{app_exec} -f {PIC_FILE} -o {existing_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -194,7 +194,7 @@ class TestOutput:
 
     def test_quiet_does_not_print_to_stdout(self, app_exec, new_pdf):
         command = f'{app_exec} -q {PIC_FILE} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -202,7 +202,7 @@ class TestOutput:
 
     def test_quiet_does_not_suppress_stderr(self, app_exec, existing_pdf):
         command = f'{app_exec} -q {PIC_FILE} -o {existing_pdf}'
-        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
@@ -210,7 +210,7 @@ class TestOutput:
 
     def test_verbose(self, app_exec, new_pdf):
         command = f'{app_exec} -v {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -222,7 +222,7 @@ class TestOutput:
         pic_files = PICS_2_BAD * 2
 
         command = f'{app_exec} -v {" ".join(pic_files)} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
@@ -231,7 +231,7 @@ class TestOutput:
 
     def test_quiet_and_verbose_are_mutually_exclusive(self, app_exec, new_pdf):
         command = f'{app_exec} -qv {PIC_FILE} -o {new_pdf}'
-        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
@@ -258,13 +258,13 @@ class TestGeneratedFile:
     )
     def test_valid_input(self, app_exec, new_pdf, pic_files, num_pics):
         command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         assert_pdf(new_pdf, num_pages=num_pics)
 
     def test_valid_and_invalid_input(self, app_exec, new_pdf):
         command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         assert_pdf(new_pdf, num_pages=1)
 
@@ -279,19 +279,19 @@ class TestGeneratedFile:
     )
     def test_invalid_input(self, app_exec, new_pdf, pic_files):
         command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         assert not new_pdf.exists()
 
     def test_invalid_page_size(self, app_exec, new_pdf):
         command = f'{app_exec} -pA11 {PIC_FILE} -o {new_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         assert not new_pdf.exists()
 
     def test_high_margin(self, app_exec, new_pdf):
         command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {new_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         assert not new_pdf.exists()
 
@@ -309,7 +309,7 @@ class TestGeneratedFile:
         pic_files = PICS_2_GOOD * 3
 
         command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {new_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         assert_pdf(new_pdf, num_pages=num_pages)
 
@@ -322,14 +322,14 @@ class TestGeneratedFile:
     )
     def test_invalid_layout(self, app_exec, new_pdf, layout):
         command = f'{app_exec} -l{layout} {PIC_FILE} -o {new_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         assert not new_pdf.exists()
 
     def test_existing_target_file(self, app_exec, existing_pdf):
         file_contents = existing_pdf.read_bytes()
         command = f'{app_exec} {PIC_FILE} -o {existing_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         # target file exists and has not changed
         assert existing_pdf.exists()
@@ -338,7 +338,7 @@ class TestGeneratedFile:
     def test_force_overwrite_existing_file(self, app_exec, existing_pdf):
         file_contents = existing_pdf.read_bytes()
         command = f'{app_exec} -f {PIC_FILE} -o {existing_pdf}'
-        subprocess.run(command.split())
+        subprocess.run(command.split())  # nosec: B603
 
         # target file has been overwritten by PDF content
         assert_pdf(existing_pdf, num_pages=1)
@@ -351,7 +351,7 @@ class TestPdfSuffix:
     def test_pdf_suffix_added_if_suffix_missing(self, app_exec, new_pdf):
         without_suffix = new_pdf.with_suffix('')
         command = f'{app_exec} {PIC_FILE} -o {without_suffix}'
-        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert not without_suffix.exists()
@@ -362,7 +362,7 @@ class TestPdfSuffix:
         file_contents = existing_pdf.read_bytes()
         without_suffix = existing_pdf.with_suffix('')
         command = f'{app_exec} {PIC_FILE} -o {without_suffix}'
-        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert not without_suffix.exists()
