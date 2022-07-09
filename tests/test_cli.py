@@ -15,7 +15,6 @@ PIC_URL = 'https://avatars.githubusercontent.com/u/43098013'
 PICS_1_GOOD = (PIC_FILE,)
 PICS_2_GOOD = (PIC_FILE, FILES + 'blender/chain_render.jpg')
 PICS_1_URL = (PIC_URL,)
-PICS_GLOB = (FILES + 'plots/gauss*',)
 PICS_1_GOOD_1_BAD = (PIC_FILE, FILES + 'not_jpg.jpg')
 PICS_1_BAD = (FILES + 'not_jpg.jpg',)
 PICS_2_BAD = (FILES + 'not_jpg.jpg', FILES + 'empty.pdf')
@@ -82,7 +81,6 @@ class TestOutput:
         (
             pytest.param(PICS_1_GOOD, '1 picture', '1 page', id='1 good'),
             pytest.param(PICS_2_GOOD, '2 pictures', '2 pages', id='2 good'),
-            pytest.param(PICS_GLOB, '2 pictures', '2 pages', id='glob'),
             pytest.param(PICS_1_URL, '1 picture', '1 page', id='1 good url'),
         )
     )
@@ -255,7 +253,6 @@ class TestGeneratedFile:
         (
             pytest.param(PICS_1_GOOD, 1, id='1 good'),
             pytest.param(PICS_2_GOOD, 2, id='2 good'),
-            pytest.param(PICS_GLOB, 2, id='glob'),
             pytest.param(PICS_1_URL, 1, id='1 good url'),
         )
     )
