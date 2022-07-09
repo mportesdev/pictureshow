@@ -13,7 +13,7 @@ PIC_FILE = FILES + 'mandelbrot.png'
 PIC_URL = 'https://avatars.githubusercontent.com/u/43098013'
 
 PICS_1_GOOD = (PIC_FILE,)
-PICS_2_GOOD = (PIC_FILE, FILES + 'blender/chain_render.jpg')
+PICS_2_GOOD = (PIC_FILE, FILES + 'plots/gauss_2x2.png')
 PICS_1_URL = (PIC_URL,)
 PICS_1_GOOD_1_BAD = (PIC_FILE, FILES + 'not_jpg.jpg')
 PICS_1_BAD = (FILES + 'not_jpg.jpg',)
