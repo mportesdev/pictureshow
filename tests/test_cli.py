@@ -30,8 +30,7 @@ def app_exec(request):
 
 @pytest.fixture
 def new_pdf(tmp_path):
-    pdf_path = tmp_path / 'pictures.pdf'
-    return pdf_path
+    return tmp_path / 'pictures.pdf'
 
 
 @pytest.fixture
@@ -46,7 +45,7 @@ def existing_pdf(tmp_path):
     (
             pytest.param(1, 'file', '1 file', id='1 file'),
             pytest.param(2, 'file', '2 files', id='2 files'),
-            pytest.param(1, 'picture', '1 picture', id='3 pictures'),
+            pytest.param(1, 'picture', '1 picture', id='1 picture'),
             pytest.param(3, 'page', '3 pages', id='3 pages'),
     )
 )
@@ -57,43 +56,40 @@ def test_number(number, noun, expected):
 @pytest.mark.parametrize(
     'path, expected',
     (
-            pytest.param('pics', 'pics.pdf', id='str without suffix'),
-            pytest.param('pics.pdf', 'pics.pdf', id='str with .pdf suffix'),
-            pytest.param('pics.pics', 'pics.pics', id='str with other suffix'),
+            pytest.param('pics', 'pics.pdf', id='no suffix'),
+            pytest.param('pics.pdf', 'pics.pdf', id='.pdf suffix'),
+            pytest.param('pics.pics', 'pics.pics', id='other suffix'),
     )
 )
 def test_ensure_suffix(path, expected):
     assert _ensure_suffix(path) == expected
 
 
-class TestCallsToCore:
-    """Test that the command line app calls the underlying function
-    correctly.
-    """
-    pass
+def assert_pdf(path, num_pages):
+    assert path.exists()
+    assert path.stat().st_size > 0
+    assert len(PdfReader(path).pages) == num_pages
 
 
-class TestOutput:
-    """Test stdout/stderr and return code of the command line app."""
-
+class TestCommandLine:
     @pytest.mark.parametrize(
-        'pic_files, num_pics, num_pages',
+        'pic_files, num_pages, pics, pages',
         (
-            pytest.param(PICS_1_GOOD, '1 picture', '1 page', id='1 good'),
-            pytest.param(PICS_2_GOOD, '2 pictures', '2 pages', id='2 good'),
-            pytest.param(PICS_1_URL, '1 picture', '1 page', id='1 good url'),
+            pytest.param(PICS_1_GOOD, 1, '1 picture', '1 page', id='1 valid'),
+            pytest.param(PICS_2_GOOD, 2, '2 pictures', '2 pages', id='2 valid'),
+            pytest.param(PICS_1_URL, 1, '1 picture', '1 page', id='1 valid url'),
         )
     )
-    def test_valid_input(self, app_exec, new_pdf, pic_files, num_pics,
-                         num_pages):
+    def test_valid_input(self, app_exec, new_pdf, pic_files, num_pages, pics, pages):
         command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
-        assert f'Saved {num_pics} ({num_pages}) to ' in std_out
+        assert f'Saved {pics} ({pages}) to ' in std_out
         assert 'skipped' not in std_out
         assert 'Nothing' not in std_out
+        assert_pdf(new_pdf, num_pages=num_pages)
 
     def test_valid_and_invalid_input(self, app_exec, new_pdf):
         command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
@@ -104,12 +100,13 @@ class TestOutput:
         assert '1 file skipped due to error.' in std_out
         assert 'Saved 1 picture (1 page) to ' in std_out
         assert 'Nothing' not in std_out
+        assert_pdf(new_pdf, num_pages=1)
 
     @pytest.mark.parametrize(
         'pic_files, num_invalid',
         (
-            pytest.param(PICS_1_BAD, '1 file', id='1bad'),
-            pytest.param(PICS_2_BAD, '2 files', id='2bad'),
+            pytest.param(PICS_1_BAD, '1 file', id='1 invalid'),
+            pytest.param(PICS_2_BAD, '2 files', id='2 invalid'),
             pytest.param(PICS_DIR, '1 file', id='dir'),
             pytest.param(PICS_MISSING, '1 file', id='missing'),
         )
@@ -123,6 +120,7 @@ class TestOutput:
         assert f'{num_invalid} skipped due to error.' in std_out
         assert 'Saved' not in std_out
         assert 'Nothing to save.' in std_out
+        assert not new_pdf.exists()
 
     def test_invalid_page_size_throws_error(self, app_exec, new_pdf):
         command = f'{app_exec} -pA11 {PIC_FILE} -o {new_pdf}'
@@ -132,6 +130,7 @@ class TestOutput:
         assert proc.returncode == 2
         assert 'error: PageSizeError:' in std_err
         assert f"unknown page size 'A11', please use one of" in std_err
+        assert not new_pdf.exists()
 
     def test_high_margin_throws_error(self, app_exec, new_pdf):
         command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {new_pdf}'
@@ -140,31 +139,31 @@ class TestOutput:
 
         assert proc.returncode == 2
         assert 'error: MarginError: margin value too high: ' in std_err
+        assert not new_pdf.exists()
 
     @pytest.mark.parametrize(
-        'layout, num_pages',
+        'layout, num_pages, pages',
         (
-            pytest.param('1x3', '2 pages', id='1x3'),
-            pytest.param('3,2', '1 page', id='3,2'),
-            pytest.param('1,1', '6 pages', id='1,1'),
+            pytest.param('1x3', 2, '2 pages', id='1x3'),
+            pytest.param('3,2', 1, '1 page', id='3,2'),
+            pytest.param('1,1', 6, '6 pages', id='1,1'),
         )
     )
-    def test_multiple_pictures_layout(self, app_exec, new_pdf, layout,
-                                      num_pages):
+    def test_multiple_pictures_layout(self, app_exec, new_pdf, layout, num_pages, pages):
         # 6 pictures
         pic_files = PICS_2_GOOD * 3
-
         command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
-        assert f'Saved 6 pictures ({num_pages}) to ' in std_out
+        assert f'Saved 6 pictures ({pages}) to ' in std_out
+        assert_pdf(new_pdf, num_pages=num_pages)
 
     @pytest.mark.parametrize(
         'layout',
         (
-            pytest.param('1', id='invalid length'),
+            pytest.param('1', id='invalid format'),
             pytest.param('0x1', id='invalid value'),
         )
     )
@@ -175,22 +174,31 @@ class TestOutput:
 
         assert proc.returncode == 2
         assert 'error: LayoutError: two positive integers expected' in std_err
+        assert not new_pdf.exists()
 
     def test_existing_target_file_throws_error(self, app_exec, existing_pdf):
+        file_contents = existing_pdf.read_bytes()
         command = f'{app_exec} {PIC_FILE} -o {existing_pdf}'
         proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
         assert f"error: FileExistsError: file '{existing_pdf}' exists" in std_err
+        # target file exists and has not changed
+        assert existing_pdf.exists()
+        assert existing_pdf.read_bytes() == file_contents
 
     def test_force_overwrite_existing_file(self, app_exec, existing_pdf):
+        file_contents = existing_pdf.read_bytes()
         command = f'{app_exec} -f {PIC_FILE} -o {existing_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
         assert 'Saved 1 picture (1 page) to ' in std_out
+        # target file has been overwritten
+        assert_pdf(existing_pdf, num_pages=1)
+        assert existing_pdf.read_bytes() != file_contents
 
     def test_quiet_does_not_print_to_stdout(self, app_exec, new_pdf):
         command = f'{app_exec} -q {PIC_FILE} -o {new_pdf}'
@@ -220,7 +228,6 @@ class TestOutput:
     def test_verbose_shows_only_unique_files(self, app_exec, new_pdf):
         # duplicate items
         pic_files = PICS_2_BAD * 2
-
         command = f'{app_exec} -v {" ".join(pic_files)} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
@@ -237,112 +244,6 @@ class TestOutput:
         assert proc.returncode == 2
         assert 'error: argument -v' in std_err
         assert 'not allowed with argument -q' in std_err
-
-
-def assert_pdf(path, num_pages):
-    assert path.exists()
-    assert path.stat().st_size > 0
-    assert len(PdfReader(path).pages) == num_pages
-
-
-class TestGeneratedFile:
-    """Test the PDF file generated by the command line app."""
-
-    @pytest.mark.parametrize(
-        'pic_files, num_pics',
-        (
-            pytest.param(PICS_1_GOOD, 1, id='1 good'),
-            pytest.param(PICS_2_GOOD, 2, id='2 good'),
-            pytest.param(PICS_1_URL, 1, id='1 good url'),
-        )
-    )
-    def test_valid_input(self, app_exec, new_pdf, pic_files, num_pics):
-        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        assert_pdf(new_pdf, num_pages=num_pics)
-
-    def test_valid_and_invalid_input(self, app_exec, new_pdf):
-        command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        assert_pdf(new_pdf, num_pages=1)
-
-    @pytest.mark.parametrize(
-        'pic_files',
-        (
-            pytest.param(PICS_1_BAD, id='1bad'),
-            pytest.param(PICS_2_BAD, id='2bad'),
-            pytest.param(PICS_DIR, id='dir'),
-            pytest.param(PICS_MISSING, id='missing'),
-        )
-    )
-    def test_invalid_input(self, app_exec, new_pdf, pic_files):
-        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        assert not new_pdf.exists()
-
-    def test_invalid_page_size(self, app_exec, new_pdf):
-        command = f'{app_exec} -pA11 {PIC_FILE} -o {new_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        assert not new_pdf.exists()
-
-    def test_high_margin(self, app_exec, new_pdf):
-        command = f'{app_exec} -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {new_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        assert not new_pdf.exists()
-
-    @pytest.mark.parametrize(
-        'layout, num_pages',
-        (
-            pytest.param('1x3', 2, id='1x3'),
-            pytest.param('3,2', 1, id='3,2'),
-            pytest.param('1,1', 6, id='1,1'),
-        )
-    )
-    def test_multiple_pictures_layout(self, app_exec, new_pdf, layout,
-                                      num_pages):
-        # 6 pictures
-        pic_files = PICS_2_GOOD * 3
-
-        command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {new_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        assert_pdf(new_pdf, num_pages=num_pages)
-
-    @pytest.mark.parametrize(
-        'layout',
-        (
-            pytest.param('1', id='invalid length'),
-            pytest.param('0x1', id='invalid value'),
-        )
-    )
-    def test_invalid_layout(self, app_exec, new_pdf, layout):
-        command = f'{app_exec} -l{layout} {PIC_FILE} -o {new_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        assert not new_pdf.exists()
-
-    def test_existing_target_file(self, app_exec, existing_pdf):
-        file_contents = existing_pdf.read_bytes()
-        command = f'{app_exec} {PIC_FILE} -o {existing_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        # target file exists and has not changed
-        assert existing_pdf.exists()
-        assert existing_pdf.read_bytes() == file_contents
-
-    def test_force_overwrite_existing_file(self, app_exec, existing_pdf):
-        file_contents = existing_pdf.read_bytes()
-        command = f'{app_exec} -f {PIC_FILE} -o {existing_pdf}'
-        subprocess.run(command.split())  # nosec: B603
-
-        # target file has been overwritten by PDF content
-        assert_pdf(existing_pdf, num_pages=1)
-        assert existing_pdf.read_bytes() != file_contents
 
 
 class TestPdfSuffix:
