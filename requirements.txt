@@ -1,2 +1,2 @@
-Pillow>=9.2.0
-reportlab>=3.6.11
+Pillow
+reportlab
