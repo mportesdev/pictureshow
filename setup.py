@@ -2,14 +2,12 @@
 
 from setuptools import setup
 
-import pictureshow
-
 with open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name='pictureshow',
-    version=pictureshow.__version__,
+    version='0.8.1',
     author='Michal Porteš',
     author_email='michalportes1@gmail.com',
     description='Save pictures to PDF.',
