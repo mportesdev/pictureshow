@@ -1,2 +1,2 @@
-Pillow
-reportlab
+Pillow==9.*
+reportlab==3.*

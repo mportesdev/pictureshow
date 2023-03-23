@@ -1,8 +1,8 @@
 -r requirements.txt
 wheel
-pytest
-pytest-mock
-pytest-cov
-pytest-xdist
-pypdf
-bandit
+pytest==7.*
+pytest-mock==3.*
+pytest-cov==4.*
+pytest-xdist==3.*
+pypdf==3.*
+bandit==1.*
