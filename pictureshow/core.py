@@ -1,7 +1,7 @@
-from collections import namedtuple
 import itertools
-from pathlib import Path
 import re
+from collections import namedtuple
+from pathlib import Path
 
 from PIL import UnidentifiedImageError
 from reportlab.lib import pagesizes

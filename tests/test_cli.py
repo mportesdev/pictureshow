@@ -1,7 +1,7 @@
 import subprocess  # nosec: B404
 
-from pypdf import PdfReader
 import pytest
+from pypdf import PdfReader
 
 from pictureshow.cli import _number, _ensure_suffix
 
