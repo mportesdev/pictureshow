@@ -1,4 +1,5 @@
 import argparse
+import sys
 from pathlib import Path
 
 from . import __version__
@@ -73,6 +74,12 @@ def main():
         epilog='https://pypi.org/project/pictureshow/'
     )
     parser.version = __version__
+
+    # handle special case before parsing args
+    if not sys.argv[1:]:
+        parser.print_usage(file=sys.stderr)
+        parser.exit(2, "Try 'pictureshow --help' for more information.\n")
+
     args = get_args(parser)
 
     picture_paths = args.pictures

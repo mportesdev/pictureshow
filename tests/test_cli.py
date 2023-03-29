@@ -245,6 +245,14 @@ class TestCommandLine:
         assert 'error: argument -v' in std_err
         assert 'not allowed with argument -q' in std_err
 
+    def test_special_message_if_args_missing(self, app_exec):
+        command = app_exec
+        proc = subprocess.run(command.split(), stderr=subprocess.PIPE)  # nosec: B603
+        std_err = proc.stderr.decode()
+
+        assert proc.returncode == 2
+        assert "Try 'pictureshow --help' for more information." in std_err
+
 
 class TestPdfSuffix:
     """Test handling of the output file's suffix."""
