@@ -81,13 +81,11 @@ def main():
         parser.exit(2, "Try 'pictureshow --help' for more information.\n")
 
     args = get_args(parser)
-
-    picture_paths = args.pictures
     output_file = _ensure_suffix(args.output_file)
 
     try:
         result = pictures_to_pdf(
-            *picture_paths,
+            *args.pictures,
             output_file=output_file,
             page_size=args.page_size,
             landscape=args.landscape,
