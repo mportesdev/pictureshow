@@ -128,6 +128,7 @@ class TestCommandLine:
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
+        assert "usage:" in std_err
         assert 'error: PageSizeError:' in std_err
         assert f"unknown page size 'A11', please use one of" in std_err
         assert not new_pdf.exists()
@@ -138,6 +139,7 @@ class TestCommandLine:
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
+        assert "usage:" in std_err
         assert 'error: MarginError: margin value too high: ' in std_err
         assert not new_pdf.exists()
 
@@ -173,6 +175,7 @@ class TestCommandLine:
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
+        assert "usage:" in std_err
         assert 'error: LayoutError: two positive integers expected' in std_err
         assert not new_pdf.exists()
 
@@ -183,6 +186,7 @@ class TestCommandLine:
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
+        assert "usage:" in std_err
         assert f"error: FileExistsError: file '{existing_pdf}' exists" in std_err
         # target file exists and has not changed
         assert existing_pdf.exists()
@@ -214,6 +218,7 @@ class TestCommandLine:
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
+        assert "usage:" in std_err
         assert 'FileExistsError:' in std_err
 
     def test_verbose(self, app_exec, new_pdf):
@@ -242,6 +247,7 @@ class TestCommandLine:
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
+        assert "usage:" in std_err
         assert 'error: argument -v' in std_err
         assert 'not allowed with argument -q' in std_err
 
@@ -251,6 +257,7 @@ class TestCommandLine:
         std_err = proc.stderr.decode()
 
         assert proc.returncode == 2
+        assert "usage:" in std_err
         assert "Try 'pictureshow --help' for more information." in std_err
 
 
