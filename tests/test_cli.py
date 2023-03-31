@@ -1,4 +1,5 @@
 import subprocess  # nosec: B404
+from pathlib import Path
 
 import pytest
 from pypdf import PdfReader
@@ -7,18 +8,19 @@ from pictureshow.cli import _number, _ensure_suffix
 
 A4_WIDTH = 72 * 210 / 25.4
 
-FILES = 'tests/files/'
+TEST_FILES = Path(__file__).parent / 'files'
 
-PIC_FILE = FILES + 'mandelbrot.png'
+PIC_FILE = TEST_FILES / 'mandelbrot.png'
 PIC_URL = 'https://avatars.githubusercontent.com/u/43098013'
+BAD_FILE = TEST_FILES / 'not_jpg.jpg'
 
 PICS_1_GOOD = (PIC_FILE,)
-PICS_2_GOOD = (PIC_FILE, FILES + 'plots/gauss_2x2.png')
+PICS_2_GOOD = (PIC_FILE, TEST_FILES / 'plots' / 'gauss_2x2.png')
 PICS_1_URL = (PIC_URL,)
-PICS_1_GOOD_1_BAD = (PIC_FILE, FILES + 'not_jpg.jpg')
-PICS_1_BAD = (FILES + 'not_jpg.jpg',)
-PICS_2_BAD = (FILES + 'not_jpg.jpg', FILES + 'empty.pdf')
-PICS_DIR = (FILES,)
+PICS_1_GOOD_1_BAD = (PIC_FILE, BAD_FILE)
+PICS_1_BAD = (BAD_FILE,)
+PICS_2_BAD = (BAD_FILE, TEST_FILES / 'empty.pdf')
+PICS_DIR = (TEST_FILES,)
 PICS_MISSING = ('missing.png',)
 
 
@@ -81,7 +83,8 @@ class TestCommandLine:
         )
     )
     def test_valid_input(self, app_exec, new_pdf, pic_files, num_pages, pics, pages):
-        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
+        pic_files = ' '.join(str(path) for path in pic_files)
+        command = f'{app_exec} {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
@@ -92,7 +95,8 @@ class TestCommandLine:
         assert_pdf(new_pdf, num_pages=num_pages)
 
     def test_valid_and_invalid_input(self, app_exec, new_pdf):
-        command = f'{app_exec} {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
+        pic_files = ' '.join(str(path) for path in PICS_1_GOOD_1_BAD)
+        command = f'{app_exec} {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
@@ -112,7 +116,8 @@ class TestCommandLine:
         )
     )
     def test_invalid_input(self, app_exec, new_pdf, pic_files, num_invalid):
-        command = f'{app_exec} {" ".join(pic_files)} -o {new_pdf}'
+        pic_files = ' '.join(str(path) for path in pic_files)
+        command = f'{app_exec} {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
@@ -153,8 +158,8 @@ class TestCommandLine:
     )
     def test_multiple_pictures_layout(self, app_exec, new_pdf, layout, num_pages, pages):
         # 6 pictures
-        pic_files = PICS_2_GOOD * 3
-        command = f'{app_exec} -l{layout} {" ".join(pic_files)} -o {new_pdf}'
+        pic_files = ' '.join(str(path) for path in PICS_2_GOOD * 3)
+        command = f'{app_exec} -l{layout} {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
@@ -222,7 +227,8 @@ class TestCommandLine:
         assert 'FileExistsError:' in std_err
 
     def test_verbose(self, app_exec, new_pdf):
-        command = f'{app_exec} -v {" ".join(PICS_1_GOOD_1_BAD)} -o {new_pdf}'
+        pic_files = ' '.join(str(path) for path in PICS_1_GOOD_1_BAD)
+        command = f'{app_exec} -v {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
@@ -232,8 +238,8 @@ class TestCommandLine:
 
     def test_verbose_shows_only_unique_files(self, app_exec, new_pdf):
         # duplicate items
-        pic_files = PICS_2_BAD * 2
-        command = f'{app_exec} -v {" ".join(pic_files)} -o {new_pdf}'
+        pic_files = ' '.join(str(path) for path in PICS_2_BAD * 2)
+        command = f'{app_exec} -v {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
