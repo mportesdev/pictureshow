@@ -16,11 +16,6 @@ Installation
 
     pip install pictureshow
 
-Third-party dependencies:
-
-- `Pillow <https://pypi.org/project/Pillow/>`__
-- `reportlab <https://pypi.org/project/reportlab/>`__
-
 
 Usage
 =====
@@ -38,6 +33,8 @@ As a command line tool
 
     options:
       -h, --help            show this help message and exit
+      -a, --fill-area       fill drawing area with picture, ignoring the picture's
+                            aspect ratio
       -f, --force-overwrite
                             save to output filename even if file exists
       -L, --landscape       set landscape orientation of page; default is portrait
@@ -119,6 +116,7 @@ correspond to the above shown command line options:
         margin=72,
         layout=(1, 1),
         stretch_small=False,
+        fill_area=False,
         force_overwrite=False
     )
 
@@ -151,6 +149,7 @@ default values correspond to the above shown command line options:
         margin=72,
         layout=(1, 1),
         stretch_small=False,
+        fill_area=False,
         force_overwrite=False
     )
 
