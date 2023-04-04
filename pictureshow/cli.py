@@ -9,6 +9,9 @@ from .core import PAGE_SIZES, pictures_to_pdf
 def get_args(parser):
     parser.add_argument('pictures', nargs='+', metavar='PICTURE',
                         help='one or more picture paths or URLs')
+    parser.add_argument('-a', '--fill-area', action='store_true',
+                        help="fill drawing area with picture, ignoring the picture's"
+                             " aspect ratio")
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save to output filename even if file exists')
     parser.add_argument('-L', '--landscape', action='store_true',
@@ -92,6 +95,7 @@ def main():
             margin=args.margin,
             layout=args.layout,
             stretch_small=args.stretch_small,
+            fill_area=args.fill_area,
             force_overwrite=args.force_overwrite
         )
     except Exception as err:
