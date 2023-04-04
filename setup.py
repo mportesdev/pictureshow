@@ -7,7 +7,7 @@ with open('README.rst', encoding='utf-8') as f:
 
 setup(
     name='pictureshow',
-    version='0.8.2',
+    version='0.9.0',
     author='Michal Porteš',
     author_email='michalportes1@gmail.com',
     description='Save pictures to PDF.',
