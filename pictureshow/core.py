@@ -30,7 +30,8 @@ class PictureShow:
         self.errors = []
 
     def save_pdf(self, output_file, page_size='A4', landscape=False, margin=72,
-                 layout=(1, 1), stretch_small=False, force_overwrite=False):
+                 layout=(1, 1), stretch_small=False, fill_area=False,
+                 force_overwrite=False):
         """Save pictures stored in `self.pic_files` to a PDF document.
 
         Return a named tuple of three values:
@@ -43,10 +44,11 @@ class PictureShow:
         layout = self._validate_layout(layout)
 
         return self._save_pdf(
-            output_file, page_size, margin, layout, stretch_small
+            output_file, page_size, margin, layout, stretch_small, fill_area
         )
 
-    def _save_pdf(self, output_file, page_size, margin, layout, stretch_small):
+    def _save_pdf(self, output_file, page_size, margin, layout, stretch_small,
+                  fill_area):
         pdf_canvas = Canvas(output_file, pagesize=page_size)
         valid_pics = self._valid_pictures()
         num_ok = 0
@@ -66,7 +68,8 @@ class PictureShow:
                 x, y, pic_width, pic_height = self._position_and_size(
                     picture.getSize(),
                     area[2:],    # short for (area.width, area.height)
-                    stretch_small
+                    stretch_small,
+                    fill_area
                 )
                 pdf_canvas.drawImage(
                     picture, area.x + x, area.y + y, pic_width, pic_height,
@@ -138,11 +141,13 @@ class PictureShow:
                 yield picture
 
     @staticmethod
-    def _position_and_size(pic_size, area_size, stretch_small):
+    def _position_and_size(pic_size, area_size, stretch_small, fill_area):
         """Calculate position and size of the picture in the area."""
-        pic_width, pic_height = pic_size
         area_width, area_height = area_size
+        if fill_area:
+            return 0, 0, area_width, area_height
 
+        pic_width, pic_height = pic_size
         pic_is_big = pic_width > area_width or pic_height > area_height
         pic_is_wide = pic_width / pic_height > area_width / area_height
 
@@ -183,7 +188,7 @@ class PictureShow:
 
 
 def pictures_to_pdf(*pic_files, output_file, page_size='A4', landscape=False,
-                    margin=72, layout=(1, 1), stretch_small=False,
+                    margin=72, layout=(1, 1), stretch_small=False, fill_area=False,
                     force_overwrite=False):
     """Save one or more pictures to a PDF document.
 
@@ -195,6 +200,6 @@ def pictures_to_pdf(*pic_files, output_file, page_size='A4', landscape=False,
     pic_show = PictureShow(*pic_files)
 
     return pic_show.save_pdf(
-        output_file, page_size, landscape, margin, layout, stretch_small,
+        output_file, page_size, landscape, margin, layout, stretch_small, fill_area,
         force_overwrite
     )

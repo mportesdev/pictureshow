@@ -12,7 +12,9 @@ A4_LENGTH = 72 * 297 / 25.4
 A4 = A4_WIDTH, A4_LENGTH
 A4_LANDSCAPE = A4_LENGTH, A4_WIDTH
 
-DEFAULTS = dict(page_size=A4, margin=72, layout=(1, 1), stretch_small=False)
+DEFAULTS = dict(
+    page_size=A4, margin=72, layout=(1, 1), stretch_small=False, fill_area=False
+)
 
 
 def picture():
@@ -377,7 +379,7 @@ class TestPositionAndSize:
     def test_big_wide_picture_fills_area_x(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=False
+            pic_size, area_size, False, False
         )
         assert x == 0
         assert new_width == area_size[0]
@@ -393,7 +395,7 @@ class TestPositionAndSize:
     def test_big_tall_picture_fills_area_y(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=False
+            pic_size, area_size, False, False
         )
         assert y == 0
         assert new_height == area_size[1]
@@ -402,7 +404,7 @@ class TestPositionAndSize:
     def test_small_picture_not_resized(self):
         pic_size = (320, 200)
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, A4_PORTRAIT_MARGIN_72, stretch_small=False
+            pic_size, A4_PORTRAIT_MARGIN_72, False, False
         )
         assert (new_width, new_height) == pic_size
 
@@ -416,7 +418,7 @@ class TestPositionAndSize:
     def test_small_wide_picture_stretch_small(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=True
+            pic_size, area_size, stretch_small=True, fill_area=False
         )
         assert x == 0
         assert new_width == area_size[0]
@@ -432,11 +434,28 @@ class TestPositionAndSize:
     def test_small_tall_picture_stretch_small(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=True
+            pic_size, area_size, stretch_small=True, fill_area=False
         )
         assert y == 0
         assert new_height == area_size[1]
         assert new_width / new_height == pytest.approx(original_aspect)
+
+    @pytest.mark.parametrize(
+        'pic_size, area_size',
+        (
+            pytest.param((800, 387), A4_PORTRAIT_MARGIN_72, id='big wide picture'),
+            pytest.param((400, 3260), A4_PORTRAIT_MARGIN_72, id='big tall picture'),
+            pytest.param((320, 200), A4_PORTRAIT_MARGIN_72, id='small picture'),
+        )
+    )
+    def test_fill_area(self, pic_size, area_size):
+        x, y, new_width, new_height = PictureShow()._position_and_size(
+            pic_size, area_size, stretch_small=False, fill_area=True
+        )
+        assert x == 0
+        assert y == 0
+        assert new_width == area_size[0]
+        assert new_height == area_size[1]
 
 
 class TestAreas:
