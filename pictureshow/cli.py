@@ -71,7 +71,6 @@ def _ensure_suffix(file_path):
 
 def main():
     parser = argparse.ArgumentParser(
-        prog='pictureshow',
         usage='%(prog)s [options] PICTURE [PICTURE ...] -o PATH',
         description='Save pictures to PDF.',
         epilog='https://pypi.org/project/pictureshow/'
@@ -81,7 +80,7 @@ def main():
     # handle special case before parsing args
     if not sys.argv[1:]:
         parser.print_usage(file=sys.stderr)
-        parser.exit(2, "Try 'pictureshow --help' for more information.\n")
+        parser.exit(2, f"Try '{parser.prog} --help' for more information.\n")
 
     args = get_args(parser)
     output_file = _ensure_suffix(args.output_file)
