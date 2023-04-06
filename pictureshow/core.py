@@ -12,7 +12,7 @@ from .exceptions import PageSizeError, MarginError, LayoutError
 
 PAGE_SIZES = {
     name: size
-    for name, size in pagesizes.__dict__.items()
+    for name, size in vars(pagesizes).items()
     # use isupper() to exclude deprecated names and function names
     if name.isupper()
 }

@@ -46,7 +46,7 @@ def report_results(result, output_file, verbose=False):
         print(f'{_number(num_errors, "file")} skipped due to error.')
         if verbose:
             for pic_file, error in unique_errors.items():
-                print(f'{pic_file}:\n{error.__class__.__name__}: {error}\n')
+                print(f'{pic_file}:\n{type(error).__name__}: {error}\n')
 
     if result.num_ok > 0:
         print(f'Saved {_number(result.num_ok, "picture")}'
@@ -98,7 +98,7 @@ def main():
             force_overwrite=args.force_overwrite
         )
     except Exception as err:
-        parser.error(f'{err.__class__.__name__}: {err}')
+        parser.error(f'{type(err).__name__}: {err}')
     else:
         if not args.quiet:
             report_results(result, output_file, args.verbose)
