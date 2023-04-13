@@ -43,7 +43,7 @@ class TestSavePdf:
         output_file = 'foo.pdf'
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
-        mocker.patch('pictureshow.core.Canvas', autospec=True)
+        mocker.patch('pictureshow.backends.Canvas', autospec=True)
         result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
 
         assert result.num_ok == expected_ok
@@ -63,7 +63,7 @@ class TestSavePdf:
         output_file = 'foo.pdf'
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
-        mocker.patch('pictureshow.core.Canvas', autospec=True)
+        mocker.patch('pictureshow.backends.Canvas', autospec=True)
         result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
 
         assert result.num_ok == 0
@@ -83,7 +83,7 @@ class TestSavePdf:
         output_file = 'foo.pdf'
         mocker.patch('pictureshow.core.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
-        mocker.patch('pictureshow.core.Canvas', autospec=True)
+        mocker.patch('pictureshow.backends.Canvas', autospec=True)
         params = {**DEFAULTS, 'layout': (1, 2)}
         result = PictureShow(*pic_files)._save_pdf(output_file, **params)
 
