@@ -6,8 +6,8 @@ from pathlib import Path
 from PIL import UnidentifiedImageError
 from reportlab.lib import pagesizes
 from reportlab.lib.utils import ImageReader
-from reportlab.pdfgen.canvas import Canvas
 
+from .backends import ReportlabBackend
 from .exceptions import PageSizeError, MarginError, LayoutError
 
 PAGE_SIZES = {
@@ -27,6 +27,7 @@ Result = namedtuple('Result', 'num_ok errors num_pages')
 class PictureShow:
     def __init__(self, *pic_files):
         self.pic_files = pic_files
+        self.backend = ReportlabBackend()
         self.errors = []
 
     def save_pdf(self, output_file, page_size='A4', landscape=False, margin=72,
@@ -49,7 +50,7 @@ class PictureShow:
 
     def _save_pdf(self, output_file, page_size, margin, layout, stretch_small,
                   fill_area):
-        pdf_canvas = Canvas(output_file, pagesize=page_size)
+        self.backend.init(output_file, page_size)
         valid_pics = self._valid_pictures()
         num_ok = 0
         num_pages = 0
@@ -63,7 +64,7 @@ class PictureShow:
                     if not last_page_empty:
                         num_pages += 1
                     if num_ok > 0:
-                        pdf_canvas.save()
+                        self.backend.save()
                     return Result(num_ok, self.errors, num_pages)
                 x, y, pic_width, pic_height = self._position_and_size(
                     picture.getSize(),
@@ -71,13 +72,12 @@ class PictureShow:
                     stretch_small,
                     fill_area
                 )
-                pdf_canvas.drawImage(
-                    picture, area.x + x, area.y + y, pic_width, pic_height,
-                    mask='auto'
+                self.backend.add_picture(
+                    picture, area.x + x, area.y + y, pic_width, pic_height
                 )
                 last_page_empty = False
                 num_ok += 1
-            pdf_canvas.showPage()
+            self.backend.add_page()
             num_pages += 1
 
     @staticmethod
