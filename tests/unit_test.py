@@ -4,7 +4,8 @@ from unittest.mock import create_autospec
 import pytest
 from PIL import UnidentifiedImageError as ImageError
 
-from pictureshow.core import PictureShow, ImageReader
+from pictureshow.core import PictureShow
+from pictureshow.backends import ImageReader
 from pictureshow.exceptions import PageSizeError, MarginError, LayoutError
 
 A4_WIDTH = 72 * 210 / 25.4
@@ -41,7 +42,7 @@ class TestSavePdf:
                          expected_errors):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
-        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
         result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
@@ -61,7 +62,7 @@ class TestSavePdf:
     def test_invalid_input(self, mocker, reader_side_effects, expected_errors):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
-        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
         result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
@@ -81,7 +82,7 @@ class TestSavePdf:
                               expected_pages):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
-        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
         params = {**DEFAULTS, 'layout': (1, 2)}
@@ -317,7 +318,7 @@ class TestValidPictures:
     def test_all_valid_pictures(self, mocker, reader_side_effects):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
-        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         result = list(pic_show._valid_pictures())
 
@@ -336,7 +337,7 @@ class TestValidPictures:
                                         expected):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
-        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         result = list(pic_show._valid_pictures())
 
@@ -354,7 +355,7 @@ class TestValidPictures:
     def test_all_invalid_pictures(self, mocker, reader_side_effects):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
-        mocker.patch('pictureshow.core.ImageReader', autospec=True,
+        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         result = list(pic_show._valid_pictures())
 

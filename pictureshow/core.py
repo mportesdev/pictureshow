@@ -3,9 +3,7 @@ import re
 from collections import namedtuple
 from pathlib import Path
 
-from PIL import UnidentifiedImageError
 from reportlab.lib import pagesizes
-from reportlab.lib.utils import ImageReader
 
 from .backends import ReportlabBackend
 from .exceptions import PageSizeError, MarginError, LayoutError
@@ -67,7 +65,7 @@ class PictureShow:
                         self.backend.save()
                     return Result(num_ok, self.errors, num_pages)
                 x, y, pic_width, pic_height = self._position_and_size(
-                    picture.getSize(),
+                    self.backend.get_picture_size(picture),
                     area[2:],    # short for (area.width, area.height)
                     stretch_small,
                     fill_area
@@ -132,10 +130,8 @@ class PictureShow:
         self.errors = []
         for pic_file in self.pic_files:
             try:
-                picture = ImageReader(pic_file)
-            except (UnidentifiedImageError, OSError) as err:
-                # UnidentifiedImageError: file not recognized as picture
-                # OSError: file does not exist or is a dir
+                picture = self.backend.read_picture(pic_file)
+            except self.backend.read_errors as err:
                 self.errors.append((pic_file, err))
             else:
                 yield picture
