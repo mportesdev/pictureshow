@@ -6,3 +6,4 @@ pytest-cov==4.*
 pytest-xdist==3.*
 pypdf==3.*
 bandit==1.*
+setuptools
