@@ -32,7 +32,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages=['pictureshow'],
-    install_requires=['Pillow==9.*', 'reportlab==3.*'],
+    install_requires=['Pillow==10.*,>=10.0.1', 'reportlab==4.*'],
     python_requires='>=3.7',
     entry_points={'console_scripts': ['pictureshow=pictureshow.cli:main']},
 )
