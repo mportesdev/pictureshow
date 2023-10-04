@@ -18,7 +18,6 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
@@ -33,6 +32,6 @@ setup(
     ],
     packages=['pictureshow'],
     install_requires=['Pillow==10.*,>=10.0.1', 'reportlab==4.*'],
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     entry_points={'console_scripts': ['pictureshow=pictureshow.cli:main']},
 )

@@ -6,7 +6,7 @@ Save pictures to PDF from the command line or from your Python programs.
 Prerequisites
 =============
 
-- Python 3.7 or higher
+- Python 3.8 or higher
 
 
 Installation
