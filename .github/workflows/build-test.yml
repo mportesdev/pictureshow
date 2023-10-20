@@ -32,7 +32,8 @@ jobs:
       id: build_and_test
       run: |
         pip install -r requirements-ci.txt
-        python setup.py sdist bdist_wheel
+        curl -sSL https://install.python-poetry.org | python -
+        poetry build
         pip install -e .
         echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
         pytest --cov --cov-report=xml --cov-report=term --verbose

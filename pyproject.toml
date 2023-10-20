@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "pictureshow"
+version = "0.9.0"
+description = "Save pictures to PDF."
+authors = ["Michal Porteš <michalportes1@gmail.com>"]
+license = "MIT"
+readme = "README.rst"
+homepage = "https://github.com/mportesdev/pictureshow"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Graphics :: Presentation",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.poetry.scripts]
+pictureshow = "pictureshow.cli:main"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+pillow = "^10.0.1"
+reportlab = "^4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
