@@ -1,9 +1,7 @@
 -r requirements.txt
-wheel
 pytest==7.*
 pytest-mock==3.*
 pytest-cov==4.*
 pytest-xdist==3.*
 pypdf==3.*
 bandit==1.*
-setuptools
