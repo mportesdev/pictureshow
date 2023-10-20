@@ -28,12 +28,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
 
-    - name: Build, run tests
-      id: build_and_test
+    - name: Run tests
+      id: run_tests
       run: |
         pip install -r requirements-ci.txt
-        curl -sSL https://install.python-poetry.org | python -
-        poetry build
         pip install -e .
         echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
         pytest --cov --cov-report=xml --cov-report=term --verbose
@@ -42,6 +40,12 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       if: matrix.python-version == '3.12'
+
+    - name: Build
+      if: matrix.python-version == '3.12' && startsWith(github.ref, 'refs/tags/')
+      run: |
+        curl -sSL https://install.python-poetry.org | python -
+        poetry build
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
@@ -54,5 +58,5 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: matrix.python-version == '3.12' && startsWith(github.ref, 'refs/tags/')
       with:
-        name: version ${{ steps.build_and_test.outputs.VERSION }}
+        name: version ${{ steps.run_tests.outputs.VERSION }}
         files: 'dist/*'
