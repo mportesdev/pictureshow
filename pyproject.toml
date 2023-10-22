@@ -31,3 +31,10 @@ pictureshow = "pictureshow.cli:main"
 [tool.pytest.ini_options]
 addopts = "-ra --numprocesses=auto"
 xfail_strict = true
+
+[tool.coverage.run]
+branch = true
+source = ["pictureshow"]
+
+[tool.coverage.report]
+show_missing = true

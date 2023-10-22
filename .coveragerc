@@ -1,6 +1,0 @@
-[run]
-branch = True
-source = pictureshow
-
-[report]
-show_missing = True
