@@ -27,3 +27,7 @@ reportlab = "^4"
 
 [tool.poetry.scripts]
 pictureshow = "pictureshow.cli:main"
+
+[tool.pytest.ini_options]
+addopts = "-ra --numprocesses=auto"
+xfail_strict = true
