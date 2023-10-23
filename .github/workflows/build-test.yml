@@ -35,7 +35,7 @@ jobs:
         pip install .
         echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
         pytest --cov --cov-report=xml --cov-report=term --verbose
-        bandit --configfile=bandit.yaml --recursive pictureshow tests
+        bandit --configfile=pyproject.toml --recursive pictureshow tests
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
