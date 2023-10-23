@@ -32,7 +32,7 @@ jobs:
       id: run_tests
       run: |
         pip install -r requirements-ci.txt
-        pip install -e .
+        pip install .
         echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
         pytest --cov --cov-report=xml --cov-report=term --verbose
         bandit --configfile=bandit.yaml --recursive pictureshow tests
