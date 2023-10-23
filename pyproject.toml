@@ -16,6 +16,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+packages = [
+    { include = "pictureshow", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
