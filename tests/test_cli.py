@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from pypdf import PdfReader
 
-from pictureshow.cli import _number, _ensure_suffix
+from pictureshow.cli import _ensure_suffix, _number
 
 A4_WIDTH = 72 * 210 / 25.4
 

@@ -6,7 +6,7 @@ from pathlib import Path
 from reportlab.lib import pagesizes
 
 from .backends import ReportlabBackend
-from .exceptions import PageSizeError, MarginError, LayoutError
+from .exceptions import LayoutError, MarginError, PageSizeError
 
 PAGE_SIZES = {
     name: size

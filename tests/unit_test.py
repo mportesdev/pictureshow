@@ -4,9 +4,9 @@ from unittest.mock import create_autospec
 import pytest
 from PIL import UnidentifiedImageError as ImageError
 
-from pictureshow.core import PictureShow
 from pictureshow.backends import ImageReader
-from pictureshow.exceptions import PageSizeError, MarginError, LayoutError
+from pictureshow.core import PictureShow
+from pictureshow.exceptions import LayoutError, MarginError, PageSizeError
 
 A4_WIDTH = 72 * 210 / 25.4
 A4_LENGTH = 72 * 297 / 25.4
