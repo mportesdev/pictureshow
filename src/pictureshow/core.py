@@ -43,9 +43,10 @@ class PictureShow:
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
-        self._save_pdf(
+        for _ in self._save_pdf(
             output_file, page_size, margin, layout, stretch_small, fill_area
-        )
+        ):
+            pass
         return self.result
 
     def _save_pdf(self, output_file, page_size, margin, layout, stretch_small,
@@ -63,6 +64,7 @@ class PictureShow:
                         picture = next(valid_pics)
                         if picture is not None:
                             break
+                        yield False
                 except StopIteration:
                     if not last_page_empty:
                         num_pages += 1
@@ -81,6 +83,7 @@ class PictureShow:
                 )
                 last_page_empty = False
                 num_ok += 1
+                yield True
             self.backend.add_page()
             num_pages += 1
 

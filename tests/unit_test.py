@@ -47,7 +47,7 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
-        pic_show._save_pdf(output_file, **DEFAULTS)
+        list(pic_show._save_pdf(output_file, **DEFAULTS))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == expected_ok
@@ -70,7 +70,7 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
-        pic_show._save_pdf(output_file, **DEFAULTS)
+        list(pic_show._save_pdf(output_file, **DEFAULTS))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == 0
@@ -94,7 +94,7 @@ class TestSavePdf:
         params = {**DEFAULTS, 'layout': (1, 2)}
 
         pic_show = PictureShow(*pic_files)
-        pic_show._save_pdf(output_file, **params)
+        list(pic_show._save_pdf(output_file, **params))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == expected_ok
