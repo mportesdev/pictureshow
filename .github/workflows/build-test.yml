@@ -37,11 +37,11 @@ jobs:
     - name: Run tests
       id: run_tests
       run: |
-        pip install -r test-requirements.txt
-        pip install 'pytest-cov==4.*'
-        pip install .
-        echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
-        pytest --cov --cov-report=xml --cov-report=term --verbose
+        python -m venv venv-poetry
+        venv-poetry/bin/pip install poetry
+        venv-poetry/bin/poetry install --with=test
+        echo "VERSION=$(venv-poetry/bin/poetry version --short)" >> $GITHUB_OUTPUT
+        venv-poetry/bin/poetry run pytest --cov --cov-report=xml --cov-report=term --verbose
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

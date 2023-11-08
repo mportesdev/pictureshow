@@ -24,6 +24,13 @@ python = "^3.8"
 pillow = "^10.0.1"
 reportlab = "^4"
 
+[tool.poetry.group.test.dependencies]
+pypdf = "^3"
+pytest = "^7"
+pytest-cov= "^4"
+pytest-mock = "^3"
+pytest-xdist = "^3"
+
 [tool.poetry.scripts]
 pictureshow = "pictureshow.cli:main"
 
