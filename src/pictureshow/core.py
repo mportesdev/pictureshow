@@ -39,18 +39,19 @@ class PictureShow:
         `errors` - list of items skipped due to error
         `num_pages` - number of pages of the resulting PDF document
         """
-        output_file = self._validate_target_path(output_file, force_overwrite)
-        page_size = self._validate_page_size(page_size, landscape)
-        layout = self._validate_layout(layout)
-
         for _ in self._save_pdf(
-            output_file, page_size, margin, layout, stretch_small, fill_area
+            output_file, page_size, landscape, margin, layout, stretch_small,
+            fill_area, force_overwrite
         ):
             pass
         return self.result
 
-    def _save_pdf(self, output_file, page_size, margin, layout, stretch_small,
-                  fill_area):
+    def _save_pdf(self, output_file, page_size, landscape, margin, layout,
+                  stretch_small, fill_area, force_overwrite):
+        output_file = self._validate_target_path(output_file, force_overwrite)
+        page_size = self._validate_page_size(page_size, landscape)
+        layout = self._validate_layout(layout)
+
         self.backend.init(output_file, page_size)
         valid_pics = self._valid_pictures()
         num_ok = 0

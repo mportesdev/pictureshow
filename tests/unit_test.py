@@ -14,7 +14,8 @@ A4 = A4_WIDTH, A4_LENGTH
 A4_LANDSCAPE = A4_LENGTH, A4_WIDTH
 
 DEFAULTS = dict(
-    page_size=A4, margin=72, layout=(1, 1), stretch_small=False, fill_area=False
+    page_size=A4, landscape=False, margin=72, layout=(1, 1), stretch_small=False,
+    fill_area=False, force_overwrite=False
 )
 
 
