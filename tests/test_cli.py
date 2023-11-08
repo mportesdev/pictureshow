@@ -69,20 +69,21 @@ def assert_pdf(path, num_pages):
 
 class TestCommandLine:
     @pytest.mark.parametrize(
-        'pic_files, num_pages, pics, pages',
+        'pic_files, num_pages, progress, pics, pages',
         (
-            pytest.param(PICS_1_GOOD, 1, '1 picture', '1 page', id='1 valid'),
-            pytest.param(PICS_2_GOOD, 2, '2 pictures', '2 pages', id='2 valid'),
-            pytest.param(PICS_1_URL, 1, '1 picture', '1 page', id='1 valid url'),
+            pytest.param(PICS_1_GOOD, 1, '.', '1 picture', '1 page', id='1 valid'),
+            pytest.param(PICS_2_GOOD, 2, '..', '2 pictures', '2 pages', id='2 valid'),
+            pytest.param(PICS_1_URL, 1, '.', '1 picture', '1 page', id='1 valid url'),
         )
     )
-    def test_valid_input(self, new_pdf, pic_files, num_pages, pics, pages):
+    def test_valid_input(self, new_pdf, pic_files, num_pages, progress, pics, pages):
         pic_files = ' '.join(str(path) for path in pic_files)
         command = f'pictureshow {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert progress in std_out.splitlines()
         assert f'Saved {pics} ({pages}) to ' in std_out
         assert 'skipped' not in std_out
         assert 'Nothing' not in std_out
@@ -95,27 +96,29 @@ class TestCommandLine:
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert '.!' in std_out.splitlines()
         assert '1 file skipped due to error.' in std_out
         assert 'Saved 1 picture (1 page) to ' in std_out
         assert 'Nothing' not in std_out
         assert_pdf(new_pdf, num_pages=1)
 
     @pytest.mark.parametrize(
-        'pic_files, num_invalid',
+        'pic_files, progress, num_invalid',
         (
-            pytest.param(PICS_1_BAD, '1 file', id='1 invalid'),
-            pytest.param(PICS_2_BAD, '2 files', id='2 invalid'),
-            pytest.param(PICS_DIR, '1 file', id='dir'),
-            pytest.param(PICS_MISSING, '1 file', id='missing'),
+            pytest.param(PICS_1_BAD, '!', '1 file', id='1 invalid'),
+            pytest.param(PICS_2_BAD, '!!', '2 files', id='2 invalid'),
+            pytest.param(PICS_DIR, '!', '1 file', id='dir'),
+            pytest.param(PICS_MISSING, '!', '1 file', id='missing'),
         )
     )
-    def test_invalid_input(self, new_pdf, pic_files, num_invalid):
+    def test_invalid_input(self, new_pdf, pic_files, progress, num_invalid):
         pic_files = ' '.join(str(path) for path in pic_files)
         command = f'pictureshow {pic_files} -o {new_pdf}'
         proc = subprocess.run(command.split(), stdout=subprocess.PIPE)  # nosec: B603
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert progress in std_out.splitlines()
         assert f'{num_invalid} skipped due to error.' in std_out
         assert 'Saved' not in std_out
         assert 'Nothing to save.' in std_out
@@ -158,6 +161,7 @@ class TestCommandLine:
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert '......' in std_out.splitlines()
         assert f'Saved 6 pictures ({pages}) to ' in std_out
         assert_pdf(new_pdf, num_pages=num_pages)
 
@@ -198,6 +202,7 @@ class TestCommandLine:
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert '.' in std_out.splitlines()
         assert 'Saved 1 picture (1 page) to ' in std_out
         # target file has been overwritten
         assert_pdf(existing_pdf, num_pages=1)
@@ -227,6 +232,7 @@ class TestCommandLine:
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert '.!' in std_out.splitlines()
         assert '1 file skipped due to error.' in std_out
         assert 'UnidentifiedImageError' in std_out
 
@@ -238,6 +244,7 @@ class TestCommandLine:
         std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert '!!!!' in std_out.splitlines()
         # only unique items reported
         assert '2 files skipped due to error.' in std_out
 
