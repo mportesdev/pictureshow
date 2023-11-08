@@ -59,7 +59,10 @@ class PictureShow:
             last_page_empty = True
             for area in areas:
                 try:
-                    picture = next(valid_pics)
+                    while True:
+                        picture = next(valid_pics)
+                        if picture is not None:
+                            break
                 except StopIteration:
                     if not last_page_empty:
                         num_pages += 1
@@ -136,6 +139,7 @@ class PictureShow:
                 picture = self.backend.read_picture(pic_file)
             except self.backend.read_errors as err:
                 self.errors.append((pic_file, err))
+                yield None
             else:
                 yield picture
 
