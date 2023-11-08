@@ -27,6 +27,7 @@ class PictureShow:
         self.pic_files = pic_files
         self.backend = ReportlabBackend()
         self.errors = []
+        self.result = None
 
     def save_pdf(self, output_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, fill_area=False,
@@ -42,9 +43,10 @@ class PictureShow:
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
-        return self._save_pdf(
+        self._save_pdf(
             output_file, page_size, margin, layout, stretch_small, fill_area
         )
+        return self.result
 
     def _save_pdf(self, output_file, page_size, margin, layout, stretch_small,
                   fill_area):
@@ -63,7 +65,8 @@ class PictureShow:
                         num_pages += 1
                     if num_ok > 0:
                         self.backend.save()
-                    return Result(num_ok, self.errors, num_pages)
+                    self.result = Result(num_ok, self.errors, num_pages)
+                    return
                 x, y, pic_width, pic_height = self._position_and_size(
                     self.backend.get_picture_size(picture),
                     area[2:],    # short for (area.width, area.height)
