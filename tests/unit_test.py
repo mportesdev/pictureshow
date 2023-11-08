@@ -337,8 +337,8 @@ class TestValidPictures:
     @pytest.mark.parametrize(
         'reader_side_effects, expected',
         (
-            pytest.param([1, ImageError, 2], [1, 2], id='2 valid + 1 invalid'),
-            pytest.param([ImageError, 1, ImageError], [1],
+            pytest.param([1, ImageError, 2], [1, None, 2], id='2 valid + 1 invalid'),
+            pytest.param([ImageError, 1, ImageError], [None, 1, None],
                          id='2 invalid + 1 valid'),
         )
     )
@@ -351,25 +351,25 @@ class TestValidPictures:
         result = list(pic_show._valid_pictures())
 
         assert result == expected
-        assert len(pic_show.errors) == len(pic_files) - len(expected)
+        assert len(pic_show.errors) == expected.count(None)
 
     @pytest.mark.parametrize(
-        'reader_side_effects',
+        'reader_side_effects, expected',
         (
-            pytest.param([ImageError], id='1 invalid'),
-            pytest.param([ImageError, ImageError], id='2 invalid'),
-            pytest.param([OSError], id='dir or missing'),
+            pytest.param([ImageError], [None], id='1 invalid'),
+            pytest.param([ImageError, ImageError], [None, None], id='2 invalid'),
+            pytest.param([OSError], [None], id='dir or missing'),
         )
     )
-    def test_all_invalid_pictures(self, mocker, reader_side_effects):
+    def test_all_invalid_pictures(self, mocker, reader_side_effects, expected):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
         mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         result = list(pic_show._valid_pictures())
 
-        assert result == []
-        assert len(pic_show.errors) == len(pic_files)
+        assert result == expected
+        assert len(pic_show.errors) == expected.count(None)
 
 
 A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
