@@ -45,7 +45,10 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
-        result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
+
+        pic_show = PictureShow(*pic_files)
+        pic_show._save_pdf(output_file, **DEFAULTS)
+        result = pic_show.result
 
         assert result.num_ok == expected_ok
         assert len(result.errors) == expected_errors
@@ -65,7 +68,10 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.ImageReader', autospec=True,
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
-        result = PictureShow(*pic_files)._save_pdf(output_file, **DEFAULTS)
+
+        pic_show = PictureShow(*pic_files)
+        pic_show._save_pdf(output_file, **DEFAULTS)
+        result = pic_show.result
 
         assert result.num_ok == 0
         assert len(result.errors) == expected_errors
@@ -86,7 +92,10 @@ class TestSavePdf:
                      side_effect=reader_side_effects)
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
         params = {**DEFAULTS, 'layout': (1, 2)}
-        result = PictureShow(*pic_files)._save_pdf(output_file, **params)
+
+        pic_show = PictureShow(*pic_files)
+        pic_show._save_pdf(output_file, **params)
+        result = pic_show.result
 
         assert result.num_ok == expected_ok
         assert len(result.errors) == 0
