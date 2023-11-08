@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from .core import PAGE_SIZES, pictures_to_pdf
+from .core import PAGE_SIZES, PictureShow
 
 
 def get_args(parser):
@@ -86,8 +86,8 @@ def main():
     output_file = _ensure_suffix(args.output_file)
 
     try:
-        result = pictures_to_pdf(
-            *args.pictures,
+        pic_show = PictureShow(*args.pictures)
+        for ok_flag in pic_show._save_pdf(
             output_file=output_file,
             page_size=args.page_size,
             landscape=args.landscape,
@@ -96,7 +96,12 @@ def main():
             stretch_small=args.stretch_small,
             fill_area=args.fill_area,
             force_overwrite=args.force_overwrite
-        )
+        ):
+            if not args.quiet:
+                print('.' if ok_flag else '!', end='', flush=True)
+        if not args.quiet:
+            print()
+        result = pic_show.result
     except Exception as err:
         parser.error(f'{type(err).__name__}: {err}')
     else:
