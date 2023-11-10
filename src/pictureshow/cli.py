@@ -1,4 +1,6 @@
 import argparse
+import contextlib
+import io
 import sys
 from pathlib import Path
 
@@ -85,25 +87,27 @@ def main():
     args = get_args(parser)
     output_file = _ensure_suffix(args.output_file)
 
-    try:
-        pic_show = PictureShow(*args.pictures)
-        for ok_flag in pic_show._save_pdf(
-            output_file=output_file,
-            page_size=args.page_size,
-            landscape=args.landscape,
-            margin=args.margin,
-            layout=args.layout,
-            stretch_small=args.stretch_small,
-            fill_area=args.fill_area,
-            force_overwrite=args.force_overwrite
-        ):
-            if not args.quiet:
+    stdout_context = (
+        contextlib.redirect_stdout(io.StringIO()) if args.quiet
+        else contextlib.nullcontext()
+    )
+    with stdout_context:
+        try:
+            pic_show = PictureShow(*args.pictures)
+            for ok_flag in pic_show._save_pdf(
+                output_file=output_file,
+                page_size=args.page_size,
+                landscape=args.landscape,
+                margin=args.margin,
+                layout=args.layout,
+                stretch_small=args.stretch_small,
+                fill_area=args.fill_area,
+                force_overwrite=args.force_overwrite
+            ):
                 print('.' if ok_flag else '!', end='', flush=True)
-        if not args.quiet:
             print()
-        result = pic_show.result
-    except Exception as err:
-        parser.error(f'{type(err).__name__}: {err}')
-    else:
-        if not args.quiet:
+            result = pic_show.result
+        except Exception as err:
+            parser.error(f'{type(err).__name__}: {err}')
+        else:
             report_results(result, output_file, args.verbose)
