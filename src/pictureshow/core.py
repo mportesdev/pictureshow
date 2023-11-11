@@ -26,8 +26,6 @@ class PictureShow:
     def __init__(self, *pic_files):
         self.pic_files = pic_files
         self.backend = ReportlabBackend()
-        self.errors = []
-        self.result = None
 
     def save_pdf(self, output_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, fill_area=False,
@@ -54,8 +52,8 @@ class PictureShow:
 
         self.backend.init(output_file, page_size)
         valid_pics = self._valid_pictures()
-        num_ok = 0
-        num_pages = 0
+        self.num_ok = 0
+        self.num_pages = 0
         areas = tuple(self._areas(layout, page_size, margin))
         while True:
             last_page_empty = True
@@ -68,10 +66,9 @@ class PictureShow:
                         yield False
                 except StopIteration:
                     if not last_page_empty:
-                        num_pages += 1
-                    if num_ok > 0:
+                        self.num_pages += 1
+                    if self.num_ok > 0:
                         self.backend.save()
-                    self.result = Result(num_ok, self.errors, num_pages)
                     return
                 x, y, pic_width, pic_height = self._position_and_size(
                     self.backend.get_picture_size(picture),
@@ -83,10 +80,14 @@ class PictureShow:
                     picture, area.x + x, area.y + y, pic_width, pic_height
                 )
                 last_page_empty = False
-                num_ok += 1
+                self.num_ok += 1
                 yield True
             self.backend.add_page()
-            num_pages += 1
+            self.num_pages += 1
+
+    @property
+    def result(self):
+        return Result(self.num_ok, self.errors, self.num_pages)
 
     @staticmethod
     def _validate_target_path(path, force_overwrite):
