@@ -53,10 +53,8 @@ class PictureShow:
         self.backend.init(output_file, page_size)
         valid_pics = self._valid_pictures()
         self.num_ok = 0
-        self.num_pages = 0
         areas = tuple(self._areas(layout, page_size, margin))
         while True:
-            last_page_empty = True
             for area in areas:
                 try:
                     while True:
@@ -65,10 +63,9 @@ class PictureShow:
                             break
                         yield False
                 except StopIteration:
-                    if not last_page_empty:
-                        self.num_pages += 1
                     if self.num_ok > 0:
                         self.backend.save()
+                    self.num_pages = self.backend.num_pages
                     return
                 x, y, pic_width, pic_height = self._position_and_size(
                     self.backend.get_picture_size(picture),
@@ -79,11 +76,9 @@ class PictureShow:
                 self.backend.add_picture(
                     picture, area.x + x, area.y + y, pic_width, pic_height
                 )
-                last_page_empty = False
                 self.num_ok += 1
                 yield True
             self.backend.add_page()
-            self.num_pages += 1
 
     @property
     def result(self):
