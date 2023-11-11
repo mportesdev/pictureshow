@@ -11,9 +11,12 @@ class ReportlabBackend:
 
     def init(self, output_file, page_size):
         self.canvas = Canvas(output_file, pagesize=page_size)
+        self.num_pages = 0
 
     def add_page(self):
         self.canvas.showPage()
+        self.num_pages += 1
+        self._current_page_empty = True
 
     def read_picture(self, picture):
         return ImageReader(picture)
@@ -23,6 +26,9 @@ class ReportlabBackend:
 
     def add_picture(self, picture, x, y, width, height):
         self.canvas.drawImage(picture, x, y, width, height, mask='auto')
+        self._current_page_empty = False
 
     def save(self):
         self.canvas.save()
+        if not self._current_page_empty:
+            self.num_pages += 1
