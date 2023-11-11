@@ -67,6 +67,7 @@ Save single picture to PDF:
 .. code::
 
     $ pictureshow pics/potato.jpg -o potato.pdf
+    .
     Saved 1 picture (1 page) to 'potato.pdf'
 
 Save multiple pictures, four pictures per page (two columns, two rows),
@@ -75,6 +76,7 @@ set page orientation to landscape:
 .. code::
 
     $ pictureshow -l 2x2 -L vegetables/* -o vegetables
+    ..................................................
     Saved 50 pictures (13 pages) to 'vegetables.pdf'
 
 (Please note that if the output filename has no extension specified,
@@ -85,6 +87,7 @@ Save pictures from web URLs, set smaller margin and stretch small pictures:
 .. code::
 
     $ pictureshow -m 36 -s <carrot.1.url> <carrot.2.url> -o carrots_from_web
+    ..
     Saved 2 pictures (2 pages) to 'carrots_from_web.pdf'
 
 
