@@ -76,9 +76,10 @@ class PictureShow:
     ):
         output_file = self._validate_target_path(output_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
+        bg_color = self._validate_color(bg_color)
         layout = self._validate_layout(layout)
 
-        self._backend.init(output_file, page_size)
+        self._backend.init(output_file, page_size, bg_color)
         valid_pics = self._valid_pictures()
         self.num_ok = 0
         areas = tuple(self._areas(layout, page_size, margin))

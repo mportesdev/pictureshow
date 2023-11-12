@@ -9,9 +9,18 @@ class ReportlabBackend:
         UnidentifiedImageError,  # file not recognized as picture
     )
 
-    def init(self, output_file, page_size):
+    def init(self, output_file, page_size, bg_color=None):
         self._canvas = Canvas(output_file, pagesize=page_size)
+        self._page_size = page_size
+        self._bg_color = self._calculate_color(bg_color)
         self.num_pages = 0
+        self._current_page_empty = True
+
+    @staticmethod
+    def _calculate_color(color):
+        if color is None:
+            return None
+        return tuple(n / 255 for n in color)
 
     def add_page(self):
         self._canvas.showPage()
@@ -25,8 +34,12 @@ class ReportlabBackend:
         return picture.getSize()
 
     def add_picture(self, picture, x, y, width, height):
+        if self._current_page_empty:
+            if self._bg_color is not None:
+                self._canvas.setFillColor(self._bg_color)
+                self._canvas.rect(0, 0, *self._page_size, stroke=0, fill=1)
+            self._current_page_empty = False
         self._canvas.drawImage(picture, x, y, width, height, mask='auto')
-        self._current_page_empty = False
 
     def save(self):
         self._canvas.save()
