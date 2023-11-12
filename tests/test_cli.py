@@ -11,12 +11,10 @@ A4_WIDTH = 72 * 210 / 25.4
 TEST_FILES = Path(__file__).parent / 'files'
 
 PIC_FILE = TEST_FILES / 'mandelbrot.png'
-PIC_URL = 'https://avatars.githubusercontent.com/u/43098013'
 BAD_FILE = TEST_FILES / 'not_jpg.jpg'
 
 PICS_1_GOOD = (PIC_FILE,)
 PICS_2_GOOD = (PIC_FILE, TEST_FILES / 'plots' / 'gauss_2x2.png')
-PICS_1_URL = (PIC_URL,)
 PICS_1_GOOD_1_BAD = (PIC_FILE, BAD_FILE)
 PICS_1_BAD = (BAD_FILE,)
 PICS_2_BAD = (BAD_FILE, TEST_FILES / 'empty.pdf')
@@ -73,7 +71,6 @@ class TestCommandLine:
         (
             pytest.param(PICS_1_GOOD, 1, '.', '1 picture', '1 page', id='1 valid'),
             pytest.param(PICS_2_GOOD, 2, '..', '2 pictures', '2 pages', id='2 valid'),
-            pytest.param(PICS_1_URL, 1, '.', '1 picture', '1 page', id='1 valid url'),
         )
     )
     def test_valid_input(self, new_pdf, pic_files, num_pages, progress, pics, pages):

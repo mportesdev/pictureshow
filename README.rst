@@ -82,13 +82,16 @@ set page orientation to landscape:
 (Please note that if the output filename has no extension specified,
 ``.pdf`` will be appended to it. This only applies for the command line tool.)
 
-Save pictures from web URLs, set smaller margin and stretch small pictures:
+You can also save pictures from URLs:
 
 .. code::
 
-    $ pictureshow -m 36 -s <carrot.1.url> <carrot.2.url> -o carrots_from_web
+    $ pictureshow https://cdn.rebrickable.com/media/thumbs/parts/elements/6136555.jpg/250x250p.jpg https://cdn.rebrickable.com/media/thumbs/parts/elements/4119478.jpg/250x250p.jpg -o carrots
     ..
-    Saved 2 pictures (2 pages) to 'carrots_from_web.pdf'
+    Saved 2 pictures (2 pages) to 'carrots.pdf'
+
+But please note that this feature is not tested and depends solely on
+the underlying reportlab_ backend.
 
 
 As a Python library
@@ -171,3 +174,4 @@ default values correspond to the above shown command line options:
     :target: https://pypi.org/project/pictureshow
 .. |downloads| image:: https://pepy.tech/badge/pictureshow
     :target: https://pepy.tech/project/pictureshow
+.. _reportlab: https://pypi.org/project/reportlab
