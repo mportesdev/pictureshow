@@ -24,13 +24,13 @@ Result = namedtuple('Result', 'num_ok errors num_pages')
 
 class PictureShow:
     def __init__(self, *pic_files):
-        self.pic_files = pic_files
-        self.backend = ReportlabBackend()
+        self._pic_files = pic_files
+        self._backend = ReportlabBackend()
 
     def save_pdf(self, output_file, page_size='A4', landscape=False, margin=72,
                  layout=(1, 1), stretch_small=False, fill_area=False,
                  force_overwrite=False):
-        """Save pictures stored in `self.pic_files` to a PDF document.
+        """Save pictures stored in `self._pic_files` to a PDF document.
 
         Return a named tuple of three values:
         `num_ok` - number of successfully saved pictures
@@ -50,7 +50,7 @@ class PictureShow:
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
 
-        self.backend.init(output_file, page_size)
+        self._backend.init(output_file, page_size)
         valid_pics = self._valid_pictures()
         self.num_ok = 0
         areas = tuple(self._areas(layout, page_size, margin))
@@ -64,21 +64,21 @@ class PictureShow:
                         yield False
                 except StopIteration:
                     if self.num_ok > 0:
-                        self.backend.save()
-                    self.num_pages = self.backend.num_pages
+                        self._backend.save()
+                    self.num_pages = self._backend.num_pages
                     return
                 x, y, pic_width, pic_height = self._position_and_size(
-                    self.backend.get_picture_size(picture),
+                    self._backend.get_picture_size(picture),
                     area[2:],    # short for (area.width, area.height)
                     stretch_small,
                     fill_area
                 )
-                self.backend.add_picture(
+                self._backend.add_picture(
                     picture, area.x + x, area.y + y, pic_width, pic_height
                 )
                 self.num_ok += 1
                 yield True
-            self.backend.add_page()
+            self._backend.add_page()
 
     @property
     def result(self):
@@ -134,10 +134,10 @@ class PictureShow:
 
     def _valid_pictures(self):
         self.errors = []
-        for pic_file in self.pic_files:
+        for pic_file in self._pic_files:
             try:
-                picture = self.backend.read_picture(pic_file)
-            except self.backend.read_errors as err:
+                picture = self._backend.read_picture(pic_file)
+            except self._backend.read_errors as err:
                 self.errors.append((pic_file, err))
                 yield None
             else:
