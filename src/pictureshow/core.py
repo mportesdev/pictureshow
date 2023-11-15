@@ -105,13 +105,13 @@ class PictureShow:
                     f' please use one of: {", ".join(PAGE_SIZES)}'
                 ) from err
 
-        error = PageSizeError('two positive numbers expected')
+        page_size_error = PageSizeError('two positive numbers expected')
         try:
             page_width, page_height = page_size
             if not (page_width > 0 and page_height > 0):
-                raise error
+                raise page_size_error
         except (ValueError, TypeError) as err:
-            raise error from err
+            raise page_size_error from err
 
         if page_width < page_height and landscape:
             page_size = page_height, page_width
@@ -119,16 +119,16 @@ class PictureShow:
 
     @staticmethod
     def _validate_layout(layout):
-        error = LayoutError('two positive integers expected')
+        layout_error = LayoutError('two positive integers expected')
         try:
             if isinstance(layout, str):
                 layout = tuple(int(s) for s in DELIMITER.split(layout))
             columns, rows = layout
             if not (columns > 0 and isinstance(columns, int)
                     and rows > 0 and isinstance(rows, int)):
-                raise error
+                raise layout_error
         except (ValueError, TypeError) as err:
-            raise error from err
+            raise layout_error from err
 
         return columns, rows
 
