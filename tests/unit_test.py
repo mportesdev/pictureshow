@@ -35,7 +35,7 @@ class TestSavePdf:
         (
             pytest.param([picture()], 1, 0, id='1 valid'),
             pytest.param([picture(), picture()], 2, 0, id='2 valid'),
-            pytest.param([picture(), ImageError], 1, 1,
+            pytest.param([picture(), ImageError()], 1, 1,
                          id='1 valid + 1 invalid'),
         )
     )
@@ -58,9 +58,11 @@ class TestSavePdf:
     @pytest.mark.parametrize(
         'reader_side_effects, expected_errors',
         (
-            pytest.param([ImageError], 1, id='1 invalid'),
-            pytest.param([ImageError, ImageError], 2, id='2 invalid'),
-            pytest.param([OSError], 1, id='dir or missing'),
+            pytest.param([ImageError()], 1, id='1 invalid'),
+            pytest.param([ImageError(), ImageError()], 2, id='2 invalid'),
+            pytest.param(
+                [IsADirectoryError(), FileNotFoundError()], 2, id='dir + missing'
+            ),
         )
     )
     def test_invalid_input(self, mocker, reader_side_effects, expected_errors):
@@ -338,8 +340,8 @@ class TestValidPictures:
     @pytest.mark.parametrize(
         'reader_side_effects, expected',
         (
-            pytest.param([1, ImageError, 2], [1, None, 2], id='2 valid + 1 invalid'),
-            pytest.param([ImageError, 1, ImageError], [None, 1, None],
+            pytest.param([1, ImageError(), 2], [1, None, 2], id='2 valid + 1 invalid'),
+            pytest.param([ImageError(), 1, ImageError()], [None, 1, None],
                          id='2 invalid + 1 valid'),
         )
     )
@@ -357,9 +359,13 @@ class TestValidPictures:
     @pytest.mark.parametrize(
         'reader_side_effects, expected',
         (
-            pytest.param([ImageError], [None], id='1 invalid'),
-            pytest.param([ImageError, ImageError], [None, None], id='2 invalid'),
-            pytest.param([OSError], [None], id='dir or missing'),
+            pytest.param([ImageError()], [None], id='1 invalid'),
+            pytest.param([ImageError(), ImageError()], [None, None], id='2 invalid'),
+            pytest.param(
+                [IsADirectoryError(), FileNotFoundError()],
+                [None, None],
+                id='dir + missing',
+            ),
         )
     )
     def test_all_invalid_pictures(self, mocker, reader_side_effects, expected):
