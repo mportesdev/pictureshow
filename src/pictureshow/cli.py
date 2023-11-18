@@ -17,13 +17,13 @@ def get_args(parser):
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save to output filename even if file exists')
     parser.add_argument('-F', '--fail', choices=('skipped', 'no-output', 'no'),
-                        default='no',
+                        default='no-output',
                         help='If set to `skipped`, fail (exit with code 2) if at least '
                              'one file was skipped due to an error. '
-                             'If set to `no-output`, fail if all files were '
+                             'If set to `no-output` (default), fail if all files were '
                              'skipped and no PDF file was created; succeed (exit with '
                              'code 0) if at least one file was successfully saved. '
-                             'If set to `no` (default), succeed even if all files were '
+                             'If set to `no`, succeed even if all files were '
                              'skipped.')
     parser.add_argument('-L', '--landscape', action='store_true',
                         help='set landscape orientation of page; default is portrait')
