@@ -16,6 +16,15 @@ def get_args(parser):
                              " aspect ratio")
     parser.add_argument('-f', '--force-overwrite', action='store_true',
                         help='save to output filename even if file exists')
+    parser.add_argument('-F', '--fail', choices=('skipped', 'no-output', 'no'),
+                        default='no',
+                        help='If set to `skipped`, fail (exit with code 2) if at least '
+                             'one file was skipped due to an error. '
+                             'If set to `no-output`, fail if all files were '
+                             'skipped and no PDF file was created; succeed (exit with '
+                             'code 0) if at least one file was successfully saved. '
+                             'If set to `no` (default), succeed even if all files were '
+                             'skipped.')
     parser.add_argument('-L', '--landscape', action='store_true',
                         help='set landscape orientation of page; default is portrait')
     parser.add_argument('-l', '--layout', default='1x1',
@@ -111,3 +120,10 @@ def main():
             parser.error(f'{type(err).__name__}: {err}')
         else:
             report_results(result, output_file, args.verbose)
+            if args.fail == 'skipped':
+                exit_code = 2 if result.errors else 0
+            elif args.fail == 'no-output':
+                exit_code = 2 if result.num_ok == 0 else 0
+            else:
+                exit_code = 0
+            parser.exit(exit_code)

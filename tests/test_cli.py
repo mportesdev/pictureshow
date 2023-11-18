@@ -289,3 +289,51 @@ class TestPdfSuffix:
         assert f"error: FileExistsError: file '{existing_pdf}' exists" in std_err
         # target file has not changed
         assert existing_pdf.read_bytes() == file_contents
+
+
+class TestFailOnSkippedFiles:
+    """Test the `--fail` command-line option."""
+    @pytest.mark.parametrize(
+        'pic_files, expected_code',
+        (
+            pytest.param(PICS_1_GOOD, 0, id='no skipped'),
+            pytest.param(PICS_1_GOOD_1_BAD, 2, id='some skipped'),
+            pytest.param(PICS_1_BAD, 2, id='all skipped'),
+        )
+    )
+    def test_skipped(self, new_pdf, pic_files, expected_code):
+        pic_files = ' '.join(str(path) for path in pic_files)
+        command = f'pictureshow -Fskipped {pic_files} -o {new_pdf}'
+        exit_code = subprocess.call(command.split())  # nosec: B603
+
+        assert exit_code == expected_code
+
+    @pytest.mark.parametrize(
+        'pic_files, expected_code',
+        (
+            pytest.param(PICS_1_GOOD, 0, id='no skipped'),
+            pytest.param(PICS_1_GOOD_1_BAD, 0, id='some skipped'),
+            pytest.param(PICS_1_BAD, 2, id='all skipped'),
+        )
+    )
+    def test_no_output(self, new_pdf, pic_files, expected_code):
+        pic_files = ' '.join(str(path) for path in pic_files)
+        command = f'pictureshow -Fno-output {pic_files} -o {new_pdf}'
+        exit_code = subprocess.call(command.split())  # nosec: B603
+
+        assert exit_code == expected_code
+
+    @pytest.mark.parametrize(
+        'pic_files, expected_code',
+        (
+            pytest.param(PICS_1_GOOD, 0, id='no skipped'),
+            pytest.param(PICS_1_GOOD_1_BAD, 0, id='some skipped'),
+            pytest.param(PICS_1_BAD, 0, id='all skipped'),
+        )
+    )
+    def test_no(self, new_pdf, pic_files, expected_code):
+        pic_files = ' '.join(str(path) for path in pic_files)
+        command = f'pictureshow -Fno {pic_files} -o {new_pdf}'
+        exit_code = subprocess.call(command.split())  # nosec: B603
+
+        assert exit_code == expected_code
