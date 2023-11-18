@@ -37,6 +37,13 @@ As a command line tool
                             aspect ratio
       -f, --force-overwrite
                             save to output filename even if file exists
+      -F {skipped,no-output,no}, --fail {skipped,no-output,no}
+                            If set to `skipped`, fail (exit with code 2) if at least
+                            one file was skipped due to an error. If set to `no-
+                            output`, fail if all files were skipped and no PDF file
+                            was created; succeed (exit with code 0) if at least one
+                            file was successfully saved. If set to `no` (default),
+                            succeed even if all files were skipped.
       -L, --landscape       set landscape orientation of page; default is portrait
       -l LAYOUT, --layout LAYOUT
                             specify grid layout (columns x rows) of pictures on page,
