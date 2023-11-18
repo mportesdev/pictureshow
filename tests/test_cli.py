@@ -114,7 +114,7 @@ class TestCommandLine:
         proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
         std_out = proc.stdout.decode()
 
-        assert proc.returncode == 0
+        assert proc.returncode == 2
         assert progress in std_out.splitlines()
         assert f'{num_invalid} skipped due to error.' in std_out
         assert 'Saved' not in std_out
@@ -240,7 +240,7 @@ class TestCommandLine:
         proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
         std_out = proc.stdout.decode()
 
-        assert proc.returncode == 0
+        assert proc.returncode == 2
         assert '!!!!' in std_out.splitlines()
         # only unique items reported
         assert '2 files skipped due to error.' in std_out
