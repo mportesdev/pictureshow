@@ -112,12 +112,12 @@ def _setup_parser():
     return parser
 
 
-def get_args(parser):
+def get_args(parser, argv):
     # handle special case before parsing args
-    if not sys.argv[1:]:
+    if not argv and not sys.argv[1:]:
         parser.print_usage(file=sys.stderr)
         parser.exit(2, f"Try '{parser.prog} --help' for more information.\n")
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def report_results(result, output_file, verbose=False):
@@ -152,9 +152,9 @@ def _ensure_suffix(file_path):
     return str(path.with_suffix('.pdf'))
 
 
-def main():
+def main(argv=None):
     parser = _setup_parser()
-    args = get_args(parser)
+    args = get_args(parser, argv)
     output_file = _ensure_suffix(args.output_file)
 
     stdout_context = (
