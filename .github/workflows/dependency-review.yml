@@ -1,13 +1,12 @@
 name: Dependency Review
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
-  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   dependency-review:
