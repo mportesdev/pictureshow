@@ -2,6 +2,13 @@
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.11.0'></a>
+## 0.11.0 — 2023-11-21
+
+### Added
+
+- CLI: the `--fail` option to control the app's exit code depending on skipped files (#24)
+
 
 ## 0.10.1 — 2023-11-18
 
