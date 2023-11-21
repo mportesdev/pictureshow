@@ -40,3 +40,8 @@ show_missing = true
 
 [tool.bandit.assert_used]
 skips = ["tests/*"]
+
+[tool.scriv]
+format = "md"
+md_header_level = "2"
+version = "literal: pyproject.toml: tool.poetry.version"
