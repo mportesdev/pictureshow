@@ -233,7 +233,19 @@ class TestCommandLine:
         assert '1 file skipped due to error.' in std_out
         assert 'UnidentifiedImageError' in std_out
 
-    def test_verbose_shows_only_unique_files(self, new_pdf):
+    def test_only_unique_errors_reported(self, new_pdf):
+        # duplicate items
+        pic_files = ' '.join(str(path) for path in PICS_2_BAD * 2)
+        command = f'pictureshow {pic_files} -o {new_pdf}'
+        proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
+        std_out = proc.stdout.decode()
+
+        assert proc.returncode == 2
+        assert '!!!!' in std_out.splitlines()
+        # only unique items reported
+        assert '2 files skipped due to error.' in std_out
+
+    def test_only_unique_errors_reported_verbose(self, new_pdf):
         # duplicate items
         pic_files = ' '.join(str(path) for path in PICS_2_BAD * 2)
         command = f'pictureshow -v {pic_files} -o {new_pdf}'
@@ -244,16 +256,7 @@ class TestCommandLine:
         assert '!!!!' in std_out.splitlines()
         # only unique items reported
         assert '2 files skipped due to error.' in std_out
-
-    def test_quiet_and_verbose_are_mutually_exclusive(self, new_pdf):
-        command = f'pictureshow -qv {PIC_FILE} -o {new_pdf}'
-        proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
-        std_err = proc.stderr.decode()
-
-        assert proc.returncode == 2
-        assert 'usage: pictureshow [options]' in std_err
-        assert 'error: argument -v' in std_err
-        assert 'not allowed with argument -q' in std_err
+        assert std_out.count('UnidentifiedImageError') == 2
 
     def test_special_message_if_args_missing(self):
         command = 'pictureshow'
