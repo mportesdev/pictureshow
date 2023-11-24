@@ -35,7 +35,8 @@ def get_args(parser):
                              ' default is 72 (72 points = 1 inch)')
     parser.add_argument('-o', '--output-file', required=True, metavar='PATH',
                         help='path of the output PDF file (required)')
-    parser.add_argument('-p', '--page-size', default='A4', metavar='SIZE',
+    parser.add_argument('-p', '--page-size', choices=PAGE_SIZES, default='A4',
+                        metavar='SIZE',
                         help=f'specify page size; default is A4'
                              f' (available sizes: {", ".join(PAGE_SIZES)})')
     verbosity_group = parser.add_mutually_exclusive_group()

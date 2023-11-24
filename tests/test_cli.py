@@ -109,17 +109,6 @@ class TestCommandLine:
         assert 'Nothing to save.' in std_out
         assert not new_pdf.exists()
 
-    def test_invalid_page_size_throws_error(self, new_pdf):
-        command = f'pictureshow -pA11 {PIC_FILE} -o {new_pdf}'
-        proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
-        std_err = proc.stderr.decode()
-
-        assert proc.returncode == 2
-        assert 'usage: pictureshow [options]' in std_err
-        assert 'error: PageSizeError:' in std_err
-        assert "unknown page size 'A11', please use one of" in std_err
-        assert not new_pdf.exists()
-
     def test_high_margin_throws_error(self, new_pdf):
         command = f'pictureshow -m{A4_WIDTH/2 + 1} {PIC_FILE} -o {new_pdf}'
         proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
