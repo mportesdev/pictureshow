@@ -1,12 +1,6 @@
-|build-test| |coverage| |bandit| |pre-commit| |release| |pyversions| |downloads|
+|build-test| |coverage| |bandit| |pre-commit| |release| |pyversions|
 
 Save pictures to PDF from the command line or from your Python programs.
-
-
-Prerequisites
-=============
-
-- Python 3.8 or higher
 
 
 Installation
@@ -37,31 +31,30 @@ As a command line tool
                             aspect ratio
       -f, --force-overwrite
                             save to output filename even if file exists
-      -F {skipped,no-output,no}, --fail {skipped,no-output,no}
-                            If set to `skipped`, fail (exit with code 2) if at least
-                            one file was skipped due to an error. If set to `no-
-                            output` (default), fail if all files were skipped and no
-                            PDF file was created; succeed (exit with code 0) if at
-                            least one file was successfully saved. If set to `no`,
-                            succeed even if all files were skipped.
+      -F MODE, --fail MODE  If set to `skipped`, fail (exit with code 2) if at
+                            least one file was skipped due to an error. If set to
+                            `no-output` (default), fail if all files were skipped
+                            and no PDF file was created; succeed (exit with code
+                            0) if at least one file was successfully saved. If set
+                            to `no`, succeed even if all files were skipped.
       -L, --landscape       set landscape orientation of page; default is portrait
       -l LAYOUT, --layout LAYOUT
-                            specify grid layout (columns x rows) of pictures on page,
-                            e.g. 2x3 or 2,3; default is 1x1
+                            specify grid layout (columns x rows) of pictures on
+                            page, e.g. 2x3 or 2,3; default is 1x1
       -m MARGIN, --margin MARGIN
-                            set width of empty space around pictures; default is 72
-                            (72 points = 1 inch)
+                            set width of empty space around drawing areas; default
+                            is 72 (72 points = 1 inch)
       -o PATH, --output-file PATH
                             path of the output PDF file (required)
       -p SIZE, --page-size SIZE
                             specify page size; default is A4 (available sizes: A0,
-                            A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, B0, B1, B2, B3,
-                            B4, B5, B6, B7, B8, B9, B10, C0, C1, C2, C3, C4, C5, C6,
-                            C7, C8, C9, C10, LETTER, LEGAL, ELEVENSEVENTEEN,
-                            JUNIOR_LEGAL, HALF_LETTER, GOV_LETTER, GOV_LEGAL,
-                            TABLOID, LEDGER)
+                            A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, B0, B1, B2,
+                            B3, B4, B5, B6, B7, B8, B9, B10, C0, C1, C2, C3, C4,
+                            C5, C6, C7, C8, C9, C10, LETTER, LEGAL,
+                            ELEVENSEVENTEEN, JUNIOR_LEGAL, HALF_LETTER,
+                            GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER)
       -q, --quiet           suppress printing to stdout
-      -s, --stretch-small   scale small pictures up to fit drawing area
+      -s, --stretch-small   scale small pictures up to fit drawing areas
       -v, --verbose         show details on files skipped due to error
       -V, --version         show program's version number and exit
 
@@ -179,6 +172,4 @@ default values correspond to the above shown command line options:
     :target: https://github.com/mportesdev/pictureshow/releases/latest
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
     :target: https://pypi.org/project/pictureshow
-.. |downloads| image:: https://pepy.tech/badge/pictureshow
-    :target: https://pepy.tech/project/pictureshow
 .. _reportlab: https://pypi.org/project/reportlab
