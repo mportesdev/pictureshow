@@ -27,9 +27,17 @@ class PictureShow:
         self._pic_files = pic_files
         self._backend = ReportlabBackend()
 
-    def save_pdf(self, output_file, page_size='A4', landscape=False, margin=72,
-                 layout=(1, 1), stretch_small=False, fill_area=False,
-                 force_overwrite=False):
+    def save_pdf(
+            self,
+            output_file,
+            page_size='A4',
+            landscape=False,
+            margin=72,
+            layout=(1, 1),
+            stretch_small=False,
+            fill_area=False,
+            force_overwrite=False,
+    ):
         """Save pictures stored in `self._pic_files` to a PDF document.
 
         Return a named tuple of three values:
@@ -44,8 +52,17 @@ class PictureShow:
             pass
         return self.result
 
-    def _save_pdf(self, output_file, page_size, landscape, margin, layout,
-                  stretch_small, fill_area, force_overwrite):
+    def _save_pdf(
+            self,
+            output_file,
+            page_size,
+            landscape,
+            margin,
+            layout,
+            stretch_small,
+            fill_area,
+            force_overwrite,
+    ):
         output_file = self._validate_target_path(output_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
         layout = self._validate_layout(layout)
@@ -190,9 +207,17 @@ class PictureShow:
             yield DrawingArea(x, y, area_width, area_height)
 
 
-def pictures_to_pdf(*pic_files, output_file, page_size='A4', landscape=False,
-                    margin=72, layout=(1, 1), stretch_small=False, fill_area=False,
-                    force_overwrite=False):
+def pictures_to_pdf(
+        *pic_files,
+        output_file,
+        page_size='A4',
+        landscape=False,
+        margin=72,
+        layout=(1, 1),
+        stretch_small=False,
+        fill_area=False,
+        force_overwrite=False,
+):
     """Save one or more pictures to a PDF document.
 
     Return a named tuple of three values:

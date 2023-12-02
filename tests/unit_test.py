@@ -39,8 +39,13 @@ class TestSavePdf:
                          id='1 valid + 1 invalid'),
         )
     )
-    def test_valid_input(self, mocker, reader_side_effects, expected_ok,
-                         expected_errors):
+    def test_valid_input(
+            self,
+            mocker,
+            reader_side_effects,
+            expected_ok,
+            expected_errors,
+    ):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
         mocker.patch('pictureshow.backends.ImageReader', autospec=True,
@@ -87,8 +92,13 @@ class TestSavePdf:
             pytest.param([picture(), picture(), picture()], 3, 2, id='3 valid'),
         )
     )
-    def test_multipage_layout(self, mocker, reader_side_effects, expected_ok,
-                              expected_pages):
+    def test_multipage_layout(
+            self,
+            mocker,
+            reader_side_effects,
+            expected_ok,
+            expected_pages,
+    ):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
         mocker.patch('pictureshow.backends.ImageReader', autospec=True,
@@ -345,8 +355,7 @@ class TestValidPictures:
                          id='2 invalid + 1 valid'),
         )
     )
-    def test_valid_and_invalid_pictures(self, mocker, reader_side_effects,
-                                        expected):
+    def test_valid_and_invalid_pictures(self, mocker, reader_side_effects, expected):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
         mocker.patch('pictureshow.backends.ImageReader', autospec=True,

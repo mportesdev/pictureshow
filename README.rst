@@ -123,7 +123,7 @@ correspond to the above shown command line options:
         layout=(1, 1),
         stretch_small=False,
         fill_area=False,
-        force_overwrite=False
+        force_overwrite=False,
     )
 
 
@@ -156,7 +156,7 @@ default values correspond to the above shown command line options:
         layout=(1, 1),
         stretch_small=False,
         fill_area=False,
-        force_overwrite=False
+        force_overwrite=False,
     )
 
 
