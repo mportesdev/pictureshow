@@ -25,11 +25,11 @@ PICS_MISSING = ('missing.png',)
 @pytest.mark.parametrize(
     'number, noun, expected',
     (
-            pytest.param(1, 'file', '1 file', id='1 file'),
-            pytest.param(2, 'file', '2 files', id='2 files'),
-            pytest.param(1, 'picture', '1 picture', id='1 picture'),
-            pytest.param(3, 'page', '3 pages', id='3 pages'),
-    )
+        pytest.param(1, 'file', '1 file', id='1 file'),
+        pytest.param(2, 'file', '2 files', id='2 files'),
+        pytest.param(1, 'picture', '1 picture', id='1 picture'),
+        pytest.param(3, 'page', '3 pages', id='3 pages'),
+    ),
 )
 def test_number(number, noun, expected):
     assert _number(number, noun) == expected
@@ -38,10 +38,10 @@ def test_number(number, noun, expected):
 @pytest.mark.parametrize(
     'path, expected',
     (
-            pytest.param('pics', 'pics.pdf', id='no suffix'),
-            pytest.param('pics.pdf', 'pics.pdf', id='.pdf suffix'),
-            pytest.param('pics.pics', 'pics.pics', id='other suffix'),
-    )
+        pytest.param('pics', 'pics.pdf', id='no suffix'),
+        pytest.param('pics.pdf', 'pics.pdf', id='.pdf suffix'),
+        pytest.param('pics.pics', 'pics.pics', id='other suffix'),
+    ),
 )
 def test_ensure_suffix(path, expected):
     assert _ensure_suffix(path) == expected
@@ -59,7 +59,7 @@ class TestCommandLine:
         (
             pytest.param(PICS_1_GOOD, 1, '.', '1 picture', '1 page', id='1 valid'),
             pytest.param(PICS_2_GOOD, 2, '..', '2 pictures', '2 pages', id='2 valid'),
-        )
+        ),
     )
     def test_valid_input(self, new_pdf, pic_files, num_pages, progress, pics, pages):
         pic_files = ' '.join(str(path) for path in pic_files)
@@ -94,7 +94,7 @@ class TestCommandLine:
             pytest.param(PICS_2_BAD, '!!', '2 files', id='2 invalid'),
             pytest.param(PICS_DIR, '!', '1 file', id='dir'),
             pytest.param(PICS_MISSING, '!', '1 file', id='missing'),
-        )
+        ),
     )
     def test_invalid_input(self, new_pdf, pic_files, progress, num_invalid):
         pic_files = ' '.join(str(path) for path in pic_files)
@@ -125,7 +125,7 @@ class TestCommandLine:
             pytest.param('1x3', 2, '2 pages', id='1x3'),
             pytest.param('3,2', 1, '1 page', id='3,2'),
             pytest.param('1,1', 6, '6 pages', id='1,1'),
-        )
+        ),
     )
     def test_multiple_pictures_layout(self, new_pdf, layout, num_pages, pages):
         # 6 pictures
@@ -144,7 +144,7 @@ class TestCommandLine:
         (
             pytest.param('1', id='invalid format'),
             pytest.param('0x1', id='invalid value'),
-        )
+        ),
     )
     def test_invalid_layout_throws_error(self, new_pdf, layout):
         command = f'pictureshow -l{layout} {PIC_FILE} -o {new_pdf}'
@@ -279,7 +279,7 @@ class TestFailOnSkippedFiles:
             pytest.param(PICS_1_GOOD, 0, id='no skipped'),
             pytest.param(PICS_1_GOOD_1_BAD, 2, id='some skipped'),
             pytest.param(PICS_1_BAD, 2, id='all skipped'),
-        )
+        ),
     )
     def test_skipped(self, new_pdf, pic_files, expected_code):
         pic_files = ' '.join(str(path) for path in pic_files)
@@ -294,7 +294,7 @@ class TestFailOnSkippedFiles:
             pytest.param(PICS_1_GOOD, 0, id='no skipped'),
             pytest.param(PICS_1_GOOD_1_BAD, 0, id='some skipped'),
             pytest.param(PICS_1_BAD, 2, id='all skipped'),
-        )
+        ),
     )
     def test_no_output(self, new_pdf, pic_files, expected_code):
         pic_files = ' '.join(str(path) for path in pic_files)
@@ -309,7 +309,7 @@ class TestFailOnSkippedFiles:
             pytest.param(PICS_1_GOOD, 0, id='no skipped'),
             pytest.param(PICS_1_GOOD_1_BAD, 0, id='some skipped'),
             pytest.param(PICS_1_BAD, 0, id='all skipped'),
-        )
+        ),
     )
     def test_no(self, new_pdf, pic_files, expected_code):
         pic_files = ' '.join(str(path) for path in pic_files)

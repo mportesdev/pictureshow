@@ -46,8 +46,14 @@ class PictureShow:
         `num_pages` - number of pages of the resulting PDF document
         """
         for _ in self._save_pdf(
-            output_file, page_size, landscape, margin, layout, stretch_small,
-            fill_area, force_overwrite
+                output_file,
+                page_size,
+                landscape,
+                margin,
+                layout,
+                stretch_small,
+                fill_area,
+                force_overwrite,
         ):
             pass
         return self.result
@@ -88,7 +94,7 @@ class PictureShow:
                     self._backend.get_picture_size(picture),
                     area[2:],    # short for (area.width, area.height)
                     stretch_small,
-                    fill_area
+                    fill_area,
                 )
                 self._backend.add_picture(
                     picture, area.x + x, area.y + y, pic_width, pic_height
@@ -228,6 +234,12 @@ def pictures_to_pdf(
     pic_show = PictureShow(*pic_files)
 
     return pic_show.save_pdf(
-        output_file, page_size, landscape, margin, layout, stretch_small, fill_area,
-        force_overwrite
+        output_file,
+        page_size,
+        landscape,
+        margin,
+        layout,
+        stretch_small,
+        fill_area,
+        force_overwrite,
     )
