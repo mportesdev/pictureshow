@@ -107,7 +107,10 @@ Example:
 
     from pictureshow import PictureShow
 
-    pictures = PictureShow('pics/cucumber.jpg', 'pics/onion.jpg')
+    pictures = PictureShow(
+        'pics/cucumber.jpg',
+        'pics/onion.jpg',
+    )
     pictures.save_pdf('vegetables.pdf')
 
 The keyword parameters of the ``save_pdf`` method and their default values
@@ -136,7 +139,11 @@ Example:
 
     from pictureshow import pictures_to_pdf
 
-    pictures_to_pdf('pics/cucumber.jpg', 'pics/onion.jpg', output_file='vegetables.pdf')
+    pictures_to_pdf(
+        'pics/cucumber.jpg',
+        'pics/onion.jpg',
+        output_file='vegetables.pdf',
+    )
 
 (Please note that contrary to the ``PictureShow.save_pdf`` method, ``output_file``
 must be specified as a keyword argument in the above example, because the

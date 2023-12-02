@@ -14,8 +14,13 @@ A4 = A4_WIDTH, A4_LENGTH
 A4_LANDSCAPE = A4_LENGTH, A4_WIDTH
 
 DEFAULTS = dict(
-    page_size=A4, landscape=False, margin=72, layout=(1, 1), stretch_small=False,
-    fill_area=False, force_overwrite=False
+    page_size=A4,
+    landscape=False,
+    margin=72,
+    layout=(1, 1),
+    stretch_small=False,
+    fill_area=False,
+    force_overwrite=False,
 )
 
 
@@ -35,9 +40,8 @@ class TestSavePdf:
         (
             pytest.param([picture()], 1, 0, id='1 valid'),
             pytest.param([picture(), picture()], 2, 0, id='2 valid'),
-            pytest.param([picture(), ImageError()], 1, 1,
-                         id='1 valid + 1 invalid'),
-        )
+            pytest.param([picture(), ImageError()], 1, 1, id='1 valid + 1 invalid'),
+        ),
     )
     def test_valid_input(
             self,
@@ -48,8 +52,11 @@ class TestSavePdf:
     ):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
-        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
-                     side_effect=reader_side_effects)
+        mocker.patch(
+            'pictureshow.backends.ImageReader',
+            autospec=True,
+            side_effect=reader_side_effects,
+        )
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
@@ -68,13 +75,16 @@ class TestSavePdf:
             pytest.param(
                 [IsADirectoryError(), FileNotFoundError()], 2, id='dir + missing'
             ),
-        )
+        ),
     )
     def test_invalid_input(self, mocker, reader_side_effects, expected_errors):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
-        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
-                     side_effect=reader_side_effects)
+        mocker.patch(
+            'pictureshow.backends.ImageReader',
+            autospec=True,
+            side_effect=reader_side_effects,
+        )
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
@@ -90,7 +100,7 @@ class TestSavePdf:
         (
             pytest.param([picture(), picture()], 2, 1, id='2 valid'),
             pytest.param([picture(), picture(), picture()], 3, 2, id='3 valid'),
-        )
+        ),
     )
     def test_multipage_layout(
             self,
@@ -101,8 +111,11 @@ class TestSavePdf:
     ):
         pic_files = ['foo.png'] * len(reader_side_effects)
         output_file = 'foo.pdf'
-        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
-                     side_effect=reader_side_effects)
+        mocker.patch(
+            'pictureshow.backends.ImageReader',
+            autospec=True,
+            side_effect=reader_side_effects,
+        )
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
         params = {**DEFAULTS, 'layout': (1, 2)}
 
@@ -123,8 +136,7 @@ class TestValidateTargetPath:
         Path.return_value.exists.return_value = False
         output_file = 'foo.pdf'
 
-        result = PictureShow()._validate_target_path(output_file,
-                                                     force_overwrite=False)
+        result = PictureShow()._validate_target_path(output_file, force_overwrite=False)
         assert result == output_file
 
     def test_existing_target_file_raises_error(self, mocker):
@@ -132,16 +144,14 @@ class TestValidateTargetPath:
         Path.return_value.exists.return_value = True
 
         with pytest.raises(FileExistsError, match="file '.*' exists"):
-            PictureShow()._validate_target_path('foo.pdf',
-                                                force_overwrite=False)
+            PictureShow()._validate_target_path('foo.pdf', force_overwrite=False)
 
     def test_force_overwrite_existing_file(self, mocker):
         Path = mocker.patch('pictureshow.core.Path', autospec=True)
         Path.return_value.exists.return_value = True
         output_file = 'foo.pdf'
 
-        result = PictureShow()._validate_target_path(output_file,
-                                                     force_overwrite=True)
+        result = PictureShow()._validate_target_path(output_file, force_overwrite=True)
         assert result == output_file
 
     def test_target_pathlike_converted_to_str(self, mocker):
@@ -149,8 +159,7 @@ class TestValidateTargetPath:
         Path_mock.return_value.exists.return_value = False
         output_file = Path('foo.pdf')
 
-        result = PictureShow()._validate_target_path(output_file,
-                                                     force_overwrite=False)
+        result = PictureShow()._validate_target_path(output_file, force_overwrite=False)
         assert result == str(output_file)
 
 
@@ -162,7 +171,7 @@ class TestValidatePageSize:
         (
             pytest.param(A4, id='A4'),
             pytest.param((11.5 * 72, 8.5 * 72), id='custom'),
-        )
+        ),
     )
     def test_page_size_as_tuple(self, page_size):
         result = PictureShow()._validate_page_size(page_size, landscape=False)
@@ -173,7 +182,7 @@ class TestValidatePageSize:
         (
             pytest.param('A4', A4, id="'A4'"),
             pytest.param('letter', (72 * 8.5, 72 * 11), id="'letter'"),
-        )
+        ),
     )
     def test_page_size_as_str(self, page_size, expected):
         result = PictureShow()._validate_page_size(page_size, landscape=False)
@@ -184,7 +193,7 @@ class TestValidatePageSize:
         (
             pytest.param('A4', [210, 297], id="'A4'"),
             pytest.param('b0', [1000, 1414], id="'b0'"),
-        )
+        ),
     )
     def test_valid_names_mm(self, page_size, expected_mm):
         w, h = PictureShow()._validate_page_size(page_size, landscape=False)
@@ -195,7 +204,7 @@ class TestValidatePageSize:
         (
             pytest.param('LETTER', [8.5, 11], id="'LETTER'"),
             pytest.param('legal', [8.5, 14], id="'legal'"),
-        )
+        ),
     )
     def test_valid_names_inches(self, page_size, expected_inches):
         w, h = PictureShow()._validate_page_size(page_size, landscape=False)
@@ -207,7 +216,7 @@ class TestValidatePageSize:
             pytest.param(A4, A4_LANDSCAPE, id='A4'),
             pytest.param('A3', (420 / 25.4 * 72, 297 / 25.4 * 72), id="'A3'"),
             pytest.param((8.5*72, 10.5*72), (10.5*72, 8.5*72), id='custom'),
-        )
+        ),
     )
     def test_portrait_converted_to_landscape(self, page_size, expected):
         result = PictureShow()._validate_page_size(page_size, landscape=True)
@@ -219,7 +228,7 @@ class TestValidatePageSize:
             pytest.param(A4_LANDSCAPE, A4_LANDSCAPE, id='A4'),
             pytest.param('LEDGER', [17 * 72, 11 * 72], id="'LEDGER'"),
             pytest.param((10.5*72, 8.5*72), (10.5*72, 8.5*72), id='custom'),
-        )
+        ),
     )
     def test_landscape_remains_landscape(self, page_size, expected):
         result = PictureShow()._validate_page_size(page_size, landscape=True)
@@ -234,11 +243,10 @@ class TestValidatePageSize:
             pytest.param((500.0, -200.0), id='invalid value (negative)'),
             pytest.param((500.0, '500.0'), id='invalid type (str)'),
             pytest.param(1, id='not iterable'),
-        )
+        ),
     )
     def test_invalid_page_size_raises_error(self, page_size):
-        with pytest.raises(PageSizeError,
-                           match='two positive numbers expected'):
+        with pytest.raises(PageSizeError, match='two positive numbers expected'):
             PictureShow()._validate_page_size(page_size, landscape=False)
 
     @pytest.mark.parametrize(
@@ -246,12 +254,13 @@ class TestValidatePageSize:
         (
             pytest.param('A11', id="'A11'"),
             pytest.param('portrait', id="'portrait'"),
-        )
+        ),
     )
     def test_invalid_page_size_name_raises_error(self, page_size):
-        with pytest.raises(PageSizeError,
-                           match='unknown page size .+,'
-                                 ' please use one of: A0, A1.+'):
+        with pytest.raises(
+                PageSizeError,
+                match='unknown page size .+, please use one of: A0, A1.+',
+        ):
             PictureShow()._validate_page_size(page_size, landscape=False)
 
 
@@ -264,7 +273,7 @@ class TestValidateLayout:
             pytest.param((1, 1), id='(1, 1)'),
             pytest.param((1, 2), id='(1, 2)'),
             pytest.param((4, 2), id='(4, 2)'),
-        )
+        ),
     )
     def test_layout_as_tuple(self, layout):
         assert PictureShow()._validate_layout(layout) == layout
@@ -275,7 +284,7 @@ class TestValidateLayout:
             pytest.param([1, 2], (1, 2), id='list'),
             pytest.param(range(2, 5)[:2], (2, 3), id='iter'),
             pytest.param(b'\x05\x03', (5, 3), id='bytes'),
-        )
+        ),
     )
     def test_layout_as_other_sequence(self, layout, expected):
         result = PictureShow()._validate_layout(layout)
@@ -290,7 +299,7 @@ class TestValidateLayout:
             pytest.param('1,1', (1, 1), id='1,1'),
             pytest.param('03,01', (3, 1), id='03,01'),
             pytest.param(' 2 , 3 ', (2, 3), id=' 2 , 3 '),
-        )
+        ),
     )
     def test_layout_as_str(self, layout, expected):
         result = PictureShow()._validate_layout(layout)
@@ -306,7 +315,7 @@ class TestValidateLayout:
             pytest.param((1, 0.5), id='invalid type (float)'),
             pytest.param(('1', '1'), id='invalid type (str)'),
             pytest.param(0, id='not iterable'),
-        )
+        ),
     )
     def test_invalid_layout_raises_error(self, layout):
         with pytest.raises(LayoutError, match='two positive integers expected'):
@@ -320,7 +329,7 @@ class TestValidateLayout:
             pytest.param('0x1', id='invalid value (zero)'),
             pytest.param('-1x3', id='invalid value (negative)'),
             pytest.param('1x0.5', id='invalid type (float)'),
-        )
+        ),
     )
     def test_invalid_layout_str_raises_error(self, layout):
         with pytest.raises(LayoutError, match='two positive integers expected'):
@@ -335,13 +344,16 @@ class TestValidPictures:
         (
             pytest.param([picture()], id='1 valid'),
             pytest.param([picture(), picture()], id='2 valid'),
-        )
+        ),
     )
     def test_all_valid_pictures(self, mocker, reader_side_effects):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
-        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
-                     side_effect=reader_side_effects)
+        mocker.patch(
+            'pictureshow.backends.ImageReader',
+            autospec=True,
+            side_effect=reader_side_effects,
+        )
         result = list(pic_show._valid_pictures())
 
         assert result == reader_side_effects
@@ -351,15 +363,21 @@ class TestValidPictures:
         'reader_side_effects, expected',
         (
             pytest.param([1, ImageError(), 2], [1, None, 2], id='2 valid + 1 invalid'),
-            pytest.param([ImageError(), 1, ImageError()], [None, 1, None],
-                         id='2 invalid + 1 valid'),
-        )
+            pytest.param(
+                [ImageError(), 1, ImageError()],
+                [None, 1, None],
+                id='2 invalid + 1 valid',
+            ),
+        ),
     )
     def test_valid_and_invalid_pictures(self, mocker, reader_side_effects, expected):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
-        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
-                     side_effect=reader_side_effects)
+        mocker.patch(
+            'pictureshow.backends.ImageReader',
+            autospec=True,
+            side_effect=reader_side_effects,
+        )
         result = list(pic_show._valid_pictures())
 
         assert result == expected
@@ -375,13 +393,16 @@ class TestValidPictures:
                 [None, None],
                 id='dir + missing',
             ),
-        )
+        ),
     )
     def test_all_invalid_pictures(self, mocker, reader_side_effects, expected):
         pic_files = ['foo.png'] * len(reader_side_effects)
         pic_show = PictureShow(*pic_files)
-        mocker.patch('pictureshow.backends.ImageReader', autospec=True,
-                     side_effect=reader_side_effects)
+        mocker.patch(
+            'pictureshow.backends.ImageReader',
+            autospec=True,
+            side_effect=reader_side_effects,
+        )
         result = list(pic_show._valid_pictures())
 
         assert result == expected
@@ -400,12 +421,12 @@ class TestPositionAndSize:
         (
             pytest.param((800, 387), A4_PORTRAIT_MARGIN_72, id='portrait'),
             pytest.param((800, 387), A4_LANDSCAPE_MARGIN_72, id='landscape'),
-        )
+        ),
     )
     def test_big_wide_picture_fills_area_x(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, False, False
+            pic_size, area_size, stretch_small=False, fill_area=False
         )
         assert x == 0
         assert new_width == area_size[0]
@@ -416,12 +437,12 @@ class TestPositionAndSize:
         (
             pytest.param((400, 3260), A4_PORTRAIT_MARGIN_72, id='portrait'),
             pytest.param((400, 3260), A4_LANDSCAPE_MARGIN_72, id='landscape'),
-        )
+        ),
     )
     def test_big_tall_picture_fills_area_y(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, False, False
+            pic_size, area_size, stretch_small=False, fill_area=False
         )
         assert y == 0
         assert new_height == area_size[1]
@@ -430,7 +451,7 @@ class TestPositionAndSize:
     def test_small_picture_not_resized(self):
         pic_size = (320, 200)
         x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, A4_PORTRAIT_MARGIN_72, False, False
+            pic_size, A4_PORTRAIT_MARGIN_72, stretch_small=False, fill_area=False
         )
         assert (new_width, new_height) == pic_size
 
@@ -439,7 +460,7 @@ class TestPositionAndSize:
         (
             pytest.param((192, 108), A4_PORTRAIT_MARGIN_72, id='portrait'),
             pytest.param((192, 108), A4_LANDSCAPE_MARGIN_72, id='landscape'),
-        )
+        ),
     )
     def test_small_wide_picture_stretch_small(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
@@ -455,7 +476,7 @@ class TestPositionAndSize:
         (
             pytest.param((68, 112), A4_PORTRAIT_MARGIN_72, id='portrait'),
             pytest.param((68, 112), A4_LANDSCAPE_MARGIN_72, id='landscape'),
-        )
+        ),
     )
     def test_small_tall_picture_stretch_small(self, pic_size, area_size):
         original_aspect = pic_size[0] / pic_size[1]
@@ -472,7 +493,7 @@ class TestPositionAndSize:
             pytest.param((800, 387), A4_PORTRAIT_MARGIN_72, id='big wide picture'),
             pytest.param((400, 3260), A4_PORTRAIT_MARGIN_72, id='big tall picture'),
             pytest.param((320, 200), A4_PORTRAIT_MARGIN_72, id='small picture'),
-        )
+        ),
     )
     def test_fill_area(self, pic_size, area_size):
         x, y, new_width, new_height = PictureShow()._position_and_size(
@@ -493,7 +514,7 @@ class TestAreas:
             pytest.param((1, 1), id='1x1'),
             pytest.param((1, 2), id='1x2'),
             pytest.param((1, 5), id='1x5'),
-        )
+        ),
     )
     def test_single_column_layout(self, layout):
         page_size, margin = A4, 72
@@ -514,7 +535,7 @@ class TestAreas:
             pytest.param((1, 1), id='1x1'),
             pytest.param((2, 1), id='2x1'),
             pytest.param((5, 1), id='5x1'),
-        )
+        ),
     )
     def test_single_row_layout(self, layout):
         page_size, margin = A4, 72
@@ -535,7 +556,7 @@ class TestAreas:
             pytest.param((3, 3), A4, 18, id='(3, 3) portrait'),
             pytest.param((3, 3), A4, 0, id='(3, 3) portrait no margin'),
             pytest.param((3, 3), A4_LANDSCAPE, 36, id='(3, 3) landscape'),
-        )
+        ),
     )
     def test_3x3_layout(self, layout, page_size, margin):
         areas = list(PictureShow()._areas(layout, page_size, margin))
@@ -556,7 +577,7 @@ class TestAreas:
             pytest.param((1, 1), A4_WIDTH/2, id='A4 width/2'),
             pytest.param((1, 2), 300, id='300'),
             pytest.param((1, 2), A4_LENGTH/3, id='A4 length/3'),
-        )
+        ),
     )
     def test_high_margin_raises_error(self, layout, margin):
         with pytest.raises(MarginError, match='margin value too high: .+'):

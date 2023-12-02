@@ -9,43 +9,93 @@ from .core import PAGE_SIZES, PictureShow
 
 
 def get_args(parser):
-    parser.add_argument('pictures', nargs='+', metavar='PICTURE',
-                        help='one or more picture paths or URLs')
-    parser.add_argument('-a', '--fill-area', action='store_true',
-                        help="fill drawing area with picture, ignoring the picture's"
-                             " aspect ratio")
-    parser.add_argument('-f', '--force-overwrite', action='store_true',
-                        help='save to output filename even if file exists')
-    parser.add_argument('-F', '--fail', choices=('skipped', 'no-output', 'no'),
-                        default='no-output', metavar='MODE',
-                        help='If set to `skipped`, fail (exit with code 2) if at least '
-                             'one file was skipped due to an error. '
-                             'If set to `no-output` (default), fail if all files were '
-                             'skipped and no PDF file was created; succeed (exit with '
-                             'code 0) if at least one file was successfully saved. '
-                             'If set to `no`, succeed even if all files were '
-                             'skipped.')
-    parser.add_argument('-L', '--landscape', action='store_true',
-                        help='set landscape orientation of page; default is portrait')
-    parser.add_argument('-l', '--layout', default='1x1',
-                        help='specify grid layout (columns x rows) of pictures on page,'
-                             ' e.g. 2x3 or 2,3; default is 1x1')
-    parser.add_argument('-m', '--margin', type=float, default=72,
-                        help='set width of empty space around drawing areas;'
-                             ' default is 72 (72 points = 1 inch)')
-    parser.add_argument('-o', '--output-file', required=True, metavar='PATH',
-                        help='path of the output PDF file (required)')
-    parser.add_argument('-p', '--page-size', choices=PAGE_SIZES, default='A4',
-                        metavar='SIZE',
-                        help=f'specify page size; default is A4'
-                             f' (available sizes: {", ".join(PAGE_SIZES)})')
+    parser.add_argument(
+        'pictures',
+        nargs='+',
+        metavar='PICTURE',
+        help='one or more picture paths or URLs',
+    )
+    parser.add_argument(
+        '-a',
+        '--fill-area',
+        action='store_true',
+        help="fill drawing area with picture, ignoring the picture's aspect ratio",
+    )
+    parser.add_argument(
+        '-f',
+        '--force-overwrite',
+        action='store_true',
+        help='save to output filename even if file exists',
+    )
+    parser.add_argument(
+        '-F',
+        '--fail',
+        choices=('skipped', 'no-output', 'no'),
+        default='no-output',
+        metavar='MODE',
+        help='If set to `skipped`, fail (exit with code 2) if at least one file '
+             'was skipped due to an error. '
+             'If set to `no-output` (default), fail if all files were skipped '
+             'and no PDF file was created; succeed (exit with code 0) if at '
+             'least one file was successfully saved. '
+             'If set to `no`, succeed even if all files were skipped.',
+    )
+    parser.add_argument(
+        '-L',
+        '--landscape',
+        action='store_true',
+        help='set landscape orientation of page; default is portrait',
+    )
+    parser.add_argument(
+        '-l',
+        '--layout',
+        default='1x1',
+        help='specify grid layout (columns x rows) of pictures on page, '
+             'e.g. 2x3 or 2,3; default is 1x1',
+    )
+    parser.add_argument(
+        '-m',
+        '--margin',
+        type=float,
+        default=72,
+        help='set width of empty space around drawing areas; '
+             'default is 72 (72 points = 1 inch)',
+    )
+    parser.add_argument(
+        '-o',
+        '--output-file',
+        required=True,
+        metavar='PATH',
+        help='path of the output PDF file (required)',
+    )
+    parser.add_argument(
+        '-p',
+        '--page-size',
+        choices=PAGE_SIZES,
+        default='A4',
+        metavar='SIZE',
+        help='specify page size; default is A4 '
+             f'(available sizes: {", ".join(PAGE_SIZES)})',
+    )
     verbosity_group = parser.add_mutually_exclusive_group()
-    verbosity_group.add_argument('-q', '--quiet', action='store_true',
-                                 help='suppress printing to stdout')
-    parser.add_argument('-s', '--stretch-small', action='store_true',
-                        help='scale small pictures up to fit drawing areas')
-    verbosity_group.add_argument('-v', '--verbose', action='store_true',
-                                 help='show details on files skipped due to error')
+    verbosity_group.add_argument(
+        '-q',
+        '--quiet',
+        action='store_true',
+        help='suppress printing to stdout',
+    )
+    parser.add_argument(
+        '-s',
+        '--stretch-small',
+        action='store_true',
+        help='scale small pictures up to fit drawing areas',
+    )
+    verbosity_group.add_argument(
+        '-v',
+        '--verbose',
+        action='store_true',
+        help='show details on files skipped due to error',
+    )
     parser.add_argument('-V', '--version', action='version')
 
     return parser.parse_args()
@@ -105,14 +155,14 @@ def main():
         try:
             pic_show = PictureShow(*args.pictures)
             for ok_flag in pic_show._save_pdf(
-                output_file=output_file,
-                page_size=args.page_size,
-                landscape=args.landscape,
-                margin=args.margin,
-                layout=args.layout,
-                stretch_small=args.stretch_small,
-                fill_area=args.fill_area,
-                force_overwrite=args.force_overwrite
+                    output_file=output_file,
+                    page_size=args.page_size,
+                    landscape=args.landscape,
+                    margin=args.margin,
+                    layout=args.layout,
+                    stretch_small=args.stretch_small,
+                    fill_area=args.fill_area,
+                    force_overwrite=args.force_overwrite,
             ):
                 print('.' if ok_flag else '!', end='', flush=True)
             print()
