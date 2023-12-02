@@ -160,6 +160,7 @@ def main():
                     output_file=output_file,
                     page_size=args.page_size,
                     landscape=args.landscape,
+                    bg_color=None,
                     margin=args.margin,
                     layout=args.layout,
                     stretch_small=args.stretch_small,
