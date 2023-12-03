@@ -113,13 +113,14 @@ Example:
     )
     pictures.save_pdf('vegetables.pdf')
 
-The keyword parameters of the ``save_pdf`` method and their default values
-correspond to the above shown command line options:
+The customization parameters of the ``save_pdf`` method are keyword-only and
+their default values correspond to the above shown command line options:
 
 .. code-block:: python
 
     PictureShow.save_pdf(
         output_file,
+        *,
         page_size='A4',
         landscape=False,
         margin=72,
@@ -149,8 +150,8 @@ Example:
 must be specified as a keyword argument in the above example, because the
 ``pictures_to_pdf`` function treats all positional arguments as input files.)
 
-The keyword parameters of the ``pictures_to_pdf`` function and their
-default values correspond to the above shown command line options:
+The customization parameters of the ``pictures_to_pdf`` function are keyword-only
+and their default values correspond to the above shown command line options:
 
 .. code-block:: python
 

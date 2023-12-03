@@ -30,6 +30,7 @@ class PictureShow:
     def save_pdf(
             self,
             output_file,
+            *,
             page_size='A4',
             landscape=False,
             margin=72,
@@ -47,13 +48,13 @@ class PictureShow:
         """
         for _ in self._save_pdf(
                 output_file,
-                page_size,
-                landscape,
-                margin,
-                layout,
-                stretch_small,
-                fill_area,
-                force_overwrite,
+                page_size=page_size,
+                landscape=landscape,
+                margin=margin,
+                layout=layout,
+                stretch_small=stretch_small,
+                fill_area=fill_area,
+                force_overwrite=force_overwrite,
         ):
             pass
         return self.result
@@ -61,6 +62,7 @@ class PictureShow:
     def _save_pdf(
             self,
             output_file,
+            *,
             page_size,
             landscape,
             margin,
@@ -235,11 +237,11 @@ def pictures_to_pdf(
 
     return pic_show.save_pdf(
         output_file,
-        page_size,
-        landscape,
-        margin,
-        layout,
-        stretch_small,
-        fill_area,
-        force_overwrite,
+        page_size=page_size,
+        landscape=landscape,
+        margin=margin,
+        layout=layout,
+        stretch_small=stretch_small,
+        fill_area=fill_area,
+        force_overwrite=force_overwrite,
     )
