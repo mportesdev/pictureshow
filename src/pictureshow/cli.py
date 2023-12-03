@@ -164,14 +164,14 @@ def main():
             pic_show = PictureShow(*args.pictures)
             for ok_flag in pic_show._save_pdf(
                     output_file=output_file,
+                    force_overwrite=args.force_overwrite,
                     page_size=args.page_size,
                     landscape=args.landscape,
                     bg_color=args.bg_color,
-                    margin=args.margin,
                     layout=args.layout,
+                    margin=args.margin,
                     stretch_small=args.stretch_small,
                     fill_area=args.fill_area,
-                    force_overwrite=args.force_overwrite,
             ):
                 print('.' if ok_flag else '!', end='', flush=True)
             print()

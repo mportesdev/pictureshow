@@ -124,14 +124,14 @@ their default values correspond to the above shown command line options:
     PictureShow.save_pdf(
         output_file,
         *,
+        force_overwrite=False,
         page_size='A4',
         landscape=False,
         bg_color=None,
-        margin=72,
         layout=(1, 1),
+        margin=72,
         stretch_small=False,
         fill_area=False,
-        force_overwrite=False,
     )
 
 
@@ -162,14 +162,14 @@ and their default values correspond to the above shown command line options:
     pictures_to_pdf(
         *pic_files,
         output_file,
+        force_overwrite=False,
         page_size='A4',
         landscape=False,
         bg_color=None,
-        margin=72,
         layout=(1, 1),
+        margin=72,
         stretch_small=False,
         fill_area=False,
-        force_overwrite=False,
     )
 
 

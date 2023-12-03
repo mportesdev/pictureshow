@@ -31,14 +31,14 @@ class PictureShow:
             self,
             output_file,
             *,
+            force_overwrite=False,
             page_size='A4',
             landscape=False,
             bg_color=None,
-            margin=72,
             layout=(1, 1),
+            margin=72,
             stretch_small=False,
             fill_area=False,
-            force_overwrite=False,
     ):
         """Save pictures stored in `self._pic_files` to a PDF document.
 
@@ -49,14 +49,14 @@ class PictureShow:
         """
         for _ in self._save_pdf(
                 output_file,
+                force_overwrite=force_overwrite,
                 page_size=page_size,
                 landscape=landscape,
                 bg_color=bg_color,
-                margin=margin,
                 layout=layout,
+                margin=margin,
                 stretch_small=stretch_small,
                 fill_area=fill_area,
-                force_overwrite=force_overwrite,
         ):
             pass
         return self.result
@@ -65,14 +65,14 @@ class PictureShow:
             self,
             output_file,
             *,
+            force_overwrite,
             page_size,
             landscape,
             bg_color,
-            margin,
             layout,
+            margin,
             stretch_small,
             fill_area,
-            force_overwrite,
     ):
         output_file = self._validate_target_path(output_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
@@ -233,14 +233,14 @@ class PictureShow:
 def pictures_to_pdf(
         *pic_files,
         output_file,
+        force_overwrite=False,
         page_size='A4',
         landscape=False,
         bg_color=None,
-        margin=72,
         layout=(1, 1),
+        margin=72,
         stretch_small=False,
         fill_area=False,
-        force_overwrite=False,
 ):
     """Save one or more pictures to a PDF document.
 
@@ -253,12 +253,12 @@ def pictures_to_pdf(
 
     return pic_show.save_pdf(
         output_file,
+        force_overwrite=force_overwrite,
         page_size=page_size,
         landscape=landscape,
         bg_color=bg_color,
-        margin=margin,
         layout=layout,
+        margin=margin,
         stretch_small=stretch_small,
         fill_area=fill_area,
-        force_overwrite=force_overwrite,
     )
