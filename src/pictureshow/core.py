@@ -149,8 +149,10 @@ class PictureShow:
             if isinstance(layout, str):
                 layout = tuple(int(s) for s in DELIMITER.split(layout))
             columns, rows = layout
-            if not (columns > 0 and isinstance(columns, int)
-                    and rows > 0 and isinstance(rows, int)):
+            if not (
+                    isinstance(columns, int) and isinstance(rows, int)
+                    and columns > 0 and rows > 0
+            ):
                 raise layout_error
         except (ValueError, TypeError) as err:
             raise layout_error from err
@@ -181,8 +183,7 @@ class PictureShow:
 
         # calculate scale factor to fit picture to area
         if pic_is_big or stretch_small:
-            scale = (area_width / pic_width if pic_is_wide
-                     else area_height / pic_height)
+            scale = area_width / pic_width if pic_is_wide else area_height / pic_height
             pic_width *= scale
             pic_height *= scale
 

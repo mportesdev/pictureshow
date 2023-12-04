@@ -111,8 +111,10 @@ def report_results(result, output_file, verbose=False):
                 print(f'{pic_file}:\n{type(error).__name__}: {error}\n')
 
     if result.num_ok > 0:
-        print(f'Saved {_number(result.num_ok, "picture")}'
-              f' ({_number(result.num_pages, "page")}) to {output_file!r}')
+        print(
+            f'Saved {_number(result.num_ok, "picture")} '
+            f'({_number(result.num_pages, "page")}) to {output_file!r}'
+        )
     else:
         print('Nothing to save.')
 
@@ -135,7 +137,7 @@ def main():
     parser = argparse.ArgumentParser(
         usage='%(prog)s [options] PICTURE [PICTURE ...] -o PATH',
         description='Save pictures to PDF.',
-        epilog='https://pypi.org/project/pictureshow/'
+        epilog='https://pypi.org/project/pictureshow/',
     )
     parser.version = __version__
 
