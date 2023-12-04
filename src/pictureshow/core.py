@@ -6,7 +6,7 @@ from pathlib import Path
 from reportlab.lib import pagesizes
 
 from .backends import ReportlabBackend
-from .exceptions import LayoutError, MarginError, PageSizeError
+from .exceptions import LayoutError, MarginError, PageSizeError, RGBColorError
 
 PAGE_SIZES = {
     name: size
@@ -141,6 +141,16 @@ class PictureShow:
         if page_width < page_height and landscape:
             page_size = page_height, page_width
         return page_size
+
+    @staticmethod
+    def _validate_color(color):
+        if color is None:
+            return None
+        try:
+            r, g, b = bytes.fromhex(color)
+        except (ValueError, TypeError) as err:
+            raise RGBColorError('6-digit hex value expected') from err
+        return r, g, b
 
     @staticmethod
     def _validate_layout(layout):
