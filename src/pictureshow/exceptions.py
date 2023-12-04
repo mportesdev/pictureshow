@@ -8,3 +8,7 @@ class MarginError(ValueError):
 
 class LayoutError(ValueError):
     pass
+
+
+class RGBColorError(ValueError):
+    pass

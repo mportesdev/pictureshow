@@ -6,7 +6,9 @@ from PIL import UnidentifiedImageError as ImageError
 
 from pictureshow.backends import ImageReader
 from pictureshow.core import PictureShow
-from pictureshow.exceptions import LayoutError, MarginError, PageSizeError
+from pictureshow.exceptions import (
+    LayoutError, MarginError, PageSizeError, RGBColorError
+)
 
 A4_WIDTH = 72 * 210 / 25.4
 A4_LENGTH = 72 * 297 / 25.4
@@ -262,6 +264,36 @@ class TestValidatePageSize:
                 match='unknown page size .+, please use one of: A0, A1.+',
         ):
             PictureShow()._validate_page_size(page_size, landscape=False)
+
+
+class TestValidateColor:
+    """Test core.PictureShow._validate_color"""
+
+    def test_default(self):
+        assert PictureShow()._validate_color(None) is None
+
+    @pytest.mark.parametrize(
+        'color, expected',
+        (
+            pytest.param('000000', (0, 0, 0), id='000000'),
+            pytest.param('ff8c00', (255, 140, 0), id='ff8c00'),
+        ),
+    )
+    def test_valid_color(self, color, expected):
+        assert PictureShow()._validate_color(color) == expected
+
+    @pytest.mark.parametrize(
+        'color',
+        (
+            pytest.param('0000', id='invalid byte length'),
+            pytest.param('bcdefg', id='invalid digit'),
+            pytest.param('00000', id='missing digit'),
+            pytest.param(0, id='type error'),
+        ),
+    )
+    def test_invalid_color_raises_error(self, color):
+        with pytest.raises(RGBColorError, match='6-digit hex value expected'):
+            PictureShow()._validate_color(color)
 
 
 class TestValidateLayout:
