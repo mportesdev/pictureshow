@@ -2,6 +2,15 @@
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.12.0'></a>
+## 0.12.0 — 2023-12-04
+
+### Changed
+
+- Library API: the `page_size`, `landscape`, `margin`, `layout`, `stretch_small`, `fill_area` and `force_overwrite`
+  parameters to `PictureShow.save_pdf` are now keyword-only
+
+
 <a id='changelog-0.11.0'></a>
 ## 0.11.0 — 2023-11-21
 
