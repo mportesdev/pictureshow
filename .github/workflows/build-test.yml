@@ -30,9 +30,8 @@ jobs:
 
     - name: Run code checks
       run: |
-        pip install 'bandit[toml]==1.*' 'isort==5.*'
+        pip install 'bandit[toml]==1.*'
         bandit --configfile=pyproject.toml --recursive src tests
-        isort --check --diff src tests
 
     - name: Run tests
       id: run_tests
