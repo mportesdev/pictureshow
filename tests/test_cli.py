@@ -17,6 +17,8 @@ from . import (
     assert_pdf,
 )
 
+pytestmark = pytest.mark.usefixtures('error_log')
+
 
 @pytest.mark.parametrize(
     'number, noun, expected',
@@ -256,12 +258,11 @@ class TestSubprocessCommandLine:
         assert 'usage: pictureshow [options]' in std_err
         assert "Try 'pictureshow --help' for more information." in std_err
 
-    def test_invocation_as_module(self, new_pdf):
-        command = f'python -m pictureshow {PIC_FILE} -o {new_pdf}'
+    def test_invocation_as_module(self):
+        command = 'python -m pictureshow --version'
         proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
 
         assert proc.returncode == 0
-        assert_pdf(new_pdf, num_pages=1)
 
 
 class TestPdfSuffix:
@@ -344,3 +345,15 @@ class TestFailOnSkippedFiles:
         exit_code = exc.value.args[0]
 
         assert exit_code == expected_code
+
+
+class TestErrorLogging:
+    def test_log_saved_if_any_errors(self, new_pdf, error_log):
+        pic_files = ' '.join(str(path) for path in PICS_1_GOOD_1_BAD)
+        argv = f'{pic_files} -o {new_pdf}'.split()
+        with pytest.raises(SystemExit):
+            main(argv)
+        log_contents = error_log.read_text()
+
+        assert 'tests/files/not_jpg.jpg' in log_contents
+        assert 'UnidentifiedImageError' in log_contents

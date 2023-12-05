@@ -4,8 +4,13 @@ import io
 import sys
 from pathlib import Path
 
+from platformdirs import user_cache_path
+
 from . import __version__
 from .core import PAGE_SIZES, PictureShow
+
+CACHE_PATH = user_cache_path('pictureshow', ensure_exists=True)
+ERROR_LOG = CACHE_PATH / 'errors.log'
 
 
 class _ArgParser(argparse.ArgumentParser):
@@ -123,11 +128,15 @@ def _setup_parser():
 def _report_results(result, output_file, verbose=False):
     unique_errors = dict(result.errors)
     num_errors = len(unique_errors)
+
     if num_errors > 0:
         print(f'{_number(num_errors, "file")} skipped due to error.')
-        if verbose:
+        with ERROR_LOG.open('w', encoding='utf8') as f:
             for pic_file, error in unique_errors.items():
-                print(f'{pic_file}:\n{type(error).__name__}: {error}\n')
+                text = f'{pic_file}:\n{type(error).__name__}: {error}\n'
+                print(text, file=f)
+                if verbose:
+                    print(text)
 
     if result.num_ok > 0:
         print(
@@ -182,6 +191,7 @@ def main(argv=None):
             parser.error(f'{type(err).__name__}: {err}')
         else:
             _report_results(result, output_file, args.verbose)
+
     if args.fail == 'skipped':
         exit_code = 2 if result.errors else 0
     elif args.fail == 'no-output':
