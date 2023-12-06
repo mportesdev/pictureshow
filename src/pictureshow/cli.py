@@ -22,6 +22,12 @@ def get_args(parser):
         help="fill drawing area with picture, ignoring the picture's aspect ratio",
     )
     parser.add_argument(
+        '-b',
+        '--bg-color',
+        metavar='COLOR',
+        help='specify page background color as 6-digit hexadecimal RGB, e.g. ff8c00',
+    )
+    parser.add_argument(
         '-f',
         '--force-overwrite',
         action='store_true',
@@ -160,7 +166,7 @@ def main():
                     output_file=output_file,
                     page_size=args.page_size,
                     landscape=args.landscape,
-                    bg_color=None,
+                    bg_color=args.bg_color,
                     margin=args.margin,
                     layout=args.layout,
                     stretch_small=args.stretch_small,

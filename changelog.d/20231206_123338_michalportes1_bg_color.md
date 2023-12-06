@@ -13,6 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Added
 
 - Library API: the optional `bg_color` parameter to `PictureShow.save_pdf` and `pictures_to_pdf` to specify page background color
+- CLI: the `--bg-color` option to set page background color
 
 <!--
 ### Changed
