@@ -29,6 +29,9 @@ As a command line tool
       -h, --help            show this help message and exit
       -a, --fill-area       fill drawing area with picture, ignoring the picture's
                             aspect ratio
+      -b COLOR, --bg-color COLOR
+                            specify page background color as 6-digit hexadecimal
+                            RGB, e.g. ff8c00
       -f, --force-overwrite
                             save to output filename even if file exists
       -F MODE, --fail MODE  If set to `skipped`, fail (exit with code 2) if at
