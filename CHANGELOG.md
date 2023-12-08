@@ -2,13 +2,22 @@
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.12.1'></a>
+## 0.12.1 — 2023-12-08
+
+### Added
+
+- Library API: the optional `bg_color` parameter to `PictureShow.save_pdf` and `pictures_to_pdf` to specify page background color (#29)
+- CLI: the `--bg-color` option to set page background color (#29)
+
+
 <a id='changelog-0.12.0'></a>
 ## 0.12.0 — 2023-12-04
 
 ### Changed
 
 - Library API: the `page_size`, `landscape`, `margin`, `layout`, `stretch_small`, `fill_area` and `force_overwrite`
-  parameters to `PictureShow.save_pdf` are now keyword-only
+  parameters to `PictureShow.save_pdf` are now keyword-only (#28)
 
 
 <a id='changelog-0.11.0'></a>
