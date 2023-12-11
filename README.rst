@@ -101,6 +101,40 @@ As a Python library
 -------------------
 
 
+Using the ``pictures_to_pdf`` shortcut function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Example:
+
+.. code-block:: python
+
+    from pictureshow import pictures_to_pdf
+
+    pictures_to_pdf(
+        'pics/cucumber.jpg',
+        'pics/onion.jpg',
+        output_file='vegetables.pdf',
+    )
+
+The customization parameters of the ``pictures_to_pdf`` function are keyword-only
+and their default values correspond to the above shown command line options:
+
+.. code-block:: python
+
+    pictures_to_pdf(
+        *pic_files,
+        output_file,
+        force_overwrite=False,
+        page_size='A4',
+        landscape=False,
+        bg_color=None,
+        layout=(1, 1),
+        margin=72,
+        stretch_small=False,
+        fill_area=False,
+    )
+
+
 Using the ``PictureShow`` class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -124,44 +158,6 @@ their default values correspond to the above shown command line options:
     PictureShow.save_pdf(
         output_file,
         *,
-        force_overwrite=False,
-        page_size='A4',
-        landscape=False,
-        bg_color=None,
-        layout=(1, 1),
-        margin=72,
-        stretch_small=False,
-        fill_area=False,
-    )
-
-
-Using the ``pictures_to_pdf`` shortcut function
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Example:
-
-.. code-block:: python
-
-    from pictureshow import pictures_to_pdf
-
-    pictures_to_pdf(
-        'pics/cucumber.jpg',
-        'pics/onion.jpg',
-        output_file='vegetables.pdf',
-    )
-
-(Please note that contrary to the ``PictureShow.save_pdf`` method, ``output_file``
-must be specified as a keyword argument in the above example, because the
-``pictures_to_pdf`` function treats all positional arguments as input files.)
-
-The customization parameters of the ``pictures_to_pdf`` function are keyword-only
-and their default values correspond to the above shown command line options:
-
-.. code-block:: python
-
-    pictures_to_pdf(
-        *pic_files,
-        output_file,
         force_overwrite=False,
         page_size='A4',
         landscape=False,
