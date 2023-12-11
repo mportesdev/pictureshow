@@ -1,25 +1,21 @@
 import subprocess  # nosec: B404
-from pathlib import Path
 
 import pytest
-from pypdf import PdfReader
 
 from pictureshow.cli import _ensure_suffix, _number
 
-A4_WIDTH = 72 * 210 / 25.4
-
-TEST_FILES = Path(__file__).parent / 'files'
-
-PIC_FILE = TEST_FILES / 'mandelbrot.png'
-BAD_FILE = TEST_FILES / 'not_jpg.jpg'
-
-PICS_1_GOOD = (PIC_FILE,)
-PICS_2_GOOD = (PIC_FILE, TEST_FILES / 'plots' / 'gauss_2x2.png')
-PICS_1_GOOD_1_BAD = (PIC_FILE, BAD_FILE)
-PICS_1_BAD = (BAD_FILE,)
-PICS_2_BAD = (BAD_FILE, TEST_FILES / 'empty.pdf')
-PICS_DIR = (TEST_FILES,)
-PICS_MISSING = ('missing.png',)
+from . import (
+    PIC_FILE,
+    PICS_1_GOOD,
+    PICS_2_GOOD,
+    PICS_1_GOOD_1_BAD,
+    PICS_1_BAD,
+    PICS_2_BAD,
+    PICS_DIR,
+    PICS_MISSING,
+    A4_WIDTH,
+    assert_pdf,
+)
 
 
 @pytest.mark.parametrize(
@@ -45,12 +41,6 @@ def test_number(number, noun, expected):
 )
 def test_ensure_suffix(path, expected):
     assert _ensure_suffix(path) == expected
-
-
-def assert_pdf(path, num_pages):
-    assert path.exists()
-    assert path.stat().st_size > 0
-    assert len(PdfReader(path).pages) == num_pages
 
 
 class TestCommandLine:

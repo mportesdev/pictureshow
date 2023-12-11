@@ -10,8 +10,8 @@ from pictureshow.exceptions import (
     LayoutError, MarginError, PageSizeError, RGBColorError
 )
 
-A4_WIDTH = 72 * 210 / 25.4
-A4_LENGTH = 72 * 297 / 25.4
+from . import A4_WIDTH, A4_LENGTH
+
 A4 = A4_WIDTH, A4_LENGTH
 A4_LANDSCAPE = A4_LENGTH, A4_WIDTH
 
