@@ -234,6 +234,13 @@ class TestCommandLine:
         assert 'usage: pictureshow [options]' in std_err
         assert "Try 'pictureshow --help' for more information." in std_err
 
+    def test_invocation_as_module(self, new_pdf):
+        command = f'python -m pictureshow {PIC_FILE} -o {new_pdf}'
+        proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
+
+        assert proc.returncode == 0
+        assert_pdf(new_pdf, num_pages=1)
+
 
 class TestPdfSuffix:
     """Test handling of the output file's suffix."""
