@@ -30,9 +30,10 @@ jobs:
 
     - name: Run code checks
       run: |
-        pip install 'flake8==6.*' 'bandit[toml]==1.*'
+        pip install 'flake8==6.*' 'bandit[toml]==1.*' 'codespell==2.*'
         flake8 src tests
         bandit --configfile=pyproject.toml --recursive src tests
+        codespell src tests
 
     - name: Run tests
       id: run_tests
