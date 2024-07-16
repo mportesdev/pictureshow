@@ -29,28 +29,24 @@ As a command line tool
       -h, --help            show this help message and exit
       -a, --fill-area       fill drawing area with picture, ignoring the picture's
                             aspect ratio
-      -b COLOR, --bg-color COLOR
-                            specify page background color as 6-digit hexadecimal
+      -b, --bg-color COLOR  specify page background color as 6-digit hexadecimal
                             RGB, e.g. ff8c00
       -f, --force-overwrite
                             save to output filename even if file exists
-      -F MODE, --fail MODE  If set to `skipped`, fail (exit with code 2) if at
+      -F, --fail MODE       If set to `skipped`, fail (exit with code 2) if at
                             least one file was skipped due to an error. If set to
                             `no-output` (default), fail if all files were skipped
                             and no PDF file was created; succeed (exit with code
                             0) if at least one file was successfully saved. If set
                             to `no`, succeed even if all files were skipped.
       -L, --landscape       set landscape orientation of page; default is portrait
-      -l LAYOUT, --layout LAYOUT
-                            specify grid layout (columns x rows) of pictures on
+      -l, --layout LAYOUT   specify grid layout (columns x rows) of pictures on
                             page, e.g. 2x3 or 2,3; default is 1x1
-      -m MARGIN, --margin MARGIN
-                            set width of empty space around drawing areas; default
+      -m, --margin MARGIN   set width of empty space around drawing areas; default
                             is 72 (72 points = 1 inch)
-      -o PATH, --output-file PATH
+      -o, --output-file PATH
                             path of the output PDF file (required)
-      -p SIZE, --page-size SIZE
-                            specify page size; default is A4 (available sizes: A0,
+      -p, --page-size SIZE  specify page size; default is A4 (available sizes: A0,
                             A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, B0, B1, B2,
                             B3, B4, B5, B6, B7, B8, B9, B10, C0, C1, C2, C3, C4,
                             C5, C6, C7, C8, C9, C10, LETTER, LEGAL,
