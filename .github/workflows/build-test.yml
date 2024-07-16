@@ -40,7 +40,7 @@ jobs:
       run: |
         pip install .
         echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
-        pip install -r test-requirements.txt 'pytest-cov==4.*'
+        pip install -r test-requirements.txt 'pytest-cov==5.*'
         pytest --cov --cov-report=xml --cov-report=term --verbose
 
     - name: Upload coverage to Codecov
