@@ -8,7 +8,12 @@ from . import __version__
 from .core import PAGE_SIZES, PictureShow
 
 
-def get_args(parser):
+def _setup_parser():
+    parser = argparse.ArgumentParser(
+        usage='%(prog)s [options] PICTURE [PICTURE ...] -o PATH',
+        description='Save pictures to PDF.',
+        epilog='https://pypi.org/project/pictureshow/',
+    )
     parser.add_argument(
         'pictures',
         nargs='+',
@@ -103,7 +108,15 @@ def get_args(parser):
         help='show details on files skipped due to error',
     )
     parser.add_argument('-V', '--version', action='version')
+    parser.version = __version__
+    return parser
 
+
+def get_args(parser):
+    # handle special case before parsing args
+    if not sys.argv[1:]:
+        parser.print_usage(file=sys.stderr)
+        parser.exit(2, f"Try '{parser.prog} --help' for more information.\n")
     return parser.parse_args()
 
 
@@ -140,18 +153,7 @@ def _ensure_suffix(file_path):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        usage='%(prog)s [options] PICTURE [PICTURE ...] -o PATH',
-        description='Save pictures to PDF.',
-        epilog='https://pypi.org/project/pictureshow/',
-    )
-    parser.version = __version__
-
-    # handle special case before parsing args
-    if not sys.argv[1:]:
-        parser.print_usage(file=sys.stderr)
-        parser.exit(2, f"Try '{parser.prog} --help' for more information.\n")
-
+    parser = _setup_parser()
     args = get_args(parser)
     output_file = _ensure_suffix(args.output_file)
 
@@ -180,10 +182,10 @@ def main():
             parser.error(f'{type(err).__name__}: {err}')
         else:
             report_results(result, output_file, args.verbose)
-            if args.fail == 'skipped':
-                exit_code = 2 if result.errors else 0
-            elif args.fail == 'no-output':
-                exit_code = 2 if result.num_ok == 0 else 0
-            else:
-                exit_code = 0
-            parser.exit(exit_code)
+    if args.fail == 'skipped':
+        exit_code = 2 if result.errors else 0
+    elif args.fail == 'no-output':
+        exit_code = 2 if result.num_ok == 0 else 0
+    else:
+        exit_code = 0
+    parser.exit(exit_code)
