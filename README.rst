@@ -1,6 +1,6 @@
-|build-test| |coverage| |bandit| |pre-commit| |release| |pyversions|
+|test-build-publish| |coverage| |pre-commit.ci| |pre-commit| |bandit| |release| |pyversions|
 
-Save pictures to PDF from the command line or from your Python programs.
+Save pictures to PDF documents from the command line and from your Python programs.
 
 
 Installation
@@ -90,9 +90,9 @@ You can also save pictures from URLs:
 
 .. code::
 
-    $ pictureshow https://cdn.rebrickable.com/media/thumbs/parts/elements/6136555.jpg/250x250p.jpg https://cdn.rebrickable.com/media/thumbs/parts/elements/4119478.jpg/250x250p.jpg -o carrots
+    $ pictureshow https://httpbin.org/image/jpeg https://httpbin.org/image/png -o pics
     ..
-    Saved 2 pictures (2 pages) to 'carrots.pdf'
+    Saved 2 pictures (2 pages) to 'pics.pdf'
 
 But please note that this feature is not tested and depends solely on
 the underlying reportlab_ backend.
@@ -100,40 +100,6 @@ the underlying reportlab_ backend.
 
 As a Python library
 -------------------
-
-
-Using the ``pictures_to_pdf`` shortcut function
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Example:
-
-.. code-block:: python
-
-    from pictureshow import pictures_to_pdf
-
-    pictures_to_pdf(
-        'pics/cucumber.jpg',
-        'pics/onion.jpg',
-        output_file='vegetables.pdf',
-    )
-
-The customization parameters of the ``pictures_to_pdf`` function are keyword-only
-and their default values correspond to the above shown command line options:
-
-.. code-block:: python
-
-    pictures_to_pdf(
-        *pic_files,
-        output_file,
-        force_overwrite=False,
-        page_size='A4',
-        landscape=False,
-        bg_color=None,
-        layout=(1, 1),
-        margin=72,
-        stretch_small=False,
-        fill_cell=False,
-    )
 
 
 Using the ``PictureShow`` class
@@ -170,16 +136,53 @@ their default values correspond to the above shown command line options:
     )
 
 
-.. |build-test| image:: https://github.com/mportesdev/pictureshow/actions/workflows/build-test.yml/badge.svg
-    :target: https://github.com/mportesdev/pictureshow/actions
+Using the ``pictures_to_pdf`` shortcut function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Example:
+
+.. code-block:: python
+
+    from pictureshow import pictures_to_pdf
+
+    pictures_to_pdf(
+        'pics/cucumber.jpg',
+        'pics/onion.jpg',
+        output_file='vegetables.pdf',
+    )
+
+The customization parameters of the ``pictures_to_pdf`` function are keyword-only
+and their default values correspond to the above shown command line options:
+
+.. code-block:: python
+
+    pictures_to_pdf(
+        *pic_files,
+        output_file,
+        force_overwrite=False,
+        page_size='A4',
+        landscape=False,
+        bg_color=None,
+        layout=(1, 1),
+        margin=72,
+        stretch_small=False,
+        fill_cell=False,
+    )
+
+
+.. |test-build-publish| image:: https://github.com/mportesdev/pictureshow/actions/workflows/test-build-publish.yml/badge.svg
+    :target: https://github.com/mportesdev/pictureshow/actions/workflows/test-build-publish.yml
 .. |coverage| image:: https://img.shields.io/codecov/c/gh/mportesdev/pictureshow
     :target: https://codecov.io/gh/mportesdev/pictureshow
-.. |bandit| image:: https://img.shields.io/badge/security-bandit-yellow.svg
-    :target: https://github.com/PyCQA/bandit
+.. |pre-commit.ci| image:: https://results.pre-commit.ci/badge/github/mportesdev/pictureshow/main.svg
+   :target: https://results.pre-commit.ci/latest/github/mportesdev/pictureshow/main
 .. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit
     :target: https://github.com/pre-commit/pre-commit
+.. |bandit| image:: https://img.shields.io/badge/security-bandit-yellow.svg
+    :target: https://github.com/PyCQA/bandit
 .. |release| image:: https://img.shields.io/github/v/release/mportesdev/pictureshow
     :target: https://github.com/mportesdev/pictureshow/releases/latest
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/pictureshow
     :target: https://pypi.org/project/pictureshow
+
 .. _reportlab: https://pypi.org/project/reportlab
