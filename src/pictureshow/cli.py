@@ -112,7 +112,7 @@ def _setup_parser():
     return parser
 
 
-def get_args(parser, argv):
+def _parse_args(parser, argv):
     # handle special case before parsing args
     if not argv and not sys.argv[1:]:
         parser.print_usage(file=sys.stderr)
@@ -120,7 +120,7 @@ def get_args(parser, argv):
     return parser.parse_args(argv)
 
 
-def report_results(result, output_file, verbose=False):
+def _report_results(result, output_file, verbose=False):
     unique_errors = dict(result.errors)
     num_errors = len(unique_errors)
     if num_errors > 0:
@@ -154,7 +154,7 @@ def _ensure_suffix(file_path):
 
 def main(argv=None):
     parser = _setup_parser()
-    args = get_args(parser, argv)
+    args = _parse_args(parser, argv)
     output_file = _ensure_suffix(args.output_file)
 
     stdout_context = (
@@ -181,7 +181,7 @@ def main(argv=None):
         except Exception as err:
             parser.error(f'{type(err).__name__}: {err}')
         else:
-            report_results(result, output_file, args.verbose)
+            _report_results(result, output_file, args.verbose)
     if args.fail == 'skipped':
         exit_code = 2 if result.errors else 0
     elif args.fail == 'no-output':

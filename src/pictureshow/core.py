@@ -17,9 +17,9 @@ PAGE_SIZES = {
 
 DELIMITER = re.compile('[x,]')
 
-DrawingArea = namedtuple('DrawingArea', 'x y width height')
+_Area = namedtuple('DrawingArea', 'x y width height')
 
-Result = namedtuple('Result', 'num_ok errors num_pages')
+_Result = namedtuple('Result', 'num_ok errors num_pages')
 
 
 class PictureShow:
@@ -111,7 +111,7 @@ class PictureShow:
 
     @property
     def result(self):
-        return Result(self.num_ok, self.errors, self.num_pages)
+        return _Result(self.num_ok, self.errors, self.num_pages)
 
     @staticmethod
     def _validate_target_path(path, force_overwrite):
@@ -227,7 +227,7 @@ class PictureShow:
         )
         # yield areas row-wise
         for y, x in itertools.product(areas_y_coords, areas_x_coords):
-            yield DrawingArea(x, y, area_width, area_height)
+            yield _Area(x, y, area_width, area_height)
 
 
 def pictures_to_pdf(
