@@ -8,13 +8,13 @@ def new_pdf(tmp_path):
 
 @pytest.fixture
 def existing_pdf(tmp_path):
-    pdf_path = tmp_path / 'pictures.pdf'
-    pdf_path.write_bytes(b'foo')
-    return pdf_path
+    path = tmp_path / 'pictures.pdf'
+    path.write_bytes(b'%PDF')
+    return path
 
 
 @pytest.fixture
-def error_log(tmp_path, mocker):
+def error_log_mock(tmp_path, mocker):
     path = tmp_path / 'test.log'
     mocker.patch('pictureshow.cli.ERROR_LOG', path)
     return path
