@@ -8,8 +8,16 @@ from . import __version__
 from .core import PAGE_SIZES, PictureShow
 
 
+class _ArgParser(argparse.ArgumentParser):
+    def parse_args(self, args=None, namespace=None):
+        if not args and not sys.argv[1:]:
+            self.print_usage(file=sys.stderr)
+            self.exit(2, f"Try '{self.prog} --help' for more information.\n")
+        return super().parse_args(args, namespace)
+
+
 def _setup_parser():
-    parser = argparse.ArgumentParser(
+    parser = _ArgParser(
         usage='%(prog)s [options] PICTURE [PICTURE ...] -o PATH',
         description='Save pictures to PDF.',
         epilog='https://pypi.org/project/pictureshow/',
@@ -112,14 +120,6 @@ def _setup_parser():
     return parser
 
 
-def _parse_args(parser, argv):
-    # handle special case before parsing args
-    if not argv and not sys.argv[1:]:
-        parser.print_usage(file=sys.stderr)
-        parser.exit(2, f"Try '{parser.prog} --help' for more information.\n")
-    return parser.parse_args(argv)
-
-
 def _report_results(result, output_file, verbose=False):
     unique_errors = dict(result.errors)
     num_errors = len(unique_errors)
@@ -154,7 +154,7 @@ def _ensure_suffix(file_path):
 
 def main(argv=None):
     parser = _setup_parser()
-    args = _parse_args(parser, argv)
+    args = parser.parse_args(argv)
     output_file = _ensure_suffix(args.output_file)
 
     stdout_context = (
