@@ -4,11 +4,10 @@ build: cleandist
 	poetry build
 
 test:
-	tox run -e py312 --skip-pkg-install
+	tox run -m latest
 
 testall:
-	tox run
-	tox run -e coverage,code
+	tox run -m python pypy code
 
 clean: cleandist
 	rm -rf src/pictureshow/__pycache__/ tests/__pycache__/
