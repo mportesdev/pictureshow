@@ -17,9 +17,9 @@ PAGE_SIZES = {
 
 DELIMITER = re.compile('[x,]')
 
-_Area = namedtuple('DrawingArea', 'x y width height')
+_Area = namedtuple('_Area', 'x y width height')
 
-_Result = namedtuple('Result', 'num_ok errors num_pages')
+_Result = namedtuple('_Result', 'num_ok errors num_pages')
 
 
 class PictureShow:
