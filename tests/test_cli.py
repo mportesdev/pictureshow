@@ -1,7 +1,9 @@
+import os
 import subprocess  # nosec: B404
 
 import pytest
 
+from pictureshow import __version__
 from pictureshow.cli import _ensure_suffix, _number, main
 
 from . import (
@@ -56,7 +58,7 @@ class TestCommandLine:
     def test_valid_input(
             self, capsys, new_pdf, pic_files, num_pages, progress, pics, pages
     ):
-        pic_files = ' '.join(str(path) for path in pic_files)
+        pic_files = ' '.join(os.fspath(path) for path in pic_files)
         argv = f'{pic_files} -o {new_pdf}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -71,7 +73,7 @@ class TestCommandLine:
         assert_pdf(new_pdf, num_pages=num_pages)
 
     def test_valid_and_invalid_input(self, capsys, new_pdf):
-        pic_files = ' '.join(str(path) for path in PICS_1_GOOD_1_BAD)
+        pic_files = ' '.join(os.fspath(path) for path in PICS_1_GOOD_1_BAD)
         argv = f'{pic_files} -o {new_pdf}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -95,7 +97,7 @@ class TestCommandLine:
         ),
     )
     def test_invalid_input(self, capsys, new_pdf, pic_files, progress, num_invalid):
-        pic_files = ' '.join(str(path) for path in pic_files)
+        pic_files = ' '.join(os.fspath(path) for path in pic_files)
         argv = f'{pic_files} -o {new_pdf}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -130,7 +132,7 @@ class TestCommandLine:
     )
     def test_multiple_pictures_layout(self, capsys, new_pdf, layout, num_pages, pages):
         # 6 pictures
-        pic_files = ' '.join(str(path) for path in PICS_2_GOOD * 3)
+        pic_files = ' '.join(os.fspath(path) for path in PICS_2_GOOD * 3)
         argv = f'{pic_files} -o {new_pdf} -l {layout}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -206,7 +208,7 @@ class TestCommandLine:
         assert 'FileExistsError:' in std_err
 
     def test_verbose(self, capsys, new_pdf):
-        pic_files = ' '.join(str(path) for path in PICS_1_GOOD_1_BAD)
+        pic_files = ' '.join(os.fspath(path) for path in PICS_1_GOOD_1_BAD)
         argv = f'{pic_files} -o {new_pdf} -v'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -220,7 +222,7 @@ class TestCommandLine:
 
     def test_only_unique_errors_reported(self, capsys, new_pdf):
         # duplicate items
-        pic_files = ' '.join(str(path) for path in PICS_2_BAD * 2)
+        pic_files = ' '.join(os.fspath(path) for path in PICS_2_BAD * 2)
         argv = f'{pic_files} -o {new_pdf}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -234,7 +236,7 @@ class TestCommandLine:
 
     def test_only_unique_errors_reported_verbose(self, capsys, new_pdf):
         # duplicate items
-        pic_files = ' '.join(str(path) for path in PICS_2_BAD * 2)
+        pic_files = ' '.join(os.fspath(path) for path in PICS_2_BAD * 2)
         argv = f'{pic_files} -o {new_pdf} -v'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -261,8 +263,10 @@ class TestSubprocessCommandLine:
     def test_invocation_as_module(self):
         command = 'python -m pictureshow --version'
         proc = subprocess.run(command.split(), capture_output=True)  # nosec: B603
+        std_out = proc.stdout.decode()
 
         assert proc.returncode == 0
+        assert std_out.strip() == __version__
 
 
 class TestPdfSuffix:
@@ -304,7 +308,7 @@ class TestFailOnSkippedFiles:
         ),
     )
     def test_skipped(self, new_pdf, pic_files, expected_code):
-        pic_files = ' '.join(str(path) for path in pic_files)
+        pic_files = ' '.join(os.fspath(path) for path in pic_files)
         argv = f'{pic_files} -F skipped -o {new_pdf}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -321,7 +325,7 @@ class TestFailOnSkippedFiles:
         ),
     )
     def test_no_output(self, new_pdf, pic_files, expected_code):
-        pic_files = ' '.join(str(path) for path in pic_files)
+        pic_files = ' '.join(os.fspath(path) for path in pic_files)
         argv = f'{pic_files} -F no-output -o {new_pdf}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -338,7 +342,7 @@ class TestFailOnSkippedFiles:
         ),
     )
     def test_no(self, new_pdf, pic_files, expected_code):
-        pic_files = ' '.join(str(path) for path in pic_files)
+        pic_files = ' '.join(os.fspath(path) for path in pic_files)
         argv = f'{pic_files} -F no -o {new_pdf}'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
@@ -349,7 +353,7 @@ class TestFailOnSkippedFiles:
 
 class TestErrorLogging:
     def test_log_saved_if_any_errors(self, new_pdf, error_log_mock):
-        pic_files = ' '.join(str(path) for path in PICS_1_GOOD_1_BAD)
+        pic_files = ' '.join(os.fspath(path) for path in PICS_1_GOOD_1_BAD)
         argv = f'{pic_files} -o {new_pdf}'.split()
         with pytest.raises(SystemExit):
             main(argv)
