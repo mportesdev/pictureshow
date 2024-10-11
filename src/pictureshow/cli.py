@@ -31,96 +31,107 @@ def _setup_parser():
         'pictures',
         nargs='+',
         metavar='PICTURE',
-        help='one or more picture paths or URLs',
+        help='one or more input file paths',
     )
-    parser.add_argument(
-        '-a',
-        '--fill-area',
+    parser.add_argument('-V', '--version', action='version')
+
+    verbosity_group = parser.add_mutually_exclusive_group()
+    verbosity_group.add_argument(
+        '-q',
+        '--quiet',
         action='store_true',
-        help="fill drawing area with picture, ignoring the picture's aspect ratio",
+        help='do not print output to stdout',
     )
-    parser.add_argument(
-        '-b',
-        '--bg-color',
-        metavar='COLOR',
-        help='specify page background color as 6-digit hexadecimal RGB, e.g. ff8c00',
-    )
-    parser.add_argument(
-        '-f',
-        '--force-overwrite',
+    verbosity_group.add_argument(
+        '-v',
+        '--verbose',
         action='store_true',
-        help='save to output filename even if file exists',
+        help='show details of input files skipped due to error',
     )
+
     parser.add_argument(
         '-F',
         '--fail',
         choices=('skipped', 'no-output', 'no'),
         default='no-output',
         metavar='MODE',
-        help='If set to `skipped`, fail (exit with code 2) if at least one file '
-             'was skipped due to an error. '
-             'If set to `no-output` (default), fail if all files were skipped '
-             'and no PDF file was created; succeed (exit with code 0) if at '
-             'least one file was successfully saved. '
-             'If set to `no`, succeed even if all files were skipped.',
+        help=(
+            "control the exit code: "
+            "'skipped' exits with code 2 if at least one input file was skipped "
+            "due to an error; "
+            "'%(default)s' (default) exits with code 2 if all files were skipped "
+            "and no PDF file was saved; "
+            "'no' exits with code 0 even if all files were skipped"
+        ),
     )
-    parser.add_argument(
-        '-L',
-        '--landscape',
-        action='store_true',
-        help='set landscape orientation of page; default is portrait',
-    )
-    parser.add_argument(
-        '-l',
-        '--layout',
-        default='1x1',
-        help='specify grid layout (columns x rows) of pictures on page, '
-             'e.g. 2x3 or 2,3; default is 1x1',
-    )
-    parser.add_argument(
-        '-m',
-        '--margin',
-        type=float,
-        default=72,
-        help='set width of empty space around drawing areas; '
-             'default is 72 (72 points = 1 inch)',
-    )
-    parser.add_argument(
+
+    output_group = parser.add_argument_group('output file options')
+    output_group.add_argument(
         '-o',
         '--output-file',
         required=True,
         metavar='PATH',
         help='path of the output PDF file (required)',
     )
-    parser.add_argument(
+    output_group.add_argument(
+        '-f',
+        '--force-overwrite',
+        action='store_true',
+        help='save to output file path even if file exists',
+    )
+
+    page_group = parser.add_argument_group('page properties options')
+    page_group.add_argument(
         '-p',
         '--page-size',
         choices=PAGE_SIZES,
         default='A4',
         metavar='SIZE',
-        help='specify page size; default is A4 '
+        help='specify page size; default is %(default)s '
              f'(available sizes: {", ".join(PAGE_SIZES)})',
     )
-    verbosity_group = parser.add_mutually_exclusive_group()
-    verbosity_group.add_argument(
-        '-q',
-        '--quiet',
+    page_group.add_argument(
+        '-L',
+        '--landscape',
         action='store_true',
-        help='suppress printing to stdout',
+        help='set landscape orientation of pages',
     )
-    parser.add_argument(
+    page_group.add_argument(
+        '-b',
+        '--bg-color',
+        metavar='COLOR',
+        help='specify page background color as 6-digit hexadecimal RGB, e.g. ff8c00',
+    )
+
+    picture_group = parser.add_argument_group('picture layout options')
+    picture_group.add_argument(
+        '-l',
+        '--layout',
+        default='1x1',
+        help='specify grid layout (columns x rows) of pictures on page, '
+             'e.g. 2x3 or 2,3; default is %(default)s',
+    )
+    picture_group.add_argument(
+        '-m',
+        '--margin',
+        type=float,
+        default=72,
+        help='set width of empty space around drawing areas; '
+             'default is %(default)s (72 points = 1 inch)',
+    )
+    picture_group.add_argument(
         '-s',
         '--stretch-small',
         action='store_true',
         help='scale small pictures up to fit drawing areas',
     )
-    verbosity_group.add_argument(
-        '-v',
-        '--verbose',
+    picture_group.add_argument(
+        '-a',
+        '--fill-area',
         action='store_true',
-        help='show details on files skipped due to error',
+        help="fill drawing areas with pictures, ignoring the pictures' aspect ratio",
     )
-    parser.add_argument('-V', '--version', action='version')
+
     parser.version = __version__
     return parser
 
