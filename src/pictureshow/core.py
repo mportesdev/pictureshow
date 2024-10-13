@@ -1,4 +1,5 @@
 import itertools
+import os
 import re
 from collections import namedtuple
 from pathlib import Path
@@ -96,14 +97,14 @@ class PictureShow:
                         self._backend.save()
                     self.num_pages = self._backend.num_pages
                     return
-                x, y, pic_width, pic_height = self._position_and_size(
+                x, y, *pic_size = self._position_and_size(
                     self._backend.get_picture_size(picture),
                     area[2:],    # short for (area.width, area.height)
                     stretch_small,
                     fill_area,
                 )
                 self._backend.add_picture(
-                    picture, area.x + x, area.y + y, pic_width, pic_height
+                    picture, (area.x + x, area.y + y), pic_size
                 )
                 self.num_ok += 1
                 yield True
@@ -115,10 +116,8 @@ class PictureShow:
 
     @staticmethod
     def _validate_target_path(path, force_overwrite):
-        target_str = str(path)
-        target_path = Path(path)
-
-        if target_path.exists() and not force_overwrite:
+        target_str = os.fspath(path)
+        if Path(path).exists() and not force_overwrite:
             raise FileExistsError(f'file {target_str!r} exists')
 
         return target_str
@@ -137,14 +136,14 @@ class PictureShow:
         page_size_error = PageSizeError('two positive numbers expected')
         try:
             page_width, page_height = page_size
-            if not (page_width > 0 and page_height > 0):
+            if page_width <= 0 or page_height <= 0:
                 raise page_size_error
         except (ValueError, TypeError) as err:
             raise page_size_error from err
 
         if page_width < page_height and landscape:
-            page_size = page_height, page_width
-        return page_size
+            return page_height, page_width
+        return page_width, page_height
 
     @staticmethod
     def _validate_color(color):
@@ -193,10 +192,10 @@ class PictureShow:
 
         pic_width, pic_height = pic_size
         pic_is_big = pic_width > area_width or pic_height > area_height
-        pic_is_wide = pic_width / pic_height > area_width / area_height
 
         # calculate scale factor to fit picture to area
         if pic_is_big or stretch_small:
+            pic_is_wide = pic_width / pic_height > area_width / area_height
             scale = area_width / pic_width if pic_is_wide else area_height / pic_height
             pic_width *= scale
             pic_height *= scale

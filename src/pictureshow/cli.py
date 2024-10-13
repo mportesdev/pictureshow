@@ -1,6 +1,7 @@
 import argparse
 import contextlib
 import io
+import os
 import sys
 from pathlib import Path
 
@@ -33,7 +34,7 @@ def _setup_parser():
         metavar='PICTURE',
         help='one or more input file paths',
     )
-    parser.add_argument('-V', '--version', action='version')
+    parser.add_argument('-V', '--version', action='version', version=__version__)
 
     verbosity_group = parser.add_mutually_exclusive_group()
     verbosity_group.add_argument(
@@ -132,7 +133,6 @@ def _setup_parser():
         help="fill drawing areas with pictures, ignoring the pictures' aspect ratio",
     )
 
-    parser.version = __version__
     return parser
 
 
@@ -169,7 +169,7 @@ def _ensure_suffix(file_path):
     path = Path(file_path)
     if path.suffix:
         return file_path
-    return str(path.with_suffix('.pdf'))
+    return os.fspath(path.with_suffix('.pdf'))
 
 
 def main(argv=None):
