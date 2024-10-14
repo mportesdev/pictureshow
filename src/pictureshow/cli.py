@@ -117,20 +117,20 @@ def _setup_parser():
         '--margin',
         type=float,
         default=72,
-        help='set width of empty space around drawing areas; '
+        help='set width of empty space around the cells containing pictures; '
              'default is %(default)s (72 points = 1 inch)',
     )
     picture_group.add_argument(
         '-s',
         '--stretch-small',
         action='store_true',
-        help='scale small pictures up to fit drawing areas',
+        help='scale small pictures up to fit cells',
     )
     picture_group.add_argument(
-        '-a',
-        '--fill-area',
+        '-c',
+        '--fill-cell',
         action='store_true',
-        help="fill drawing areas with pictures, ignoring the pictures' aspect ratio",
+        help="fill cells with pictures, ignoring the pictures' aspect ratio",
     )
 
     return parser
@@ -193,7 +193,7 @@ def main(argv=None):
                     layout=args.layout,
                     margin=args.margin,
                     stretch_small=args.stretch_small,
-                    fill_area=args.fill_area,
+                    fill_cell=args.fill_cell,
             ):
                 print('.' if ok_flag else '!', end='', flush=True)
             print()

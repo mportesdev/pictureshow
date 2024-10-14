@@ -173,8 +173,8 @@ def test_stretch_small(new_pdf):
     assert_pdf(new_pdf, 1)
 
 
-def test_fill_area(new_pdf):
-    result = pictures_to_pdf(PIC_FILE, output_file=new_pdf, fill_area=True)
+def test_fill_cell(new_pdf):
+    result = pictures_to_pdf(PIC_FILE, output_file=new_pdf, fill_cell=True)
 
     assert result == (1, [], 1)
     assert_pdf(new_pdf, 1)
