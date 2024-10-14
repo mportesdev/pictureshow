@@ -97,14 +97,16 @@ class PictureShow:
                         self._backend.save()
                     self.num_pages = self._backend.num_pages
                     return
-                x, y, *pic_size = self._position_and_size(
+                pic_box = self._position_and_size(
                     self._backend.get_picture_size(picture),
                     (cell.width, cell.height),
                     stretch_small,
                     fill_cell,
                 )
                 self._backend.add_picture(
-                    picture, (cell.x + x, cell.y + y), pic_size
+                    picture,
+                    position=(cell.x + pic_box.x, cell.y + pic_box.y),
+                    size=(pic_box.width, pic_box.height),
                 )
                 self.num_ok += 1
                 yield True
@@ -188,7 +190,7 @@ class PictureShow:
         """Calculate position and size of the picture within the cell."""
         cell_width, cell_height = cell_size
         if fill_cell:
-            return 0, 0, cell_width, cell_height
+            return _Box(0, 0, cell_width, cell_height)
 
         pic_width, pic_height = pic_size
         pic_is_big = pic_width > cell_width or pic_height > cell_height
@@ -204,7 +206,7 @@ class PictureShow:
         x = (cell_width - pic_width) / 2
         y = (cell_height - pic_height) / 2
 
-        return x, y, pic_width, pic_height
+        return _Box(x, y, pic_width, pic_height)
 
     @staticmethod
     def _cells(layout, page_size, margin):
