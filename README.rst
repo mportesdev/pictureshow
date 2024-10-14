@@ -56,11 +56,11 @@ As a command line tool
     picture layout options:
       -l, --layout LAYOUT   specify grid layout (columns x rows) of pictures on
                             page, e.g. 2x3 or 2,3; default is 1x1
-      -m, --margin MARGIN   set width of empty space around drawing areas; default
-                            is 72 (72 points = 1 inch)
-      -s, --stretch-small   scale small pictures up to fit drawing areas
-      -a, --fill-area       fill drawing areas with pictures, ignoring the
-                            pictures' aspect ratio
+      -m, --margin MARGIN   set width of empty space around the cells containing
+                            pictures; default is 72 (72 points = 1 inch)
+      -s, --stretch-small   scale small pictures up to fit cells
+      -c, --fill-cell       fill cells with pictures, ignoring the pictures'
+                            aspect ratio
 
 
 Examples
@@ -132,7 +132,7 @@ and their default values correspond to the above shown command line options:
         layout=(1, 1),
         margin=72,
         stretch_small=False,
-        fill_area=False,
+        fill_cell=False,
     )
 
 
@@ -166,7 +166,7 @@ their default values correspond to the above shown command line options:
         layout=(1, 1),
         margin=72,
         stretch_small=False,
-        fill_area=False,
+        fill_cell=False,
     )
 
 
