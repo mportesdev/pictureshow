@@ -1,3 +1,5 @@
+import os
+
 from PIL import UnidentifiedImageError
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
@@ -10,7 +12,7 @@ class ReportlabBackend:
     )
 
     def init(self, output_file, page_size, bg_color=None):
-        self._canvas = Canvas(output_file, pagesize=page_size)
+        self._canvas = Canvas(os.fspath(output_file), pagesize=page_size)
         self._page_size = page_size
         self._bg_color = self._calculate_color(bg_color)
         self.num_pages = 0

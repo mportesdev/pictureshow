@@ -135,24 +135,22 @@ class TestValidateTargetPath:
     """Test core.PictureShow._validate_target_path"""
 
     def test_new_file(self, new_pdf):
-        path_str = os.fspath(new_pdf)
-        result = PictureShow()._validate_target_path(path_str, force_overwrite=False)
-        assert result == path_str
+        result = PictureShow()._validate_target_path(new_pdf, force_overwrite=False)
+        assert result == new_pdf
 
     def test_existing_file_raises_error(self, existing_pdf):
         with pytest.raises(FileExistsError, match="file '.*' exists"):
-            PictureShow()._validate_target_path(
-                os.fspath(existing_pdf), force_overwrite=False
-            )
+            PictureShow()._validate_target_path(existing_pdf, force_overwrite=False)
 
     def test_force_overwrite(self, existing_pdf):
-        path_str = os.fspath(existing_pdf)
-        result = PictureShow()._validate_target_path(path_str, force_overwrite=True)
-        assert result == path_str
+        result = PictureShow()._validate_target_path(existing_pdf, force_overwrite=True)
+        assert result == existing_pdf
 
-    def test_pathlike_converted_to_str(self, new_pdf):
-        result = PictureShow()._validate_target_path(new_pdf, force_overwrite=False)
-        assert result == os.fspath(new_pdf)
+    def test_str_converted_to_pathlike(self, new_pdf):
+        result = PictureShow()._validate_target_path(
+            os.fspath(new_pdf), force_overwrite=False
+        )
+        assert result == new_pdf
 
 
 class TestValidatePageSize:

@@ -116,11 +116,11 @@ class PictureShow:
 
     @staticmethod
     def _validate_target_path(path, force_overwrite):
-        target_str = os.fspath(path)
-        if Path(path).exists() and not force_overwrite:
-            raise FileExistsError(f'file {target_str!r} exists')
+        path = Path(path)
+        if path.exists() and not force_overwrite:
+            raise FileExistsError(f'file {os.fspath(path)!r} exists')
 
-        return target_str
+        return path
 
     @staticmethod
     def _validate_page_size(page_size, landscape):
