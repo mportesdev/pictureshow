@@ -227,17 +227,21 @@ class PictureShow:
         num_columns, num_rows = layout
         page_width, page_height = page_size
 
-        cell_width = (page_width - (num_columns + 1) * margin) / num_columns
-        cell_height = (page_height - (num_rows + 1) * margin) / num_rows
+        step_x = (page_width - margin) / num_columns
+        step_y = (page_height - margin) / num_rows
+        cell_width = step_x - margin
+        cell_height = step_y - margin
+
         if cell_width < 1 or cell_height < 1:
             raise MarginError(f'margin value too high: {margin}')
 
         cells_y_coords = (
-            page_height - row * (cell_height + margin)
+            page_height - row * step_y
             for row in range(1, num_rows + 1)
         )
+
         cells_x_coords = (
-            margin + col * (cell_width + margin)
+            margin + col * step_x
             for col in range(num_columns)
         )
         # yield cells row-wise
