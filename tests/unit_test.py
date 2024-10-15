@@ -435,7 +435,7 @@ class TestPositionAndSize:
         pic_box = PictureShow()._position_and_size(
             pic_size, A4_PORTRAIT_MARGIN_72, stretch_small=False, fill_cell=False
         )
-        assert (pic_box.width, pic_box.height) == pic_size
+        assert pic_box.size == pic_size
 
     @pytest.mark.parametrize(
         'pic_size, cell_size',
@@ -481,10 +481,8 @@ class TestPositionAndSize:
         pic_box = PictureShow()._position_and_size(
             pic_size, cell_size, stretch_small=False, fill_cell=True
         )
-        assert pic_box.x == 0
-        assert pic_box.y == 0
-        assert pic_box.width == cell_size[0]
-        assert pic_box.height == cell_size[1]
+        assert pic_box.position == (0, 0)
+        assert pic_box.size == cell_size
 
 
 class TestCells:
