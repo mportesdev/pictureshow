@@ -208,12 +208,11 @@ class PictureShow:
             return _Box(0, 0, cell_width, cell_height)
 
         pic_width, pic_height = pic_size
-        pic_is_big = pic_width > cell_width or pic_height > cell_height
+        fits_in_cell = pic_width <= cell_width and pic_height <= cell_height
 
-        # calculate scale factor to fit picture to cell
-        if pic_is_big or stretch_small:
-            pic_is_wide = pic_width / pic_height > cell_width / cell_height
-            scale = cell_width / pic_width if pic_is_wide else cell_height / pic_height
+        if not fits_in_cell or stretch_small:
+            # scale picture to fit in cell
+            scale = min(cell_width / pic_width, cell_height / pic_height)
             pic_width *= scale
             pic_height *= scale
 
