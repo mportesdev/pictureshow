@@ -3,6 +3,7 @@ import os
 import re
 from collections import namedtuple
 from pathlib import Path
+from typing import NamedTuple
 
 from reportlab.lib import pagesizes
 
@@ -18,7 +19,21 @@ PAGE_SIZES = {
 
 DELIMITER = re.compile('[x,]')
 
-_Box = namedtuple('_Box', 'x y width height')
+
+class _Box(NamedTuple):
+    x: float
+    y: float
+    width: float
+    height: float
+
+    @property
+    def position(self):
+        return self.x, self.y
+
+    @property
+    def size(self):
+        return self.width, self.height
+
 
 _Result = namedtuple('_Result', 'num_ok errors num_pages')
 
@@ -99,14 +114,14 @@ class PictureShow:
                     return
                 pic_box = self._position_and_size(
                     self._backend.get_picture_size(picture),
-                    (cell.width, cell.height),
+                    cell.size,
                     stretch_small,
                     fill_cell,
                 )
                 self._backend.add_picture(
                     picture,
                     position=(cell.x + pic_box.x, cell.y + pic_box.y),
-                    size=(pic_box.width, pic_box.height),
+                    size=pic_box.size,
                 )
                 self.num_ok += 1
                 yield True
