@@ -5,7 +5,7 @@ import pytest
 from PIL import UnidentifiedImageError as ImageError
 
 from pictureshow.backends import ImageReader
-from pictureshow.core import PictureShow
+from pictureshow.core import _Box, PictureShow
 from pictureshow.exceptions import (
     LayoutError, MarginError, PageSizeError, RGBColorError
 )
@@ -391,43 +391,43 @@ class TestValidPictures:
         assert len(pic_show.errors) == expected.count(None)
 
 
-DEFAULT_CELL = A4_WIDTH - 144, A4_LENGTH - 144
-DEFAULT_CELL_LANDSCAPE = DEFAULT_CELL[::-1]
+DEFAULT_CELL = _Box(72, 72, A4_WIDTH - 144, A4_LENGTH - 144)
+DEFAULT_CELL_LANDSCAPE = _Box(72, 72, A4_LENGTH - 144, A4_WIDTH - 144)
 
 
 class TestPictureBox:
     """Test core.PictureShow._picture_box"""
 
     @pytest.mark.parametrize(
-        'cell_size',
+        'cell',
         (
             pytest.param(DEFAULT_CELL, id='portrait'),
             pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
         ),
     )
-    def test_big_wide_picture_fills_cell_x(self, cell_size):
+    def test_big_wide_picture_fills_cell_x(self, cell):
         pic_width, pic_height = 800, 387
         pic_box = PictureShow()._picture_box(
-            (pic_width, pic_height), cell_size, stretch_small=False, fill_cell=False
+            (pic_width, pic_height), cell, stretch_small=False, fill_cell=False
         )
-        assert pic_box.x == 0
-        assert pic_box.width == cell_size[0]
+        assert pic_box.x == 72
+        assert pic_box.width == cell.width
         assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
 
     @pytest.mark.parametrize(
-        'cell_size',
+        'cell',
         (
             pytest.param(DEFAULT_CELL, id='portrait'),
             pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
         ),
     )
-    def test_big_tall_picture_fills_cell_y(self, cell_size):
+    def test_big_tall_picture_fills_cell_y(self, cell):
         pic_width, pic_height = 400, 3260
         pic_box = PictureShow()._picture_box(
-            (pic_width, pic_height), cell_size, stretch_small=False, fill_cell=False
+            (pic_width, pic_height), cell, stretch_small=False, fill_cell=False
         )
-        assert pic_box.y == 0
-        assert pic_box.height == cell_size[1]
+        assert pic_box.y == 72
+        assert pic_box.height == cell.height
         assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
 
     def test_small_picture_not_resized(self):
@@ -438,35 +438,35 @@ class TestPictureBox:
         assert pic_box.size == pic_size
 
     @pytest.mark.parametrize(
-        'cell_size',
+        'cell',
         (
             pytest.param(DEFAULT_CELL, id='portrait'),
             pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
         ),
     )
-    def test_small_wide_picture_stretch_small(self, cell_size):
+    def test_small_wide_picture_stretch_small(self, cell):
         pic_width, pic_height = 192, 108
         pic_box = PictureShow()._picture_box(
-            (pic_width, pic_height), cell_size, stretch_small=True, fill_cell=False
+            (pic_width, pic_height), cell, stretch_small=True, fill_cell=False
         )
-        assert pic_box.x == 0
-        assert pic_box.width == cell_size[0]
+        assert pic_box.x == 72
+        assert pic_box.width == cell.width
         assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
 
     @pytest.mark.parametrize(
-        'cell_size',
+        'cell',
         (
             pytest.param(DEFAULT_CELL, id='portrait'),
             pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
         ),
     )
-    def test_small_tall_picture_stretch_small(self, cell_size):
+    def test_small_tall_picture_stretch_small(self, cell):
         pic_width, pic_height = 68, 112
         pic_box = PictureShow()._picture_box(
-            (pic_width, pic_height), cell_size, stretch_small=True, fill_cell=False
+            (pic_width, pic_height), cell, stretch_small=True, fill_cell=False
         )
-        assert pic_box.y == 0
-        assert pic_box.height == cell_size[1]
+        assert pic_box.y == 72
+        assert pic_box.height == cell.height
         assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
 
     @pytest.mark.parametrize(
@@ -478,12 +478,12 @@ class TestPictureBox:
         ),
     )
     def test_fill_cell(self, pic_size):
-        cell_size = DEFAULT_CELL
+        cell = DEFAULT_CELL
         pic_box = PictureShow()._picture_box(
-            pic_size, cell_size, stretch_small=False, fill_cell=True
+            pic_size, cell, stretch_small=False, fill_cell=True
         )
-        assert pic_box.position == (0, 0)
-        assert pic_box.size == cell_size
+        assert pic_box.position == (72, 72)
+        assert pic_box.size == cell.size
 
 
 class TestCells:
