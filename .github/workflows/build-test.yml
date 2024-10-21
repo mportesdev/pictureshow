@@ -47,7 +47,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-      if: matrix.python-version == '3.12' && github.ref == 'refs/heads/main'
+      if: matrix.python-version == '3.13' && github.ref == 'refs/heads/main'
 
     - name: Build
       run: |
@@ -56,14 +56,14 @@ jobs:
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      if: matrix.python-version == '3.12' && startsWith(github.ref, 'refs/tags/')
+      if: matrix.python-version == '3.13' && startsWith(github.ref, 'refs/tags/')
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
 
     - name: Create GitHub release
       uses: softprops/action-gh-release@v2
-      if: matrix.python-version == '3.12' && startsWith(github.ref, 'refs/tags/')
+      if: matrix.python-version == '3.13' && startsWith(github.ref, 'refs/tags/')
       with:
         name: version ${{ steps.run_tests.outputs.VERSION }}
         files: 'dist/*'

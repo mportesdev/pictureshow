@@ -8,12 +8,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - support for Python 3.8
 
-<!--
 ### Added
 
-- A bullet item for the Added category.
+- support for Python 3.13
 
--->
 <!--
 ### Changed
 
