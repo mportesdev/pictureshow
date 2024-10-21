@@ -44,6 +44,18 @@ pytest-mock = "^3"
 pytest-xdist = "^3"
 pypdf = "^5"
 
+[dependency-groups]
+test = [
+    "pytest==8.*",
+    "pytest-mock==3.*",
+    "pytest-xdist==3.*",
+    "pypdf==5.*",
+]
+coverage = [
+    "coverage==7.*",
+    "pytest-cov==6.*",
+]
+
 [tool.pytest.ini_options]
 addopts = "-ra --numprocesses=auto"
 xfail_strict = true
