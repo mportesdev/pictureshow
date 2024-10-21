@@ -7,6 +7,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Removed
 
 - support for Python 3.8
+- support for PyPy 3.9
 
 ### Added
 
