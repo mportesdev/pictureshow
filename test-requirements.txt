@@ -1,4 +1,0 @@
-pytest==8.*
-pytest-mock==3.*
-pytest-xdist==3.*
-pypdf==5.*

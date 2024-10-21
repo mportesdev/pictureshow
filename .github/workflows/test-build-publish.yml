@@ -40,9 +40,9 @@ jobs:
     - name: Run tests
       id: run_tests
       run: |
-        pip install .
+        pip install --upgrade pip
+        pip install --group=test --group=coverage .
         echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
-        pip install -r test-requirements.txt 'pytest-cov==6.*'
         pytest --cov --cov-report=xml --cov-report=term --verbose
 
     - name: Upload coverage to Codecov
