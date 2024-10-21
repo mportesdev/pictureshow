@@ -21,7 +21,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pillow = "^10.0.1"
+pillow = "^11"
 platformdirs = "^4"
 reportlab = "^4"
 
