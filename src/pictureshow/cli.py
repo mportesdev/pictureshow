@@ -184,7 +184,7 @@ def main(argv=None):
     with stdout_context:
         try:
             pic_show = PictureShow(*args.pictures)
-            for ok_flag in pic_show._save_pdf(
+            for ok_flag in pic_show._iter_save(
                     output_file=output_file,
                     force_overwrite=args.force_overwrite,
                     page_size=args.page_size,

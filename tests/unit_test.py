@@ -35,8 +35,8 @@ def picture():
     return image_reader
 
 
-class TestSavePdf:
-    """Test core.PictureShow._save_pdf"""
+class TestIterSave:
+    """Test core.PictureShow._iter_save"""
 
     @pytest.mark.parametrize(
         'reader_side_effects, expected_ok, expected_errors',
@@ -63,7 +63,7 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
-        list(pic_show._save_pdf(output_file, **DEFAULTS))  # exhaust the generator
+        list(pic_show._iter_save(output_file, **DEFAULTS))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == expected_ok
@@ -91,7 +91,7 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
-        list(pic_show._save_pdf(output_file, **DEFAULTS))  # exhaust the generator
+        list(pic_show._iter_save(output_file, **DEFAULTS))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == 0
@@ -123,7 +123,7 @@ class TestSavePdf:
         params = {**DEFAULTS, 'layout': (1, 2)}
 
         pic_show = PictureShow(*pic_files)
-        list(pic_show._save_pdf(output_file, **params))  # exhaust the generator
+        list(pic_show._iter_save(output_file, **params))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == expected_ok
@@ -395,8 +395,8 @@ DEFAULT_CELL = A4_WIDTH - 144, A4_LENGTH - 144
 DEFAULT_CELL_LANDSCAPE = DEFAULT_CELL[::-1]
 
 
-class TestPositionAndSize:
-    """Test core.PictureShow._position_and_size"""
+class TestPictureBox:
+    """Test core.PictureShow._picture_box"""
 
     @pytest.mark.parametrize(
         'cell_size',
@@ -407,7 +407,7 @@ class TestPositionAndSize:
     )
     def test_big_wide_picture_fills_cell_x(self, cell_size):
         pic_width, pic_height = 800, 387
-        pic_box = PictureShow()._position_and_size(
+        pic_box = PictureShow()._picture_box(
             (pic_width, pic_height), cell_size, stretch_small=False, fill_cell=False
         )
         assert pic_box.x == 0
@@ -423,7 +423,7 @@ class TestPositionAndSize:
     )
     def test_big_tall_picture_fills_cell_y(self, cell_size):
         pic_width, pic_height = 400, 3260
-        pic_box = PictureShow()._position_and_size(
+        pic_box = PictureShow()._picture_box(
             (pic_width, pic_height), cell_size, stretch_small=False, fill_cell=False
         )
         assert pic_box.y == 0
@@ -432,7 +432,7 @@ class TestPositionAndSize:
 
     def test_small_picture_not_resized(self):
         pic_size = 320, 200
-        pic_box = PictureShow()._position_and_size(
+        pic_box = PictureShow()._picture_box(
             pic_size, DEFAULT_CELL, stretch_small=False, fill_cell=False
         )
         assert pic_box.size == pic_size
@@ -446,7 +446,7 @@ class TestPositionAndSize:
     )
     def test_small_wide_picture_stretch_small(self, cell_size):
         pic_width, pic_height = 192, 108
-        pic_box = PictureShow()._position_and_size(
+        pic_box = PictureShow()._picture_box(
             (pic_width, pic_height), cell_size, stretch_small=True, fill_cell=False
         )
         assert pic_box.x == 0
@@ -462,7 +462,7 @@ class TestPositionAndSize:
     )
     def test_small_tall_picture_stretch_small(self, cell_size):
         pic_width, pic_height = 68, 112
-        pic_box = PictureShow()._position_and_size(
+        pic_box = PictureShow()._picture_box(
             (pic_width, pic_height), cell_size, stretch_small=True, fill_cell=False
         )
         assert pic_box.y == 0
@@ -479,7 +479,7 @@ class TestPositionAndSize:
     )
     def test_fill_cell(self, pic_size):
         cell_size = DEFAULT_CELL
-        pic_box = PictureShow()._position_and_size(
+        pic_box = PictureShow()._picture_box(
             pic_size, cell_size, stretch_small=False, fill_cell=True
         )
         assert pic_box.position == (0, 0)
