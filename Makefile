@@ -1,7 +1,10 @@
-.PHONY: build develop test testall clean cleandist
+.PHONY: build tag develop test testall clean cleandist
 
 build: cleandist
 	poetry build
+
+tag:
+	git tag $$(poetry version --short)
 
 develop:
 	poetry install --with=develop
