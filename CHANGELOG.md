@@ -2,6 +2,25 @@
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.13.0'></a>
+## 0.13.0 — 2024-10-22
+
+### Breaking changes
+
+- Library API: the `fill_area` keyword parameter renamed to `fill_cell`
+- CLI: the `-a`/`--fill-area` option renamed to `-c`/`--fill-cell`
+
+### Added
+
+- CLI: errors caught when reading picture files are now being logged for later inspection
+- support for Python 3.13
+
+### Removed
+
+- support for Python 3.8
+- support for PyPy 3.9
+
+
 <a id='changelog-0.12.1'></a>
 ## 0.12.1 — 2023-12-08
 
