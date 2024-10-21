@@ -63,7 +63,7 @@ class PictureShow:
         `errors` - list of items skipped due to error
         `num_pages` - number of pages of the resulting PDF document
         """
-        for _ in self._save_pdf(
+        for _ in self._iter_save(
                 output_file,
                 force_overwrite=force_overwrite,
                 page_size=page_size,
@@ -77,7 +77,7 @@ class PictureShow:
             pass
         return self.result
 
-    def _save_pdf(
+    def _iter_save(
             self,
             output_file,
             *,
@@ -112,7 +112,7 @@ class PictureShow:
                         self._backend.save()
                     self.num_pages = self._backend.num_pages
                     return
-                pic_box = self._position_and_size(
+                pic_box = self._picture_box(
                     self._backend.get_picture_size(picture),
                     cell.size,
                     stretch_small,
@@ -201,7 +201,7 @@ class PictureShow:
                 yield picture
 
     @staticmethod
-    def _position_and_size(pic_size, cell_size, stretch_small, fill_cell):
+    def _picture_box(pic_size, cell_size, stretch_small, fill_cell):
         """Calculate position and size of the picture within the cell."""
         cell_width, cell_height = cell_size
         if fill_cell:
