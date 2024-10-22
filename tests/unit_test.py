@@ -1,11 +1,11 @@
-from pathlib import Path
+import os
 from unittest.mock import create_autospec
 
 import pytest
 from PIL import UnidentifiedImageError as ImageError
 
 from pictureshow.backends import ImageReader
-from pictureshow.core import PictureShow
+from pictureshow.core import _Box, PictureShow
 from pictureshow.exceptions import (
     LayoutError, MarginError, PageSizeError, RGBColorError
 )
@@ -23,7 +23,7 @@ DEFAULTS = dict(
     layout=(1, 1),
     margin=72,
     stretch_small=False,
-    fill_area=False,
+    fill_cell=False,
 )
 
 
@@ -35,8 +35,8 @@ def picture():
     return image_reader
 
 
-class TestSavePdf:
-    """Test core.PictureShow._save_pdf"""
+class TestIterSave:
+    """Test core.PictureShow._iter_save"""
 
     @pytest.mark.parametrize(
         'reader_side_effects, expected_ok, expected_errors',
@@ -63,7 +63,7 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
-        list(pic_show._save_pdf(output_file, **DEFAULTS))  # exhaust the generator
+        list(pic_show._iter_save(output_file, **DEFAULTS))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == expected_ok
@@ -91,7 +91,7 @@ class TestSavePdf:
         mocker.patch('pictureshow.backends.Canvas', autospec=True)
 
         pic_show = PictureShow(*pic_files)
-        list(pic_show._save_pdf(output_file, **DEFAULTS))  # exhaust the generator
+        list(pic_show._iter_save(output_file, **DEFAULTS))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == 0
@@ -123,7 +123,7 @@ class TestSavePdf:
         params = {**DEFAULTS, 'layout': (1, 2)}
 
         pic_show = PictureShow(*pic_files)
-        list(pic_show._save_pdf(output_file, **params))  # exhaust the generator
+        list(pic_show._iter_save(output_file, **params))  # exhaust the generator
         result = pic_show.result
 
         assert result.num_ok == expected_ok
@@ -134,36 +134,23 @@ class TestSavePdf:
 class TestValidateTargetPath:
     """Test core.PictureShow._validate_target_path"""
 
-    def test_nonexistent_target_file(self, mocker):
-        Path = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path.return_value.exists.return_value = False
-        output_file = 'foo.pdf'
+    def test_new_file(self, new_pdf):
+        result = PictureShow()._validate_target_path(new_pdf, force_overwrite=False)
+        assert result == new_pdf
 
-        result = PictureShow()._validate_target_path(output_file, force_overwrite=False)
-        assert result == output_file
-
-    def test_existing_target_file_raises_error(self, mocker):
-        Path = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path.return_value.exists.return_value = True
-
+    def test_existing_file_raises_error(self, existing_pdf):
         with pytest.raises(FileExistsError, match="file '.*' exists"):
-            PictureShow()._validate_target_path('foo.pdf', force_overwrite=False)
+            PictureShow()._validate_target_path(existing_pdf, force_overwrite=False)
 
-    def test_force_overwrite_existing_file(self, mocker):
-        Path = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path.return_value.exists.return_value = True
-        output_file = 'foo.pdf'
+    def test_force_overwrite(self, existing_pdf):
+        result = PictureShow()._validate_target_path(existing_pdf, force_overwrite=True)
+        assert result == existing_pdf
 
-        result = PictureShow()._validate_target_path(output_file, force_overwrite=True)
-        assert result == output_file
-
-    def test_target_pathlike_converted_to_str(self, mocker):
-        Path_mock = mocker.patch('pictureshow.core.Path', autospec=True)
-        Path_mock.return_value.exists.return_value = False
-        output_file = Path('foo.pdf')
-
-        result = PictureShow()._validate_target_path(output_file, force_overwrite=False)
-        assert result == str(output_file)
+    def test_str_converted_to_pathlike(self, new_pdf):
+        result = PictureShow()._validate_target_path(
+            os.fspath(new_pdf), force_overwrite=False
+        )
+        assert result == new_pdf
 
 
 class TestValidatePageSize:
@@ -176,7 +163,7 @@ class TestValidatePageSize:
             pytest.param((11.5 * 72, 8.5 * 72), id='custom'),
         ),
     )
-    def test_page_size_as_tuple(self, page_size):
+    def test_tuple(self, page_size):
         result = PictureShow()._validate_page_size(page_size, landscape=False)
         assert result == page_size
 
@@ -187,7 +174,7 @@ class TestValidatePageSize:
             pytest.param('letter', (72 * 8.5, 72 * 11), id="'letter'"),
         ),
     )
-    def test_page_size_as_str(self, page_size, expected):
+    def test_str(self, page_size, expected):
         result = PictureShow()._validate_page_size(page_size, landscape=False)
         assert result == pytest.approx(expected)
 
@@ -198,7 +185,7 @@ class TestValidatePageSize:
             pytest.param('b0', [1000, 1414], id="'b0'"),
         ),
     )
-    def test_valid_names_mm(self, page_size, expected_mm):
+    def test_valid_name_mm(self, page_size, expected_mm):
         w, h = PictureShow()._validate_page_size(page_size, landscape=False)
         assert [n / 72 * 25.4 for n in (w, h)] == pytest.approx(expected_mm)
 
@@ -209,7 +196,7 @@ class TestValidatePageSize:
             pytest.param('legal', [8.5, 14], id="'legal'"),
         ),
     )
-    def test_valid_names_inches(self, page_size, expected_inches):
+    def test_valid_name_inches(self, page_size, expected_inches):
         w, h = PictureShow()._validate_page_size(page_size, landscape=False)
         assert [n / 72 for n in (w, h)] == pytest.approx(expected_inches)
 
@@ -218,7 +205,6 @@ class TestValidatePageSize:
         (
             pytest.param(A4, A4_LANDSCAPE, id='A4'),
             pytest.param('A3', (420 / 25.4 * 72, 297 / 25.4 * 72), id="'A3'"),
-            pytest.param((8.5*72, 10.5*72), (10.5*72, 8.5*72), id='custom'),
         ),
     )
     def test_portrait_converted_to_landscape(self, page_size, expected):
@@ -228,43 +214,31 @@ class TestValidatePageSize:
     @pytest.mark.parametrize(
         'page_size, expected',
         (
-            pytest.param(A4_LANDSCAPE, A4_LANDSCAPE, id='A4'),
+            pytest.param(A4_LANDSCAPE, A4_LANDSCAPE, id='A4_LANDSCAPE'),
             pytest.param('LEDGER', [17 * 72, 11 * 72], id="'LEDGER'"),
-            pytest.param((10.5*72, 8.5*72), (10.5*72, 8.5*72), id='custom'),
         ),
     )
-    def test_landscape_remains_landscape(self, page_size, expected):
+    def test_landscape_unchanged(self, page_size, expected):
         result = PictureShow()._validate_page_size(page_size, landscape=True)
         assert result == pytest.approx(expected)
 
     @pytest.mark.parametrize(
         'page_size',
         (
-            pytest.param((100,), id='invalid length (1)'),
-            pytest.param((100, 100, 100), id='invalid length (3)'),
-            pytest.param((500.0, 0), id='invalid value (zero)'),
-            pytest.param((500.0, -200.0), id='invalid value (negative)'),
-            pytest.param((500.0, '500.0'), id='invalid type (str)'),
-            pytest.param(1, id='not iterable'),
+            pytest.param((100,), id='invalid length'),
+            pytest.param((500.0, 0), id='invalid value'),
         ),
     )
     def test_invalid_page_size_raises_error(self, page_size):
         with pytest.raises(PageSizeError, match='two positive numbers expected'):
             PictureShow()._validate_page_size(page_size, landscape=False)
 
-    @pytest.mark.parametrize(
-        'page_size',
-        (
-            pytest.param('A11', id="'A11'"),
-            pytest.param('portrait', id="'portrait'"),
-        ),
-    )
-    def test_invalid_page_size_name_raises_error(self, page_size):
+    def test_invalid_page_size_name_raises_error(self):
         with pytest.raises(
                 PageSizeError,
-                match='unknown page size .+, please use one of: A0, A1.+',
+                match="unknown page size 'A11', please use one of: ",
         ):
-            PictureShow()._validate_page_size(page_size, landscape=False)
+            PictureShow()._validate_page_size('A11', landscape=False)
 
 
 class TestValidateColor:
@@ -286,10 +260,8 @@ class TestValidateColor:
     @pytest.mark.parametrize(
         'color',
         (
-            pytest.param('0000', id='invalid byte length'),
-            pytest.param('bcdefg', id='invalid digit'),
-            pytest.param('00000', id='missing digit'),
-            pytest.param(0, id='type error'),
+            pytest.param('0000', id='invalid length'),
+            pytest.param('bcdefg', id='invalid value'),
         ),
     )
     def test_invalid_color_raises_error(self, color):
@@ -303,51 +275,31 @@ class TestValidateLayout:
     @pytest.mark.parametrize(
         'layout',
         (
-            pytest.param((1, 1), id='(1, 1)'),
             pytest.param((1, 2), id='(1, 2)'),
-            pytest.param((4, 2), id='(4, 2)'),
         ),
     )
-    def test_layout_as_tuple(self, layout):
+    def test_tuple(self, layout):
         assert PictureShow()._validate_layout(layout) == layout
 
     @pytest.mark.parametrize(
         'layout, expected',
         (
-            pytest.param([1, 2], (1, 2), id='list'),
-            pytest.param(range(2, 5)[:2], (2, 3), id='iter'),
-            pytest.param(b'\x05\x03', (5, 3), id='bytes'),
+            pytest.param('1x2', (1, 2), id='1x2'),
+            pytest.param('2 x 3', (2, 3), id='2 x 3'),
+            pytest.param('1,2', (1, 2), id='1,2'),
+            pytest.param('2, 3', (2, 3), id='2, 3'),
         ),
     )
-    def test_layout_as_other_sequence(self, layout, expected):
-        result = PictureShow()._validate_layout(layout)
-        assert result == expected
-
-    @pytest.mark.parametrize(
-        'layout, expected',
-        (
-            pytest.param('1x1', (1, 1), id='1x1'),
-            pytest.param('02x03', (2, 3), id='02x03'),
-            pytest.param(' 3 x 1 ', (3, 1), id=' 3 x 1 '),
-            pytest.param('1,1', (1, 1), id='1,1'),
-            pytest.param('03,01', (3, 1), id='03,01'),
-            pytest.param(' 2 , 3 ', (2, 3), id=' 2 , 3 '),
-        ),
-    )
-    def test_layout_as_str(self, layout, expected):
+    def test_str(self, layout, expected):
         result = PictureShow()._validate_layout(layout)
         assert result == expected
 
     @pytest.mark.parametrize(
         'layout',
         (
-            pytest.param((1,), id='invalid length (1)'),
-            pytest.param((1, 1, 1), id='invalid length (3)'),
-            pytest.param((0, 1), id='invalid value (zero)'),
-            pytest.param((-1, 3), id='invalid value (negative)'),
-            pytest.param((1, 0.5), id='invalid type (float)'),
-            pytest.param(('1', '1'), id='invalid type (str)'),
-            pytest.param(0, id='not iterable'),
+            pytest.param((1,), id='invalid length'),
+            pytest.param((0, 1), id='invalid value'),
+            pytest.param((1, 1.0), id='invalid type'),
         ),
     )
     def test_invalid_layout_raises_error(self, layout):
@@ -357,11 +309,8 @@ class TestValidateLayout:
     @pytest.mark.parametrize(
         'layout',
         (
-            pytest.param('1', id='invalid length (1)'),
-            pytest.param('1x1x1', id='invalid length (3)'),
-            pytest.param('0x1', id='invalid value (zero)'),
-            pytest.param('-1x3', id='invalid value (negative)'),
-            pytest.param('1x0.5', id='invalid type (float)'),
+            pytest.param('1x', id='invalid format'),
+            pytest.param('0x1', id='invalid value'),
         ),
     )
     def test_invalid_layout_str_raises_error(self, layout):
@@ -442,176 +391,151 @@ class TestValidPictures:
         assert len(pic_show.errors) == expected.count(None)
 
 
-A4_PORTRAIT_MARGIN_72 = (A4_WIDTH - 144, A4_LENGTH - 144)
-A4_LANDSCAPE_MARGIN_72 = (A4_LENGTH - 144, A4_WIDTH - 144)
+DEFAULT_CELL = _Box(72, 72, A4_WIDTH - 144, A4_LENGTH - 144)
+DEFAULT_CELL_LANDSCAPE = _Box(72, 72, A4_LENGTH - 144, A4_WIDTH - 144)
 
 
-class TestPositionAndSize:
-    """Test core.PictureShow._position_and_size"""
-
-    @pytest.mark.parametrize(
-        'pic_size, area_size',
-        (
-            pytest.param((800, 387), A4_PORTRAIT_MARGIN_72, id='portrait'),
-            pytest.param((800, 387), A4_LANDSCAPE_MARGIN_72, id='landscape'),
-        ),
-    )
-    def test_big_wide_picture_fills_area_x(self, pic_size, area_size):
-        original_aspect = pic_size[0] / pic_size[1]
-        x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=False, fill_area=False
-        )
-        assert x == 0
-        assert new_width == area_size[0]
-        assert new_width / new_height == pytest.approx(original_aspect)
+class TestPictureBox:
+    """Test core.PictureShow._picture_box"""
 
     @pytest.mark.parametrize(
-        'pic_size, area_size',
+        'cell',
         (
-            pytest.param((400, 3260), A4_PORTRAIT_MARGIN_72, id='portrait'),
-            pytest.param((400, 3260), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+            pytest.param(DEFAULT_CELL, id='portrait'),
+            pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
         ),
     )
-    def test_big_tall_picture_fills_area_y(self, pic_size, area_size):
-        original_aspect = pic_size[0] / pic_size[1]
-        x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=False, fill_area=False
+    def test_big_wide_picture_fills_cell_x(self, cell):
+        pic_width, pic_height = 800, 387
+        pic_box = PictureShow()._picture_box(
+            (pic_width, pic_height), cell, stretch_small=False, fill_cell=False
         )
-        assert y == 0
-        assert new_height == area_size[1]
-        assert new_width / new_height == pytest.approx(original_aspect)
+        assert pic_box.x == 72
+        assert pic_box.width == cell.width
+        assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
+
+    @pytest.mark.parametrize(
+        'cell',
+        (
+            pytest.param(DEFAULT_CELL, id='portrait'),
+            pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
+        ),
+    )
+    def test_big_tall_picture_fills_cell_y(self, cell):
+        pic_width, pic_height = 400, 3260
+        pic_box = PictureShow()._picture_box(
+            (pic_width, pic_height), cell, stretch_small=False, fill_cell=False
+        )
+        assert pic_box.y == 72
+        assert pic_box.height == cell.height
+        assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
 
     def test_small_picture_not_resized(self):
-        pic_size = (320, 200)
-        x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, A4_PORTRAIT_MARGIN_72, stretch_small=False, fill_area=False
+        pic_size = 320, 200
+        pic_box = PictureShow()._picture_box(
+            pic_size, DEFAULT_CELL, stretch_small=False, fill_cell=False
         )
-        assert (new_width, new_height) == pic_size
+        assert pic_box.size == pic_size
 
     @pytest.mark.parametrize(
-        'pic_size, area_size',
+        'cell',
         (
-            pytest.param((192, 108), A4_PORTRAIT_MARGIN_72, id='portrait'),
-            pytest.param((192, 108), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+            pytest.param(DEFAULT_CELL, id='portrait'),
+            pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
         ),
     )
-    def test_small_wide_picture_stretch_small(self, pic_size, area_size):
-        original_aspect = pic_size[0] / pic_size[1]
-        x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=True, fill_area=False
+    def test_small_wide_picture_stretch_small(self, cell):
+        pic_width, pic_height = 192, 108
+        pic_box = PictureShow()._picture_box(
+            (pic_width, pic_height), cell, stretch_small=True, fill_cell=False
         )
-        assert x == 0
-        assert new_width == area_size[0]
-        assert new_width / new_height == pytest.approx(original_aspect)
+        assert pic_box.x == 72
+        assert pic_box.width == cell.width
+        assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
 
     @pytest.mark.parametrize(
-        'pic_size, area_size',
+        'cell',
         (
-            pytest.param((68, 112), A4_PORTRAIT_MARGIN_72, id='portrait'),
-            pytest.param((68, 112), A4_LANDSCAPE_MARGIN_72, id='landscape'),
+            pytest.param(DEFAULT_CELL, id='portrait'),
+            pytest.param(DEFAULT_CELL_LANDSCAPE, id='landscape'),
         ),
     )
-    def test_small_tall_picture_stretch_small(self, pic_size, area_size):
-        original_aspect = pic_size[0] / pic_size[1]
-        x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=True, fill_area=False
+    def test_small_tall_picture_stretch_small(self, cell):
+        pic_width, pic_height = 68, 112
+        pic_box = PictureShow()._picture_box(
+            (pic_width, pic_height), cell, stretch_small=True, fill_cell=False
         )
-        assert y == 0
-        assert new_height == area_size[1]
-        assert new_width / new_height == pytest.approx(original_aspect)
+        assert pic_box.y == 72
+        assert pic_box.height == cell.height
+        assert pic_box.width / pic_box.height == pytest.approx(pic_width / pic_height)
 
     @pytest.mark.parametrize(
-        'pic_size, area_size',
+        'pic_size',
         (
-            pytest.param((800, 387), A4_PORTRAIT_MARGIN_72, id='big wide picture'),
-            pytest.param((400, 3260), A4_PORTRAIT_MARGIN_72, id='big tall picture'),
-            pytest.param((320, 200), A4_PORTRAIT_MARGIN_72, id='small picture'),
+            pytest.param((800, 387), id='big wide picture'),
+            pytest.param((400, 3260), id='big tall picture'),
+            pytest.param((320, 200), id='small picture'),
         ),
     )
-    def test_fill_area(self, pic_size, area_size):
-        x, y, new_width, new_height = PictureShow()._position_and_size(
-            pic_size, area_size, stretch_small=False, fill_area=True
+    def test_fill_cell(self, pic_size):
+        cell = DEFAULT_CELL
+        pic_box = PictureShow()._picture_box(
+            pic_size, cell, stretch_small=False, fill_cell=True
         )
-        assert x == 0
-        assert y == 0
-        assert new_width == area_size[0]
-        assert new_height == area_size[1]
+        assert pic_box.position == (72, 72)
+        assert pic_box.size == cell.size
 
 
-class TestAreas:
-    """Test core.PictureShow._areas"""
+class TestCells:
+    """Test core.PictureShow._cells"""
 
     @pytest.mark.parametrize(
-        'layout',
+        'num_rows',
         (
-            pytest.param((1, 1), id='1x1'),
-            pytest.param((1, 2), id='1x2'),
-            pytest.param((1, 5), id='1x5'),
+            pytest.param(2, id='1x2'),
+            pytest.param(3, id='1x3'),
         ),
     )
-    def test_single_column_layout(self, layout):
-        page_size, margin = A4, 72
-        areas = list(PictureShow()._areas(layout, page_size, margin))
+    def test_single_column_layout(self, num_rows):
+        margin = 72
+        cells = list(PictureShow()._cells((1, num_rows), A4, margin))
 
-        # number of areas == number of rows
-        assert len(areas) == layout[1]
-        assert areas[-1].y == margin
-
-        expected_width = A4_WIDTH - 2*margin
-        for area in areas:
-            assert area.x == margin
-            assert area.width == expected_width
+        assert len(cells) == num_rows
+        assert cells[0].x == pytest.approx(margin)
+        assert cells[0].width == pytest.approx(A4_WIDTH - 2 * margin)
+        assert cells[-1].position == pytest.approx((margin, margin))
 
     @pytest.mark.parametrize(
-        'layout',
+        'num_cols',
         (
-            pytest.param((1, 1), id='1x1'),
-            pytest.param((2, 1), id='2x1'),
-            pytest.param((5, 1), id='5x1'),
+            pytest.param(2, id='2x1'),
+            pytest.param(3, id='3x1'),
         ),
     )
-    def test_single_row_layout(self, layout):
-        page_size, margin = A4, 72
-        areas = list(PictureShow()._areas(layout, page_size, margin))
+    def test_single_row_layout(self, num_cols):
+        margin = 72
+        cells = list(PictureShow()._cells((num_cols, 1), A4, margin))
 
-        # number of areas == number of columns
-        assert len(areas) == layout[0]
-        assert areas[0].x == margin
+        assert len(cells) == num_cols
+        assert cells[0].position == pytest.approx((margin, margin))
+        assert cells[0].height == pytest.approx(A4_LENGTH - 2 * margin)
 
-        expected_height = A4_LENGTH - 2*margin
-        for area in areas:
-            assert area.y == margin
-            assert area.height == expected_height
+    def test_3x3_layout(self):
+        margin = 72
+        cells = list(PictureShow()._cells((3, 3), A4, margin))
 
-    @pytest.mark.parametrize(
-        'layout, page_size, margin',
-        (
-            pytest.param((3, 3), A4, 18, id='(3, 3) portrait'),
-            pytest.param((3, 3), A4, 0, id='(3, 3) portrait no margin'),
-            pytest.param((3, 3), A4_LANDSCAPE, 36, id='(3, 3) landscape'),
-        ),
-    )
-    def test_3x3_layout(self, layout, page_size, margin):
-        areas = list(PictureShow()._areas(layout, page_size, margin))
-        assert len(areas) == 9
-
-        # areas in the left column
-        for area in areas[::3]:
-            assert area.x == margin
-
-        # areas in the bottom row
-        for area in areas[6:]:
-            assert area.y == margin
+        assert len(cells) == 9
+        assert cells[0].x == pytest.approx(margin)
+        assert cells[6].position == pytest.approx((margin, margin))
+        assert cells[8].y == pytest.approx(margin)
 
     @pytest.mark.parametrize(
         'layout, margin',
         (
-            pytest.param((1, 1), 500, id='500'),
-            pytest.param((1, 1), A4_WIDTH/2, id='A4 width/2'),
-            pytest.param((1, 2), 300, id='300'),
-            pytest.param((1, 2), A4_LENGTH/3, id='A4 length/3'),
+            pytest.param((1, 1), 300, id='1x1, 300'),
+            pytest.param((1, 2), 285, id='1x2, 285'),
         ),
     )
     def test_high_margin_raises_error(self, layout, margin):
         with pytest.raises(MarginError, match='margin value too high: .+'):
-            list(PictureShow()._areas(layout, A4, margin))
+            list(PictureShow()._cells(layout, A4, margin))

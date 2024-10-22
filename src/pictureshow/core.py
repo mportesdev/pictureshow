@@ -1,7 +1,9 @@
 import itertools
+import os
 import re
 from collections import namedtuple
 from pathlib import Path
+from typing import NamedTuple
 
 from reportlab.lib import pagesizes
 
@@ -17,7 +19,21 @@ PAGE_SIZES = {
 
 DELIMITER = re.compile('[x,]')
 
-_Area = namedtuple('_Area', 'x y width height')
+
+class _Box(NamedTuple):
+    x: float
+    y: float
+    width: float
+    height: float
+
+    @property
+    def position(self):
+        return self.x, self.y
+
+    @property
+    def size(self):
+        return self.width, self.height
+
 
 _Result = namedtuple('_Result', 'num_ok errors num_pages')
 
@@ -38,7 +54,7 @@ class PictureShow:
             layout=(1, 1),
             margin=72,
             stretch_small=False,
-            fill_area=False,
+            fill_cell=False,
     ):
         """Save pictures stored in `self._pic_files` to a PDF document.
 
@@ -47,7 +63,7 @@ class PictureShow:
         `errors` - list of items skipped due to error
         `num_pages` - number of pages of the resulting PDF document
         """
-        for _ in self._save_pdf(
+        for _ in self._iter_save(
                 output_file,
                 force_overwrite=force_overwrite,
                 page_size=page_size,
@@ -56,12 +72,12 @@ class PictureShow:
                 layout=layout,
                 margin=margin,
                 stretch_small=stretch_small,
-                fill_area=fill_area,
+                fill_cell=fill_cell,
         ):
             pass
         return self.result
 
-    def _save_pdf(
+    def _iter_save(
             self,
             output_file,
             *,
@@ -72,7 +88,7 @@ class PictureShow:
             layout,
             margin,
             stretch_small,
-            fill_area,
+            fill_cell,
     ):
         output_file = self._validate_target_path(output_file, force_overwrite)
         page_size = self._validate_page_size(page_size, landscape)
@@ -82,9 +98,9 @@ class PictureShow:
         self._backend.init(output_file, page_size, bg_color)
         valid_pics = self._valid_pictures()
         self.num_ok = 0
-        areas = tuple(self._areas(layout, page_size, margin))
+        cells = tuple(self._cells(layout, page_size, margin))
         while True:
-            for area in areas:
+            for cell in cells:
                 try:
                     while True:
                         picture = next(valid_pics)
@@ -96,15 +112,13 @@ class PictureShow:
                         self._backend.save()
                     self.num_pages = self._backend.num_pages
                     return
-                x, y, pic_width, pic_height = self._position_and_size(
+                pic_box = self._picture_box(
                     self._backend.get_picture_size(picture),
-                    area[2:],    # short for (area.width, area.height)
+                    cell,
                     stretch_small,
-                    fill_area,
+                    fill_cell,
                 )
-                self._backend.add_picture(
-                    picture, area.x + x, area.y + y, pic_width, pic_height
-                )
+                self._backend.add_picture(picture, pic_box.position, pic_box.size)
                 self.num_ok += 1
                 yield True
             self._backend.add_page()
@@ -115,13 +129,11 @@ class PictureShow:
 
     @staticmethod
     def _validate_target_path(path, force_overwrite):
-        target_str = str(path)
-        target_path = Path(path)
+        path = Path(path)
+        if path.exists() and not force_overwrite:
+            raise FileExistsError(f'file {os.fspath(path)!r} exists')
 
-        if target_path.exists() and not force_overwrite:
-            raise FileExistsError(f'file {target_str!r} exists')
-
-        return target_str
+        return path
 
     @staticmethod
     def _validate_page_size(page_size, landscape):
@@ -137,14 +149,14 @@ class PictureShow:
         page_size_error = PageSizeError('two positive numbers expected')
         try:
             page_width, page_height = page_size
-            if not (page_width > 0 and page_height > 0):
+            if page_width <= 0 or page_height <= 0:
                 raise page_size_error
         except (ValueError, TypeError) as err:
             raise page_size_error from err
 
         if page_width < page_height and landscape:
-            page_size = page_height, page_width
-        return page_size
+            return page_height, page_width
+        return page_width, page_height
 
     @staticmethod
     def _validate_color(color):
@@ -185,49 +197,52 @@ class PictureShow:
                 yield picture
 
     @staticmethod
-    def _position_and_size(pic_size, area_size, stretch_small, fill_area):
-        """Calculate position and size of the picture in the area."""
-        area_width, area_height = area_size
-        if fill_area:
-            return 0, 0, area_width, area_height
+    def _picture_box(pic_size, cell, stretch_small, fill_cell):
+        """Calculate position and size of the picture on the page."""
+        if fill_cell:
+            return cell
 
+        cell_width, cell_height = cell.size
         pic_width, pic_height = pic_size
-        pic_is_big = pic_width > area_width or pic_height > area_height
-        pic_is_wide = pic_width / pic_height > area_width / area_height
+        fits_in_cell = pic_width <= cell_width and pic_height <= cell_height
 
-        # calculate scale factor to fit picture to area
-        if pic_is_big or stretch_small:
-            scale = area_width / pic_width if pic_is_wide else area_height / pic_height
+        if not fits_in_cell or stretch_small:
+            # scale picture to fit in cell
+            scale = min(cell_width / pic_width, cell_height / pic_height)
             pic_width *= scale
             pic_height *= scale
 
-        # center picture to area
-        x = (area_width - pic_width) / 2
-        y = (area_height - pic_height) / 2
+        # center picture in cell
+        x = (cell_width - pic_width) / 2
+        y = (cell_height - pic_height) / 2
 
-        return x, y, pic_width, pic_height
+        return _Box(cell.x + x, cell.y + y, pic_width, pic_height)
 
     @staticmethod
-    def _areas(layout, page_size, margin):
+    def _cells(layout, page_size, margin):
         num_columns, num_rows = layout
         page_width, page_height = page_size
 
-        area_width = (page_width - (num_columns + 1) * margin) / num_columns
-        area_height = (page_height - (num_rows + 1) * margin) / num_rows
-        if area_width < 1 or area_height < 1:
+        step_x = (page_width - margin) / num_columns
+        step_y = (page_height - margin) / num_rows
+        cell_width = step_x - margin
+        cell_height = step_y - margin
+
+        if cell_width < 1 or cell_height < 1:
             raise MarginError(f'margin value too high: {margin}')
 
-        areas_y_coords = (
-            page_height - row * (area_height + margin)
+        cells_y_coords = (
+            page_height - row * step_y
             for row in range(1, num_rows + 1)
         )
-        areas_x_coords = (
-            margin + col * (area_width + margin)
+
+        cells_x_coords = (
+            margin + col * step_x
             for col in range(num_columns)
         )
-        # yield areas row-wise
-        for y, x in itertools.product(areas_y_coords, areas_x_coords):
-            yield _Area(x, y, area_width, area_height)
+        # yield cells row-wise
+        for y, x in itertools.product(cells_y_coords, cells_x_coords):
+            yield _Box(x, y, cell_width, cell_height)
 
 
 def pictures_to_pdf(
@@ -240,7 +255,7 @@ def pictures_to_pdf(
         layout=(1, 1),
         margin=72,
         stretch_small=False,
-        fill_area=False,
+        fill_cell=False,
 ):
     """Save one or more pictures to a PDF document.
 
@@ -260,5 +275,5 @@ def pictures_to_pdf(
         layout=layout,
         margin=margin,
         stretch_small=stretch_small,
-        fill_area=fill_area,
+        fill_cell=fill_cell,
     )

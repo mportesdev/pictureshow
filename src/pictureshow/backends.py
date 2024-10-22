@@ -1,3 +1,5 @@
+import os
+
 from PIL import UnidentifiedImageError
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
@@ -10,7 +12,7 @@ class ReportlabBackend:
     )
 
     def init(self, output_file, page_size, bg_color=None):
-        self._canvas = Canvas(output_file, pagesize=page_size)
+        self._canvas = Canvas(os.fspath(output_file), pagesize=page_size)
         self._page_size = page_size
         self._bg_color = self._calculate_color(bg_color)
         self.num_pages = 0
@@ -33,13 +35,13 @@ class ReportlabBackend:
     def get_picture_size(self, picture):
         return picture.getSize()
 
-    def add_picture(self, picture, x, y, width, height):
+    def add_picture(self, picture, position, size):
         if self._current_page_empty:
             if self._bg_color is not None:
                 self._canvas.setFillColor(self._bg_color)
                 self._canvas.rect(0, 0, *self._page_size, stroke=0, fill=1)
             self._current_page_empty = False
-        self._canvas.drawImage(picture, x, y, width, height, mask='auto')
+        self._canvas.drawImage(picture, *position, *size, mask='auto')
 
     def save(self):
         self._canvas.save()

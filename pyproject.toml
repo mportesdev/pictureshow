@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "pictureshow"
-version = "0.12.1"
+version = "0.13.0"
 description = "Save pictures to PDF."
 authors = ["Michal Porteš <michalportes1@gmail.com>"]
 license = "MIT"
@@ -20,13 +20,22 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pillow = "^10.0.1"
+python = "^3.9"
+pillow = "^11"
 platformdirs = "^4"
 reportlab = "^4"
 
 [tool.poetry.scripts]
 pictureshow = "pictureshow.cli:main"
+
+[tool.poetry.group.develop]
+optional = true
+
+[tool.poetry.group.develop.dependencies]
+pytest = "^8"
+pytest-mock = "^3"
+pytest-xdist = "^3"
+pypdf = "^5"
 
 [tool.pytest.ini_options]
 addopts = "-ra --numprocesses=auto"

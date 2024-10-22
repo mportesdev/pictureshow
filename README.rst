@@ -23,39 +23,44 @@ As a command line tool
     usage: pictureshow [options] PICTURE [PICTURE ...] -o PATH
 
     positional arguments:
-      PICTURE               one or more picture paths or URLs
+      PICTURE               one or more input file paths
 
     options:
       -h, --help            show this help message and exit
-      -a, --fill-area       fill drawing area with picture, ignoring the picture's
-                            aspect ratio
-      -b, --bg-color COLOR  specify page background color as 6-digit hexadecimal
-                            RGB, e.g. ff8c00
-      -f, --force-overwrite
-                            save to output filename even if file exists
-      -F, --fail MODE       If set to `skipped`, fail (exit with code 2) if at
-                            least one file was skipped due to an error. If set to
-                            `no-output` (default), fail if all files were skipped
-                            and no PDF file was created; succeed (exit with code
-                            0) if at least one file was successfully saved. If set
-                            to `no`, succeed even if all files were skipped.
-      -L, --landscape       set landscape orientation of page; default is portrait
-      -l, --layout LAYOUT   specify grid layout (columns x rows) of pictures on
-                            page, e.g. 2x3 or 2,3; default is 1x1
-      -m, --margin MARGIN   set width of empty space around drawing areas; default
-                            is 72 (72 points = 1 inch)
+      -V, --version         show program's version number and exit
+      -q, --quiet           do not print output to stdout
+      -v, --verbose         show details of input files skipped due to error
+      -F, --fail MODE       control the exit code: 'skipped' exits with code 2 if
+                            at least one input file was skipped due to an error;
+                            'no-output' (default) exits with code 2 if all files
+                            were skipped and no PDF file was saved; 'no' exits
+                            with code 0 even if all files were skipped
+
+    output file options:
       -o, --output-file PATH
                             path of the output PDF file (required)
+      -f, --force-overwrite
+                            save to output file path even if file exists
+
+    page properties options:
       -p, --page-size SIZE  specify page size; default is A4 (available sizes: A0,
                             A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, B0, B1, B2,
                             B3, B4, B5, B6, B7, B8, B9, B10, C0, C1, C2, C3, C4,
                             C5, C6, C7, C8, C9, C10, LETTER, LEGAL,
                             ELEVENSEVENTEEN, JUNIOR_LEGAL, HALF_LETTER,
                             GOV_LETTER, GOV_LEGAL, TABLOID, LEDGER)
-      -q, --quiet           suppress printing to stdout
-      -s, --stretch-small   scale small pictures up to fit drawing areas
-      -v, --verbose         show details on files skipped due to error
-      -V, --version         show program's version number and exit
+      -L, --landscape       set landscape orientation of pages
+      -b, --bg-color COLOR  specify page background color as 6-digit hexadecimal
+                            RGB, e.g. ff8c00
+
+    picture layout options:
+      -l, --layout LAYOUT   specify grid layout (columns x rows) of pictures on
+                            page, e.g. 2x3 or 2,3; default is 1x1
+      -m, --margin MARGIN   set width of empty space around the cells containing
+                            pictures; default is 72 (72 points = 1 inch)
+      -s, --stretch-small   scale small pictures up to fit cells
+      -c, --fill-cell       fill cells with pictures, ignoring the pictures'
+                            aspect ratio
 
 
 Examples
@@ -127,7 +132,7 @@ and their default values correspond to the above shown command line options:
         layout=(1, 1),
         margin=72,
         stretch_small=False,
-        fill_area=False,
+        fill_cell=False,
     )
 
 
@@ -161,7 +166,7 @@ their default values correspond to the above shown command line options:
         layout=(1, 1),
         margin=72,
         stretch_small=False,
-        fill_area=False,
+        fill_cell=False,
     )
 
 
