@@ -7,12 +7,12 @@
 
 ### Breaking changes
 
-- Library API: the `fill_area` keyword parameter renamed to `fill_cell`
-- CLI: the `-a`/`--fill-area` option renamed to `-c`/`--fill-cell`
+- Library API: the `fill_area` keyword parameter renamed to `fill_cell` (#47)
+- CLI: the `-a`/`--fill-area` option renamed to `-c`/`--fill-cell` (#47)
 
 ### Added
 
-- CLI: errors caught when reading picture files are now being logged for later inspection
+- CLI: errors caught when reading picture files are now being logged for later inspection (#45)
 - support for Python 3.13
 
 ### Removed
