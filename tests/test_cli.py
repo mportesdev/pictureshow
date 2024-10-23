@@ -144,22 +144,26 @@ class TestCommandLine:
         assert f'Saved 6 pictures ({pages}) to ' in std_out
         assert_pdf(new_pdf, num_pages=num_pages)
 
-    @pytest.mark.parametrize(
-        'layout',
-        (
-            pytest.param('1', id='invalid format'),
-            pytest.param('0x1', id='invalid value'),
-        ),
-    )
-    def test_invalid_layout_throws_error(self, capsys, new_pdf, layout):
-        argv = f'{PIC_FILE} -o {new_pdf} -l {layout}'.split()
+    def test_invalid_layout_format_raises_error(self, capsys, new_pdf):
+        argv = f'{PIC_FILE} -o {new_pdf} -l 1'.split()
         with pytest.raises(SystemExit) as exc:
             main(argv)
         exit_code = exc.value.args[0]
         std_err = capsys.readouterr().err
 
         assert exit_code == 2
-        assert 'LayoutError: two positive integers expected' in std_err
+        assert "LayoutError: expected two positive integers, got '1'" in std_err
+        assert not new_pdf.exists()
+
+    def test_invalid_layout_value_raises_error(self, capsys, new_pdf):
+        argv = f'{PIC_FILE} -o {new_pdf} -l 0x1'.split()
+        with pytest.raises(SystemExit) as exc:
+            main(argv)
+        exit_code = exc.value.args[0]
+        std_err = capsys.readouterr().err
+
+        assert exit_code == 2
+        assert "LayoutError: expected two positive integers, got '0x1'" in std_err
         assert not new_pdf.exists()
 
     def test_existing_target_file_throws_error(self, capsys, existing_pdf):

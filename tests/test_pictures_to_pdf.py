@@ -146,7 +146,9 @@ def test_layout(new_pdf):
 
 
 def test_invalid_layout_raises_error(new_pdf):
-    with pytest.raises(LayoutError, match='two positive integers expected'):
+    with pytest.raises(
+            LayoutError, match=r'expected two positive integers, got \(1, 0\)'
+    ):
         pictures_to_pdf(PIC_FILE, output_file=new_pdf, layout=(1, 0))
 
     assert not new_pdf.exists()

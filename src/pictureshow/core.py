@@ -146,7 +146,9 @@ class PictureShow:
                     f' please use one of: {", ".join(PAGE_SIZES)}'
                 ) from err
 
-        page_size_error = PageSizeError('two positive numbers expected')
+        page_size_error = PageSizeError(
+            f'expected two positive numbers, got {page_size!r}'
+        )
         try:
             page_width, page_height = page_size
             if page_width <= 0 or page_height <= 0:
@@ -170,7 +172,7 @@ class PictureShow:
 
     @staticmethod
     def _validate_layout(layout):
-        layout_error = LayoutError('two positive integers expected')
+        layout_error = LayoutError(f'expected two positive integers, got {layout!r}')
         try:
             if isinstance(layout, str):
                 layout = tuple(int(s) for s in DELIMITER.split(layout))
