@@ -1,4 +1,4 @@
-.PHONY: build tag develop test testall clean cleandist
+.PHONY: build tag develop test testall clean cleandist change
 
 build: cleandist
 	poetry build
@@ -22,3 +22,7 @@ clean: cleandist
 
 cleandist:
 	rm -rf dist/
+
+change:
+	mkdir -p changelog.d
+	tox run -e changelog -- create
