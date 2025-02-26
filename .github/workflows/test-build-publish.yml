@@ -32,7 +32,7 @@ jobs:
 
     - name: Run code checks
       run: |
-        pip install 'flake8==6.*' 'bandit[toml]==1.*' 'codespell==2.*'
+        pip install 'flake8==7.*' 'bandit[toml]==1.*' 'codespell==2.*'
         flake8 src tests
         bandit --configfile=pyproject.toml --recursive src tests
         codespell src tests
@@ -42,7 +42,7 @@ jobs:
       run: |
         pip install .
         echo "VERSION=$(pictureshow --version)" >> $GITHUB_OUTPUT
-        pip install -r test-requirements.txt 'pytest-cov==5.*'
+        pip install -r test-requirements.txt 'pytest-cov==6.*'
         pytest --cov --cov-report=xml --cov-report=term --verbose
 
     - name: Upload coverage to Codecov
