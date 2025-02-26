@@ -78,6 +78,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
     needs: [test, build]
     env:
       VERSION: ${{ needs.test.outputs.version }}
@@ -93,11 +94,9 @@ jobs:
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      if: startsWith(github.ref, 'refs/tags/')
 
     - name: Create GitHub release
       uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/')
       with:
         name: version ${{ env.VERSION }}
         files: 'dist/*'
