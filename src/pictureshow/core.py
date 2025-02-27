@@ -5,17 +5,8 @@ from collections import namedtuple
 from pathlib import Path
 from typing import NamedTuple
 
-from reportlab.lib import pagesizes
-
 from .backends import ReportlabBackend
 from .exceptions import LayoutError, MarginError, PageSizeError, RGBColorError
-
-PAGE_SIZES = {
-    name: size
-    for name, size in vars(pagesizes).items()
-    # use isupper() to exclude deprecated names and function names
-    if name.isupper()
-}
 
 DELIMITER = re.compile('[x,]')
 
@@ -39,6 +30,8 @@ _Result = namedtuple('_Result', 'num_ok errors num_pages')
 
 
 class PictureShow:
+    _page_sizes = dict(ReportlabBackend.page_sizes)
+
     def __init__(self, *pic_files):
         self._pic_files = pic_files
         self._backend = ReportlabBackend()
@@ -135,15 +128,15 @@ class PictureShow:
 
         return path
 
-    @staticmethod
-    def _validate_page_size(page_size, landscape):
+    @classmethod
+    def _validate_page_size(cls, page_size, landscape):
         if isinstance(page_size, str):
             try:
-                page_size = PAGE_SIZES[page_size.upper()]
+                page_size = cls._page_sizes[page_size.upper()]
             except KeyError as err:
                 raise PageSizeError(
                     f'unknown page size {page_size!r},'
-                    f' please use one of: {", ".join(PAGE_SIZES)}'
+                    f' please use one of: {", ".join(cls._page_sizes)}'
                 ) from err
 
         page_size_error = PageSizeError(
