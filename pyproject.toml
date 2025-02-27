@@ -2,14 +2,24 @@
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry]
+[project]
 name = "pictureshow"
 version = "0.13.0"
 description = "Save pictures to PDF."
-authors = ["Michal Porteš <michalportes1@gmail.com>"]
+authors = [
+    { name = "Michal Porteš", email = "michalportes1@gmail.com" },
+]
 license = "MIT"
 readme = "README.rst"
+dynamic = ["requires-python", "dependencies", "classifiers"]
+
+[project.urls]
 homepage = "https://github.com/mportesdev/pictureshow"
+
+[project.scripts]
+pictureshow = "pictureshow.cli:main"
+
+[tool.poetry]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Operating System :: OS Independent",
@@ -24,9 +34,6 @@ python = "^3.9"
 pillow = "^11"
 platformdirs = "^4"
 reportlab = "^4"
-
-[tool.poetry.scripts]
-pictureshow = "pictureshow.cli:main"
 
 [tool.poetry.group.develop]
 optional = true
@@ -54,4 +61,4 @@ skips = ["tests/*"]
 [tool.scriv]
 format = "md"
 md_header_level = "2"
-version = "literal: pyproject.toml: tool.poetry.version"
+version = "literal: pyproject.toml: project.version"
