@@ -230,7 +230,9 @@ class TestValidatePageSize:
         ),
     )
     def test_invalid_page_size_raises_error(self, page_size):
-        with pytest.raises(PageSizeError, match='two positive numbers expected'):
+        with pytest.raises(
+                PageSizeError, match=r'expected two positive numbers, got \(.+\)'
+        ):
             PictureShow()._validate_page_size(page_size, landscape=False)
 
     def test_invalid_page_size_name_raises_error(self):
@@ -302,8 +304,10 @@ class TestValidateLayout:
             pytest.param((1, 1.0), id='invalid type'),
         ),
     )
-    def test_invalid_layout_raises_error(self, layout):
-        with pytest.raises(LayoutError, match='two positive integers expected'):
+    def test_invalid_layout_tuple_raises_error(self, layout):
+        with pytest.raises(
+                LayoutError, match=r'expected two positive integers, got \(.+\)'
+        ):
             PictureShow()._validate_layout(layout)
 
     @pytest.mark.parametrize(
@@ -314,7 +318,9 @@ class TestValidateLayout:
         ),
     )
     def test_invalid_layout_str_raises_error(self, layout):
-        with pytest.raises(LayoutError, match='two positive integers expected'):
+        with pytest.raises(
+                LayoutError, match="expected two positive integers, got '.+'"
+        ):
             PictureShow()._validate_layout(layout)
 
 
