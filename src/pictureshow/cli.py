@@ -8,7 +8,7 @@ from pathlib import Path
 from platformdirs import user_cache_path
 
 from . import __version__
-from .core import PAGE_SIZES, PictureShow
+from .core import PictureShow
 
 CACHE_PATH = user_cache_path('pictureshow', ensure_exists=True)
 ERROR_LOG = CACHE_PATH / 'errors.log'
@@ -85,11 +85,11 @@ def _setup_parser():
     page_group.add_argument(
         '-p',
         '--page-size',
-        choices=PAGE_SIZES,
+        choices=PictureShow.page_sizes,
         default='A4',
         metavar='SIZE',
         help='specify page size; default is %(default)s '
-             f'(available sizes: {", ".join(PAGE_SIZES)})',
+             f'(available sizes: {", ".join(PictureShow.page_sizes)})',
     )
     page_group.add_argument(
         '-L',

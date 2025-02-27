@@ -1,11 +1,18 @@
 import os
 
 from PIL import UnidentifiedImageError
+from reportlab.lib import pagesizes
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
 
 class ReportlabBackend:
+    page_sizes = {
+        name: size
+        for name, size in vars(pagesizes).items()
+        if name.isupper()  # exclude deprecated names and function names
+    }
+
     read_errors = (
         OSError,  # file does not exist or is a dir
         UnidentifiedImageError,  # file not recognized as picture
