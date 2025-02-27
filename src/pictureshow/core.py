@@ -28,13 +28,15 @@ class _Box(NamedTuple):
 
 _Result = namedtuple('_Result', 'num_ok errors num_pages')
 
+_backend_class = ReportlabBackend
+
 
 class PictureShow:
-    _page_sizes = dict(ReportlabBackend.page_sizes)
+    _page_sizes = dict(_backend_class.page_sizes)
 
     def __init__(self, *pic_files):
         self._pic_files = pic_files
-        self._backend = ReportlabBackend()
+        self._backend = _backend_class()
 
     def save_pdf(
             self,
