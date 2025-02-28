@@ -2,6 +2,15 @@
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.13.1'></a>
+## 0.13.1 — 2025-02-28
+
+### Changed
+
+- CI: set up trusted publishing to PyPI
+- Improve validation error messages (#56)
+- Packaging: migrate `pyproject.toml` to Poetry 2.x
+
 <a id='changelog-0.13.0'></a>
 ## 0.13.0 — 2024-10-22
 
