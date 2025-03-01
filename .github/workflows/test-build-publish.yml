@@ -84,6 +84,7 @@ jobs:
       VERSION: ${{ needs.test.outputs.version }}
     permissions:
       id-token: write
+      contents: write
 
     steps:
     - name: Download dist
