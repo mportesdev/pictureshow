@@ -1,5 +1,6 @@
 import os
 import subprocess  # nosec: B404
+import sys
 
 import pytest
 
@@ -365,3 +366,15 @@ class TestErrorLogging:
 
         assert 'tests/files/not_jpg.jpg' in log_contents
         assert 'UnidentifiedImageError' in log_contents
+
+
+@pytest.mark.skipif(sys.version_info < (3, 14), reason='3.14+ only')
+class TestSuggestOnError:
+    def test_suggest_on_error(self, capsys, new_pdf):
+        pic_files = ' '.join(os.fspath(path) for path in PICS_1_GOOD)
+        argv = f'{pic_files} -o {new_pdf} --fail no-skipped'.split()
+        with pytest.raises(SystemExit):
+            main(argv)
+        std_err = capsys.readouterr().err
+
+        assert "maybe you meant 'skipped'?" in std_err
