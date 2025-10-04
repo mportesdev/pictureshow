@@ -42,18 +42,18 @@ optional = true
 pytest = "^8"
 pytest-mock = "^3"
 pytest-xdist = "^3"
-pypdf = "^5"
+pypdf = "^6"
 
 [dependency-groups]
 test = [
     "pytest==8.*",
     "pytest-mock==3.*",
     "pytest-xdist==3.*",
-    "pypdf==5.*",
+    "pypdf==6.*",
 ]
 coverage = [
     "coverage==7.*",
-    "pytest-cov==6.*",
+    "pytest-cov==7.*",
 ]
 
 [tool.pytest.ini_options]
