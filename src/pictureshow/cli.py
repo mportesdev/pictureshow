@@ -13,6 +13,11 @@ from .core import PictureShow
 CACHE_PATH = user_cache_path('pictureshow', ensure_exists=True)
 ERROR_LOG = CACHE_PATH / 'errors.log'
 
+COLORIZE = os.getenv('TERM') != 'dumb' and os.isatty(sys.stdout.fileno())
+RED = '\x1b[31m' if COLORIZE else ''
+GREEN = '\x1b[32m' if COLORIZE else ''
+RESET = '\x1b[0m' if COLORIZE else ''
+
 
 class _ArgParser(argparse.ArgumentParser):
     def parse_args(self, args=None, namespace=None):
@@ -145,10 +150,10 @@ def _report_results(result, output_file, verbose=False):
         print(f'{_number(num_errors, "file")} skipped due to error.')
         with ERROR_LOG.open('w', encoding='utf8') as f:
             for pic_file, error in unique_errors.items():
-                text = f'{pic_file}:\n{type(error).__name__}: {error}\n'
-                print(text, file=f)
+                error_text = f'{type(error).__name__}: {error}'
+                print(f'{pic_file}:\n{error_text}\n', file=f)
                 if verbose:
-                    print(text)
+                    print(f'{pic_file}:\n{RED}{error_text}{RESET}\n', file=sys.stderr)
 
     if result.num_ok > 0:
         print(
@@ -196,11 +201,15 @@ def main(argv=None):
                     stretch_small=args.stretch_small,
                     fill_cell=args.fill_cell,
             ):
-                print('.' if ok_flag else '!', end='', flush=True)
+                print(
+                    f'{GREEN}.{RESET}' if ok_flag else f'{RED}!{RESET}',
+                    end='',
+                    flush=True,
+                )
             print()
             result = pic_show.result
         except Exception as err:
-            parser.error(f'{type(err).__name__}: {err}')
+            parser.error(f'{RED}{type(err).__name__}: {err}{RESET}')
         else:
             _report_results(result, output_file, args.verbose)
 
