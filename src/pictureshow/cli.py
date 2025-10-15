@@ -133,6 +133,7 @@ def _setup_parser():
         help="fill cells with pictures, ignoring the pictures' aspect ratio",
     )
 
+    parser.suggest_on_error = True
     return parser
 
 
