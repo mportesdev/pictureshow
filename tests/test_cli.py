@@ -218,12 +218,12 @@ class TestCommandLine:
         with pytest.raises(SystemExit) as exc:
             main(argv)
         exit_code = exc.value.args[0]
-        std_out = capsys.readouterr().out
+        std_out, std_err = capsys.readouterr()
 
         assert exit_code == 0
         assert '.!' in std_out.splitlines()
         assert '1 file skipped due to error.' in std_out
-        assert 'UnidentifiedImageError' in std_out
+        assert 'UnidentifiedImageError' in std_err
 
     def test_only_unique_errors_reported(self, capsys, new_pdf):
         # duplicate items
@@ -246,13 +246,13 @@ class TestCommandLine:
         with pytest.raises(SystemExit) as exc:
             main(argv)
         exit_code = exc.value.args[0]
-        std_out = capsys.readouterr().out
+        std_out, std_err = capsys.readouterr()
 
         assert exit_code == 2
         assert '!!!!' in std_out.splitlines()
         # only unique items reported
         assert '2 files skipped due to error.' in std_out
-        assert std_out.count('UnidentifiedImageError') == 2
+        assert std_err.count('UnidentifiedImageError') == 2
 
 
 class TestSubprocessCommandLine:
