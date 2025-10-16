@@ -2,6 +2,24 @@
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.14.0'></a>
+## 0.14.0 — 2025-10-16
+
+### Changed
+
+- CLI: Colorize progress indicator and error messages
+
+### Removed
+
+- support for Python 3.9
+- support for PyPy 3.10
+
+### Added
+
+- support for PyPy 3.11
+- support for Python 3.14
+
+
 <a id='changelog-0.13.1'></a>
 ## 0.13.1 — 2025-02-28
 
@@ -10,6 +28,7 @@
 - CI: set up trusted publishing to PyPI
 - Improve validation error messages (#56)
 - Packaging: migrate `pyproject.toml` to Poetry 2.x
+
 
 <a id='changelog-0.13.0'></a>
 ## 0.13.0 — 2024-10-22
