@@ -7,7 +7,7 @@ tag:
 	git tag $$(poetry version --short)
 
 develop:
-	poetry install --with=develop
+	poetry install --with=test
 
 test:
 	poetry run pytest

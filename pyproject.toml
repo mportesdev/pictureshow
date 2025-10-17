@@ -35,15 +35,6 @@ pillow = "^12"
 platformdirs = "^4"
 reportlab = "^4"
 
-[tool.poetry.group.develop]
-optional = true
-
-[tool.poetry.group.develop.dependencies]
-pytest = "^8"
-pytest-mock = "^3"
-pytest-xdist = "^3"
-pypdf = "^6"
-
 [dependency-groups]
 test = [
     "pytest==8.*",
