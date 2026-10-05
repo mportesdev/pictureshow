@@ -33,7 +33,7 @@ packages = [
 python = "^3.10"
 pillow = "^12"
 platformdirs = "^4"
-reportlab = "^4"
+reportlab = "^5"
 
 [dependency-groups]
 test = [
