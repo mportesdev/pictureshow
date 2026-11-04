@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.11', '3.12', '3.13', '3.14', '3.15', 'pypy3.11']
+        python-version: ['3.11', '3.12', '3.13', '3.14', '3.15', 'pypy3.11', 'pypy3.12']
     outputs:
       version: ${{ steps.run_tests.outputs.VERSION }}
 
