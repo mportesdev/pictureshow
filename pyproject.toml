@@ -30,8 +30,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-pillow = "^12"
+python = "^3.11"
+pillow = "^13"
 platformdirs = "^4"
 reportlab = "^4"
 
